@@ -1,0 +1,21 @@
+[project]
+name = "ai-for-software-engineers-companion"
+version = "0.1.0"
+description = "Companion repository blending completed lessons and AI-augmented scaffolds."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit>=1.26",
+    "langchain>=0.1.0",
+    "openai>=0.28",
+    "anthropic>=0.8.0",
+    "chromadb>=0.3.34",
+    "uvicorn>=0.23.0",
+    "uv~=1.0",
+    "python-dotenv>=1.0",
+    "rich>=13.0",
+]
+
+[build-system]
+requires = ["hatchling>=1.14"]
+build-backend = "hatchling.build"

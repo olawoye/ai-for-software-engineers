@@ -1,0 +1,239 @@
+{
+  "lesson_2_2": {
+    "explorations": [
+      {
+        "prompt": "Explain quantum computing in simple terms.",
+        "model": "mistralai/mistral-7b-instruct",
+        "prompt_tokens": 4,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 8192,
+          "used": 4,
+          "estimated_total": 504,
+          "remaining": 8188,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1e-06,
+          "output_cost": 0.00021,
+          "total_cost": 0.000211
+        },
+        "timestamp": "2026-06-22T11:52:14.144979"
+      },
+      {
+        "prompt": "You are an AI assistant for a software engineering course.\n        A student asks: \"How should I design a token-efficient prompt for an LLM?\"\n        Provide a detailed response with best practices.",
+        "model": "mistralai/mistral-7b-instruct",
+        "prompt_tokens": 22,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 8192,
+          "used": 22,
+          "estimated_total": 522,
+          "remaining": 8170,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3e-06,
+          "output_cost": 0.00021,
+          "total_cost": 0.000213
+        },
+        "timestamp": "2026-06-22T11:56:42.691405"
+      },
+      {
+        "prompt": "You are an AI assistant for a software engineering course.\n        A student asks: \"How should I design a token-efficient prompt for an LLM?\"\n        Provide a detailed response with best practices.",
+        "model": "mistralai/mistral-7b-instruct",
+        "prompt_tokens": 22,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 8192,
+          "used": 22,
+          "estimated_total": 522,
+          "remaining": 8170,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3e-06,
+          "output_cost": 0.00021,
+          "total_cost": 0.000213
+        },
+        "timestamp": "2026-06-22T12:31:25.293833"
+      },
+      {
+        "prompt": "You are an AI assistant for a software engineering course.\n        A student asks: \"How should I design a token-efficient prompt for an LLM?\"\n        Provide a detailed response with best practices.",
+        "model": "mistralai/mistral-7b-instruct",
+        "prompt_tokens": 22,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 8192,
+          "used": 22,
+          "estimated_total": 522,
+          "remaining": 8170,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3e-06,
+          "output_cost": 0.00021,
+          "total_cost": 0.000213
+        },
+        "timestamp": "2026-06-22T12:32:20.495395"
+      },
+      {
+        "prompt": "You are an AI assistant for a software engineering course.\n        A student asks: \"How should I design a token-efficient prompt for an LLM?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 22,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 22,
+          "estimated_total": 522,
+          "remaining": 4074,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.1e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000761
+        },
+        "timestamp": "2026-06-22T12:35:49.183676"
+      },
+      {
+        "prompt": "You are an AI assistant for a software engineering course.\n        A student asks: \"How should I design a token-efficient prompt for an LLM?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 22,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 22,
+          "estimated_total": 522,
+          "remaining": 4074,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.1e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000761
+        },
+        "timestamp": "2026-06-22T12:36:00.604369",
+        "actual_response": "Designing a token-efficient prompt for a Language Model (LLM) involves creating a prompt that efficiently utilizes the token limit of the model while still providing relevant and useful information. Here are some best practices to consider when designing a token-efficient prompt for an LLM:\n\n1. Clearly define the task: Make sure that the prompt clearly communicates the task or question that you want the LLM to address. This will help the model focus on generating relevant responses within the token limit.\n\n2. Use concise language: Use clear and concise language in your prompt to convey the necessary information without using unnecessary tokens. Avoid using filler words or redundant phrases that do not add value to the prompt.\n\n3. Focus on key details: Identify the key details that are essential for the LLM to generate a meaningful response and include them in the prompt. Avoid including extraneous information that may use up valuable tokens.\n\n4. Use formatting and structure: Break down the prompt into smaller, more digestible chunks by using formatting such as bullet points or lists. This can help the LLM better understand the prompt and generate more accurate responses.\n\n5. Avoid ambiguity: Be specific and avoid ambiguous language that may confuse the LLM. Clearly state the parameters and constraints of the task to guide the model in generating the desired output.\n\n6. Test and iterate: Test different variations of the prompt to see which one yields the best results in terms of relevance and accuracy. Iterate on the prompt based on the feedback and adjust as necessary to improve the performance of the LLM.\n\nBy following these best practices, you can design a token-efficient prompt for an LLM that maximizes the model's capabilities while staying within the token limit. Remember to focus on clarity, conciseness, and relevance to optimize the performance of the LLM in generating accurate and meaningful responses.",
+        "actual_usage": {
+          "prompt_tokens": 46,
+          "completion_tokens": 364,
+          "total_tokens": 410
+        },
+        "actual_cost": {
+          "input_cost": 2.3e-05,
+          "output_cost": 0.000546,
+          "total_cost": 0.000569
+        }
+      },
+      {
+        "prompt": "You are an AI assistant for a software engineering course.\n        A student asks: \"How should I design a token-efficient prompt for an LLM?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 22,
+        "estimated_completion_tokens": 100,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 22,
+          "estimated_total": 122,
+          "remaining": 4074,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.1e-05,
+          "output_cost": 0.00015,
+          "total_cost": 0.000161
+        },
+        "timestamp": "2026-06-22T12:36:51.065828",
+        "actual_response": "Designing a token-efficient prompt for a language model like an LLM (Large Language Model) involves carefully crafting a concise and clear input prompt that maximizes the efficiency of the model in generating accurate and relevant outputs. Here are some best practices to consider when designing a token-efficient prompt for an LLM:\n\n1. Keep it concise: Limit the number of tokens in your prompt to the minimum necessary to convey your input query or request. Avoid unnecessary words, phrases, or punctuation that may consume extra tokens",
+        "actual_usage": {
+          "prompt_tokens": 46,
+          "completion_tokens": 100,
+          "total_tokens": 146
+        },
+        "actual_cost": {
+          "input_cost": 2.3e-05,
+          "output_cost": 0.00015,
+          "total_cost": 0.000173
+        }
+      },
+      {
+        "prompt": "should employees work from home",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 3,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 3,
+          "estimated_total": 503,
+          "remaining": 4093,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2e-06,
+          "output_cost": 0.00075,
+          "total_cost": 0.000751
+        },
+        "timestamp": "2026-06-22T13:00:22.285075"
+      },
+      {
+        "prompt": "should employees work from home",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 3,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 3,
+          "estimated_total": 503,
+          "remaining": 4093,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2e-06,
+          "output_cost": 0.00075,
+          "total_cost": 0.000751
+        },
+        "timestamp": "2026-06-22T13:03:18.960979"
+      },
+      {
+        "prompt": "should employees work from home",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 3,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 3,
+          "estimated_total": 503,
+          "remaining": 4093,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2e-06,
+          "output_cost": 0.00075,
+          "total_cost": 0.000751
+        },
+        "timestamp": "2026-06-22T13:03:37.421036",
+        "actual_response": "Whether employees should work from home or not is a decision that depends on various factors including the nature of the job, the company's policies, and individual preferences. Some employees may prefer to work from home for reasons such as increased flexibility, reduced commute time, and better work-life balance. On the other hand, some employees may prefer to work in an office environment for reasons such as better collaboration, social interaction, and access to resources.\n\nUltimately, the decision of whether employees should work from home should be based on what is best for the individual employee, the company, and the overall productivity and efficiency of the work being done. It is important for companies to consider the needs and preferences of their employees and to provide the necessary support and resources to ensure that they can be successful whether working from home or in an office. Flexibility and open communication are key in making this decision and ensuring that employees are happy and productive in their work environment.",
+        "actual_usage": {
+          "prompt_tokens": 12,
+          "completion_tokens": 187,
+          "total_tokens": 199
+        },
+        "actual_cost": {
+          "input_cost": 6e-06,
+          "output_cost": 0.00028,
+          "total_cost": 0.000286
+        }
+      }
+    ]
+  }
+}

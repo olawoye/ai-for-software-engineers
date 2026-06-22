@@ -1,0 +1,133 @@
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+*.cover
+*.py,cover
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+.code-workspace
+.env.*.json
+
+# Streamlit
+.streamlit/
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# Database & Data
+*.db
+*.sqlite
+*.sqlite3
+.data/
+*.csv
+*.parquet
+*.pkl
+*.pickle
+
+# API Keys & Credentials (NEVER commit these!)
+.api_keys
+.secrets
+credentials.json
+*.pem
+*.key
+*.cert
+.credentials/
+openrouter_key.txt
+anthropic_key.txt
+openai_key.txt
+
+# OS Files
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Logs
+*.log
+logs/
+*.log.gz
+
+# Temporary/Testing Files
+temp/
+tmp/
+*.tmp
+test_output/
+debug/
+.debug/
+
+# Node (if using frontend tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Student Testing (Don't commit personal experimentation)
+student_*/
+test_*.py
+my_*/
+sandbox/
+scratch/
+experiments/
+
+# Module outputs during development (commit only final versions)
+datasets/*.json.bak
+datasets/*.json.tmp
