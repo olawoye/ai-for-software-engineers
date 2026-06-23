@@ -34,6 +34,7 @@ from shared.tokens import (
     check_context_fit,
 )
 from shared.streamlit_app import register_lesson
+from shared.data_loader import load_sample_corpus
 
 # ============================================================================
 # PHASE 1: Setup & Configuration
@@ -41,77 +42,9 @@ from shared.streamlit_app import register_lesson
 
 # Sample policies for demonstration
 SAMPLE_POLICIES = {
-    "Remote Work Policy": """
-    REMOTE WORK POLICY
-    Last Updated: 2024
-
-    1. ELIGIBILITY
-    - Full-time employees in eligible roles may request remote work
-    - Managers must approve based on job requirements
-    - Remote work is a privilege, not a right
-
-    2. EQUIPMENT & ALLOWANCE
-    - Company provides laptop and monitor
-    - $500 annual home office stipend
-    - Internet reimbursement up to $50/month
-
-    3. SCHEDULE
-    - Core hours: 10 AM - 3 PM local time
-    - Minimum 3 days in office per month
-    - Flexibility for timezone differences
-
-    4. SECURITY
-    - VPN required for all work
-    - No public WiFi for sensitive work
-    - Encrypt all devices
-    """,
-
-    "Vacation & PTO": """
-    PAID TIME OFF POLICY
-
-    1. ANNUAL ALLOWANCE
-    - Years 0-2: 15 days vacation + 10 sick days
-    - Years 3-5: 20 days vacation + 10 sick days
-    - Years 5+: 25 days vacation + 10 sick days
-
-    2. REQUEST PROCESS
-    - Submit requests 2 weeks in advance
-    - Use company time-off system
-    - Manager approval required
-
-    3. CARRYOVER
-    - Maximum 5 days carryover to next year
-    - Use it or lose it after Dec 31
-    - Exceptions require executive approval
-
-    4. PAYOUT
-    - Unused vacation paid out at termination
-    - Sick days not paid out
-    """,
-
-    "Code of Conduct": """
-    CODE OF CONDUCT
-
-    1. PROFESSIONAL BEHAVIOR
-    - Treat colleagues with respect
-    - Maintain professional communication
-    - No harassment or discrimination
-
-    2. CONFLICTS OF INTEREST
-    - Disclose potential conflicts to HR
-    - Avoid outside work in competing companies
-    - Get approval for board positions
-
-    3. CONFIDENTIALITY
-    - Protect trade secrets
-    - Don't share customer data
-    - Respect IP rights
-
-    4. COMPLIANCE
-    - Report violations to HR or ethics line
-    - Retaliation is strictly prohibited
-    - Violations result in disciplinary action
-    """
+    "Remote Work Policy": "...",
+    "Vacation & PTO": "...",
+    "Code of Conduct": "..."
 }
 
 def setup_output_dir():
@@ -306,8 +239,13 @@ def render_lesson_2_4():
         policy_source = st.radio("Policy source:", ["Use Sample Policies", "Paste Your Own"])
 
     if policy_source == "Use Sample Policies":
-        policies = SAMPLE_POLICIES
-        st.success(f"✅ Loaded {len(SAMPLE_POLICIES)} sample policies")
+        # Load from shared corpus
+        policies, data_source = load_sample_corpus()
+        if not policies:
+            st.error("Could not load sample policies. Using empty corpus.")
+            policies = {}
+        st.success(f"✅ Loaded {len(policies)} sample policies")
+        st.caption(f"📁 Sample data loaded from: `{data_source}`")
     else:
         user_policy = st.text_area(
             "Paste your policy document(s):",

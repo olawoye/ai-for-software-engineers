@@ -58,46 +58,101 @@ This lesson provides a visual explanation of transformer architecture and self-a
 
 ### Lesson 2.4: Prompting, Retrieval & Fine-Tuning
 **Type:** Code Screencast  
-**Status:** 🔄 In Progress
+**Status:** ✅ Complete
 
-Compare prompting, RAG, and fine-tuning strategies.
+Compare three approaches to improve AI outputs and choose the best for your scenario.
 
-#### Run Instructions (when ready)
+#### Run Instructions
 ```bash
 source .venv/bin/activate
 export OPENROUTER_API_KEY='your-key-here'
 streamlit run lesson-04-prompting-retrieval-finetuning.py
 ```
 
+**What You'll Learn:**
+- Compare prompt engineering, RAG, and fine-tuning
+- Evaluate tradeoffs: cost, complexity, maintainability
+- Decision matrix for approach selection
+- Real-world scenarios for each approach
+
+**Output:** Results saved to `../datasets/lesson-04-output.json`
+
 ---
 
 ### Lesson 2.5: Embeddings & Semantic Search
 **Type:** Code Screencast  
-**Status:** 🔄 In Progress
+**Status:** ✅ Complete
 
-Learn how embeddings power semantic search and retrieval systems.
+Build semantic search using embeddings and vector databases.
 
-#### Run Instructions (when ready)
+#### Setup: Get Your Cohere API Key
+This lesson uses **Cohere embeddings** by default (free tier, 100k requests/month).
+
+1. **Sign up** at [cohere.com](https://cohere.com) (no credit card needed)
+2. **Get API key** from dashboard
+3. **Set environment variable:**
+   ```bash
+   export COHERE_API_KEY='your-key-here'
+   ```
+
+#### Run Instructions
 ```bash
 source .venv/bin/activate
-export OPENROUTER_API_KEY='your-key-here'
+export COHERE_API_KEY='your-key-here'
 streamlit run lesson-05-embeddings-semantic-search.py
 ```
+
+**What You'll Learn:**
+- Generate embeddings from text (semantic understanding)
+- Build semantic search index using Cohere
+- Understand embedding vectors and similarity
+- Automatic fallback to TF-IDF if API key not set
+- Create reusable document corpus
+
+**Embedding Options:**
+- **Primary (Cohere)**: True semantic search, free tier 100k requests/month → recommended for learning
+- **Fallback (TF-IDF)**: Lightweight, keyword-based, no API key needed
+- **Optional (sentence-transformers)**: Best quality, local, requires several GB install
+
+**Output:** Corpus and metadata saved to `../datasets/lesson-05-output.json` → Lesson 2.6 input
+
+**Key Concepts:**
+- Semantic embeddings vs keyword search
+- Vector similarity (cosine similarity)
+- Relevance scoring
+- Document ranking by meaning
+
 
 ---
 
 ### Lesson 2.6: Build a Mini Search Demo
 **Type:** Code Screencast  
-**Status:** 🔄 In Progress
+**Status:** ✅ Complete
 
-Build a complete semantic search application combining tokens, embeddings, and retrieval.
+Build a production-like semantic search application combining all lessons 2.2-2.5.
 
-#### Run Instructions (when ready)
+#### Run Instructions
 ```bash
 source .venv/bin/activate
-export OPENROUTER_API_KEY='your-key-here'
 streamlit run lesson-06-mini-search-demo.py
 ```
+
+**What You'll Learn:**
+- Build complete search application
+- Intuitive search interface with hero bar
+- Results displayed as cards with relevance scores
+- Add documents mid-session
+- Track search analytics
+
+**Output:** Application state saved to `../datasets/lesson-06-output.json`
+
+**Key Features:**
+- Loads corpus from Lesson 2.5 automatically
+- Suggested queries to get started
+- Result snippets + full document preview
+- Relevance score visualization (🟢🟡🔴)
+- Search history tracking
+- TF-IDF search (lightweight, instant)
 
 ---
 
@@ -119,13 +174,58 @@ Each lesson outputs results to `datasets/lesson-XX-output.json`:
 
 ## Setup & Dependencies
 
-See the main [README.md](../../README.md) for project-wide setup instructions.
-
-**Quick Start:**
+### First-Time Setup (Required Once)
 ```bash
+# Create clean virtual environment
+rm -rf .venv  # Remove old venv if it exists
 ./setup.sh
 source .venv/bin/activate
+
+# Install Module 2 base dependencies (lightweight, ~50MB, includes Cohere)
+pip install -r requirements-module-02.txt
 ```
+
+**First run:** Lessons 2.2, 2.4, 2.5 are instant (cloud-based APIs, no downloads).
+
+### Lessons 2.2 & 2.4: OpenRouter API Key
+```bash
+export OPENROUTER_API_KEY='your-key-here'
+```
+
+### Lesson 2.5: Cohere API Key (Primary Method - Recommended)
+```bash
+# Sign up free at https://cohere.com (no credit card needed)
+# Free tier: 100k requests/month — plenty for learning and demos
+export COHERE_API_KEY='your-key-here'
+```
+
+If `COHERE_API_KEY` is not set, Lesson 2.5 automatically falls back to TF-IDF (keyword-based, no API key needed).
+
+### Optional Performance Upgrades
+
+**For local semantic embeddings** (runs entirely on your machine):
+```bash
+# ⚠️ Warning: Adds several GB to venv size, requires PyTorch
+pip install sentence-transformers faiss-cpu
+
+# Then uncomment the sentence-transformer sections in:
+# - lesson-05-embeddings-semantic-search.py (lines ~154-191)
+# - lesson-06-mini-search-demo.py (similar section)
+```
+
+**Benefits of local embeddings:**
+- ✅ No API key needed
+- ✅ Runs locally, faster for repeated queries
+- ⚠️ Large install (~several GB), slower first-time generation
+- ✅ Highest quality embeddings available
+
+**Lesson 2.5 Fallback Chain:**
+1. **Cohere** (if `COHERE_API_KEY` set) → True semantic search, recommended for learning
+2. **TF-IDF** (if Cohere unavailable) → Keyword-based, instant, no API key
+3. **sentence-transformers** (if installed) → Best quality, local, no API key
+
+
+---
 
 ## Reference
 
