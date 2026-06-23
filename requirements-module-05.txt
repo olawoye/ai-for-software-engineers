@@ -1,0 +1,10 @@
+# Core dependencies minimal - most functionality in pure Python
+# Optional packages for advanced features:
+
+# json is built-in, so no additional requirements for JSON-RPC
+# pathlib is built-in for file operations
+
+# Optional for advanced features:
+# email-validator>=2.0.0       # Email validation
+# pydantic>=2.0.0              # Schema validation
+# python-dotenv>=1.0.0         # Environment management

@@ -1,2 +1,12 @@
 streamlit>=1.28.0
 openai>=1.3.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+cohere>=4.0.0
+
+# Optional upgrades for better performance:
+# sentence-transformers>=2.2.0  # Better embeddings (adds 3GB, requires PyTorch)
+# faiss-cpu>=1.7.4              # Faster vector search (pulls heavy CUDA deps)
+
+# Note: Default implementation uses Cohere embeddings (free tier) with TF-IDF fallback.
+# For production use cases, uncomment sentence-transformers for local embeddings (no API key needed).

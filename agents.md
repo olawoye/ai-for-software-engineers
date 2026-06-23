@@ -63,3 +63,46 @@ After implementing Output 1 & 2, always:
 4. ✅ Explain data flow (input/output between lessons)
 5. ✅ Link to full curriculum in docs/
 6. ✅ Update main repo README.md if adding new dependencies or setup changes
+
+## Lesson-by-Lesson Implementation Workflow
+
+### When Implementing Code Screencast Lessons
+
+**Process:**
+1. **Proposal Stage** (Agent → User)
+   - Propose a specific implementation style for the lesson
+   - Suggest optimal UI/UX (Streamlit, CLI, script output)
+   - Describe input/output patterns
+   - Explain how this best demonstrates the lesson objectives
+   - Reference the curriculum learning goals
+
+2. **Approval Stage** (User → Agent)
+   - User reviews proposal and approves/requests changes
+   - Agent notes any modifications
+
+3. **Implementation Stage** (Agent)
+   - Build production-ready implementation in `project-completed/`
+   - Include full working code with comments
+   - Test and verify it runs without errors
+   - Add example data/usage
+
+4. **Scaffold Generation Stage** (Agent)
+   - Generate empty TODO version in `project-todo/`
+   - Add PHASE-based comments guiding implementation
+   - Reference the completed version
+   - Include hints but not solutions
+   - Ensure it's completable by students or AI assistants
+
+5. **Documentation Stage** (Agent)
+   - Update lesson section in module README
+   - Document run instructions
+   - Explain learning objectives demonstrated
+   - Note any dependencies or setup required
+
+### Why This Approach
+
+- **User approval ensures alignment** with learning goals before implementation
+- **Iterative design** catches poor UX/architecture early
+- **Consistent style** across all lessons and modules
+- **Educational value** maintained through thoughtful TODO scaffolding
+- **Reusable pattern** for all future module implementations

@@ -280,6 +280,286 @@
             ]
           }
         }
+      },
+      {
+        "question": "What is the remote work policy?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-06-23T11:03:57.085822",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "A remote work policy is a set of guidelines and rules established by an organization to govern how employees can work from locations other than the office, typically from their homes or other remote locations. This policy outlines expectations for communication, work hours, availability, equipment and technology requirements, and other important information related to remote work. It also addresses issues such as data security, privacy, and compliance with company policies and procedures. A remote work policy helps to ensure consistency and clarity for both employees and employers when working remotely.",
+                "tokens": 115,
+                "cost": 0.000159,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "A remote work policy is a set of guidelines and expectations that outline the conditions under which employees are allowed to work remotely, either full-time or part-time. This policy typically covers topics such as eligibility criteria, approval process for remote work arrangements, guidelines for communication, equipment and technology requirements, work hours and availability expectations, data security and confidentiality measures, and performance evaluation criteria for remote employees. It is important for organizations to have a clear and well-defined remote work policy in place to ensure consistency, productivity, and compliance with legal regulations.",
+                "tokens": 137,
+                "cost": 0.000175,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Understand the policy requirements\n- Remote work policies outline guidelines and expectations for employees who work outside of the traditional office setting.\n- Key components of a remote work policy may include eligibility criteria, expectations for communication and availability, equipment and technology requirements, data security protocols, work hours, performance evaluation criteria, and any other relevant guidelines.\n\nStep 2: Provide a clear answer\n- A remote work policy is a set of guidelines and expectations for employees who work outside of the traditional office setting. This policy outlines eligibility criteria, communication and availability expectations, equipment and technology requirements, data security protocols, work hours, performance evaluation criteria, and any other relevant guidelines to ensure successful remote work arrangements.\n\n- Organizations should develop a comprehensive remote work policy that addresses the specific needs and requirements of their workforce, taking into consideration factors such as job roles, team dynamics, and organizational culture. It is important to communicate the remote work policy clearly to employees and provide support and resources to help them succeed in their remote work arrangements.\n\n- In summary, a remote work policy is a crucial tool for organizations to establish clear guidelines and expectations for remote work arrangements, ensuring that employees can effectively work outside of the traditional office setting while maintaining productivity and collaboration with their colleagues.",
+                "tokens": 292,
+                "cost": 0.000395,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000729,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy allows full-time employees in eligible roles to request remote work. Managers must approve based on job requirements, as remote work is considered a privilege and not a right. The company provides a laptop and monitor, a $500 annual home office stipend, and internet reimbursement up to $50 per month. The schedule includes core hours from 10 AM to 3 PM local time, a minimum of 3 days in the office per month, and flexibility for timezone differences. Security measures include requiring a VPN for all work, avoiding public WiFi for sensitive work, and encrypting all devices.",
+            "retrieved_policies": [
+              "Remote Work Policy"
+            ],
+            "tokens": 330,
+            "cost": 0.000285,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.00",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-06-23T11:19:00.053464",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "A remote work policy outlines guidelines and expectations for employees who work remotely. It typically includes information on eligibility criteria, communication protocols, work hours, security measures, equipment provisions, and performance expectations. The policy helps ensure that remote employees are able to effectively perform their jobs while maintaining a consistent level of productivity and communication with their team and supervisors.",
+                "tokens": 81,
+                "cost": 0.000107,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "A remote work policy outlines the guidelines and expectations for employees who work remotely, typically away from the company's physical office space. This policy usually covers topics such as eligibility criteria for remote work, working hours, communication protocols, data security measures, equipment and technology requirements, performance expectations, and other relevant considerations.\n\nIt is important for organizations to have a clear and comprehensive remote work policy in place to ensure consistency, productivity, and compliance with labor laws and regulations. This policy should be communicated to all employees and regularly reviewed and updated as needed to reflect changes in the working environment.",
+                "tokens": 145,
+                "cost": 0.000187,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Understand the policy requirements:\n- Remote work policy outlines the guidelines, expectations, and procedures related to employees working from a location other than the traditional office setting.\n- It typically covers topics such as eligibility criteria, communication protocols, work hours, equipment and technology requirements, data security measures, performance evaluation, and compliance with company policies and procedures.\n\nStep 2: Provide a clear answer:\n- A remote work policy is a set of guidelines and procedures that govern how employees can work remotely, outside of the traditional office setting. It outlines the expectations, responsibilities, and requirements for both employees and employers to ensure that remote work is conducted effectively and in alignment with the company's goals and standards.\n\n- A typical remote work policy may include:\n1. Eligibility criteria: defining which employees are eligible to work remotely based on job roles, performance, and other factors.\n2. Communication protocols: specifying how employees should stay in touch with their managers, colleagues, and clients while working remotely.\n3. Work hours: outlining the expected work hours and availability for remote employees.\n4. Equipment and technology requirements: detailing the necessary tools, devices, and software needed to perform work remotely.\n5. Data security measures: ensuring that employees follow security protocols to protect company data and information while working remotely.\n6. Performance evaluation: establishing how remote employees will be evaluated and monitored for their work performance.\n7. Compliance with company policies: reiterating the need for remote employees to adhere to all company policies, procedures",
+                "tokens": 343,
+                "cost": 0.000471,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.0007650000000000001,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy allows full-time employees whose roles permit remote work to request approval. Remote work is a privilege subject to business needs and manager approval. The company provides a laptop and monitor, a $500 annual home office stipend for desk, chair, lighting, and internet reimbursement up to $50/month for employees without company broadband. Core hours are from 10 AM - 3 PM local time, Monday-Friday, with a minimum of 2 days in the office per month for team meetings and collaboration. Employees are required to use company communication tools (Slack, Teams) during business hours. Security measures include VPN required for all work access, no public WiFi for work activities, and all devices must be encrypted and password-protected.",
+            "retrieved_policies": [
+              "Remote Work Policy"
+            ],
+            "tokens": 356,
+            "cost": 0.000327,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.00",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-06-23T11:21:34.635263",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "A remote work policy is a set of guidelines and expectations that outline how employees can work remotely. This policy typically covers topics such as eligibility for remote work, communication protocols, work hours, equipment and technology requirements, data security measures, and performance expectations. Remote work policies are important for ensuring that employees and employers are on the same page when it comes to working remotely and can help maintain productivity and accountability in a remote work environment.",
+                "tokens": 99,
+                "cost": 0.000135,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "A remote work policy is a set of guidelines and expectations established by an organization regarding employees working from a location outside of the traditional office setting, typically from their home or another remote location. This policy outlines the requirements for remote work, including expectations for communication, working hours, availability, data security, productivity, and equipment usage. It may also address issues such as confidentiality, safety, and reimbursement for expenses related to remote work. The remote work policy should be clearly communicated to all employees and regularly reviewed to ensure it aligns with the organization's goals and objectives.",
+                "tokens": 143,
+                "cost": 0.000183,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Understand the policy requirements\n- Remote work policy should outline the guidelines, expectations, and procedures for employees who work remotely.\n- It should address topics such as eligibility, hours of work, communication, equipment, data security, performance evaluation, and reimbursement.\n- The policy should ensure that remote work arrangements comply with labor laws and company standards.\n\nStep 2: Provide a clear answer\n- The remote work policy is a set of guidelines and procedures that outline the expectations and requirements for employees who work remotely. It should cover topics such as eligibility criteria, hours of work, communication methods, equipment provision, data security measures, performance evaluation criteria, and reimbursement policies.\n- The policy should ensure that remote work arrangements are in compliance with labor laws and company standards, while also promoting productivity, communication, and work-life balance for remote employees. It is important for the policy to be communicated effectively to all employees and regularly reviewed and updated as needed.",
+                "tokens": 233,
+                "cost": 0.000306,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000624,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "Sorry, the provided policies do not include information about the remote work policy. For more information on the remote work policy, please refer to the company's official handbook or speak with the HR manager.",
+            "retrieved_policies": [
+              "Custom Policy"
+            ],
+            "tokens": 98,
+            "cost": 8.8e-05,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.00",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-06-23T11:22:17.099705",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "A remote work policy is a set of guidelines and expectations put in place by an organization to govern how employees can work remotely. This policy typically outlines the criteria for being eligible to work remotely, the procedures for requesting and approving remote work, expectations for communication and availability, data security measures, and other relevant information. It is designed to ensure that remote work is carried out effectively and in alignment with the organization's goals and values.",
+                "tokens": 99,
+                "cost": 0.000135,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "A remote work policy is a set of guidelines and expectations provided by an organization that outlines the rules and procedures for employees who work remotely. This policy typically includes information on eligibility for remote work, communication expectations, work hours and availability, data security measures, equipment and technology requirements, performance evaluation criteria, and any other relevant guidelines for remote employees to follow. It is important for organizations to have a clear and comprehensive remote work policy in place to ensure consistency, productivity, and compliance with legal and regulatory requirements.",
+                "tokens": 131,
+                "cost": 0.000166,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Understand the policy requirements\n- Remote work policy outlines the guidelines and expectations for employees who work outside of the traditional office setting.\n- It should address topics such as eligibility, communication, work hours, equipment, security, and performance evaluation.\n\nStep 2: Provide a clear answer\n- The remote work policy should clearly define who is eligible to work remotely, such as specific roles or departments.\n- It should outline the communication expectations between remote employees and their managers, as well as with other team members.\n- The policy should specify the expected work hours for remote employees, whether they need to be available during specific times or if they have flexibility in their schedule.\n- It should address the equipment and tools that remote employees need to effectively perform their job, such as laptops, internet access, and software.\n- Security measures should be outlined in the policy to ensure that remote work is conducted in a secure manner, such as using VPNs, encryption, and secure file sharing.\n- Lastly, the policy should detail how remote employees will be evaluated and their performance monitored to ensure productivity and accountability.",
+                "tokens": 263,
+                "cost": 0.000351,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000652,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy states that employees are eligible to work from home and receive free food and free laptops if they wear green shirts.",
+            "retrieved_policies": [
+              "Custom Policy"
+            ],
+            "tokens": 89,
+            "cost": 7.1e-05,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.00",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
       }
     ],
     "recommendations": []
