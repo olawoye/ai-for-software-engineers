@@ -1,18 +1,28 @@
 """
 Token utilities for counting, estimating costs, and managing context windows.
 """
+import math
 import re
 from typing import Dict, List
 
-# Approximate tokens per word (varies by model)
-TOKENS_PER_WORD = 0.75
+# Approximate tokens per word (varies by model and text type).
+# A safer general planning heuristic is ~1.33 tokens/word.
+TOKENS_PER_WORD = 1.33
 
 # Model context window limits (in tokens)
 CONTEXT_WINDOWS = {
-    "gpt-3.5-turbo": 4096,
-    "gpt-4": 8192,
+    "gpt-3.5-turbo": 16385,
+    "gpt-4": 8191,
     "claude-3-sonnet": 200000,
     "claude-3-opus": 200000,
+}
+
+# Approximate max output tokens per response (in tokens).
+OUTPUT_WINDOWS = {
+    "gpt-3.5-turbo": 4096,
+    "gpt-4": 4096,
+    "claude-3-sonnet": 4096,
+    "claude-3-opus": 4096,
 }
 
 # Approximate pricing per 1M tokens (OpenRouter, may vary)
@@ -26,7 +36,8 @@ PRICING = {
 def estimate_tokens(text: str) -> int:
     """Estimate token count from text (rough approximation)."""
     words = len(text.split())
-    return int(words * TOKENS_PER_WORD)
+    # Round up to avoid systematically underestimating token budget.
+    return math.ceil(words * TOKENS_PER_WORD)
 
 def count_message_tokens(messages: List[Dict]) -> int:
     """Count approximate tokens in message list."""
@@ -38,6 +49,10 @@ def count_message_tokens(messages: List[Dict]) -> int:
 def get_context_window(model: str) -> int:
     """Get context window size for model."""
     return CONTEXT_WINDOWS.get(model, 4096)
+
+def get_output_window(model: str) -> int:
+    """Get max output tokens per response for model."""
+    return OUTPUT_WINDOWS.get(model, 4096)
 
 def calculate_cost(model: str, prompt_tokens: int, completion_tokens: int) -> Dict:
     """

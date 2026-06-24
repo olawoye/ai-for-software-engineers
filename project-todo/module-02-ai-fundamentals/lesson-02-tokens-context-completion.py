@@ -33,7 +33,8 @@ INSTRUCTIONS:
 #   - Path from pathlib (for file operations)
 #
 # TODO: Import from shared utilities:
-#   - estimate_tokens, check_context_fit, calculate_cost from shared.tokens
+#   - estimate_tokens, check_context_fit, calculate_cost,
+#     get_context_window, get_output_window from shared.tokens
 #   - register_lesson from shared.streamlit_app
 
 # ============================================================================
@@ -92,7 +93,8 @@ INSTRUCTIONS:
 #     BUTTON 1: "🔍 Analyze Prompt" (Theory-only, full-width results)
 #     - Call analyze_prompt()
 #     - Display results in FULL-WIDTH metrics (4 columns)
-#     - Show context fit status (✅ Fits or ❌ Exceeds)
+#     - Show total context metrics and separate output context metrics
+#     - Show context fit status for both total context and output context
 #     - Show cost analysis in 3-column metrics
 #     - Append to lesson_data["lesson_2_2"]["explorations"]
 #     - Save via save_lesson_output()
@@ -119,8 +121,12 @@ INSTRUCTIONS:
 #
 #   SECTION 2: Context Window Comparison
 #   - Add st.subheader() for "Context Window Comparison"
-#   - Display a table/dataframe of CONTEXT_WINDOWS from shared.tokens
+#   - Display a table/dataframe with BOTH columns per model:
+#     - Total Context Window (prompt + output)
+#     - Output Context Window (max generated tokens)
+#   - Source values from shared.tokens (no local hardcoded model limits)
 #   - Add caption explaining trade-offs
+#   - Add a small "Last verified" note that values may change over time
 #
 #   SECTION 3: Token Budget Scenarios
 #   - Add st.subheader() for "Token Budget Scenarios"
@@ -129,8 +135,9 @@ INSTRUCTIONS:
 #     "Medium Article (500-word limit)"
 #     "Long Document (2000-word limit)"
 #   - Map scenario to word count
-#   - Calculate estimated tokens (~0.75 per word)
-#   - Show remaining budget for gpt-3.5-turbo (4096 - used)
+#   - Calculate estimated tokens (~1.33 per word for conservative planning)
+#   - Show remaining total context budget for gpt-3.5-turbo
+#     using get_context_window("gpt-3.5-turbo") - used
 #
 #   SECTION 4: Lesson Summary & Key Takeaways
 #   - Add st.subheader() for "Key Takeaways"

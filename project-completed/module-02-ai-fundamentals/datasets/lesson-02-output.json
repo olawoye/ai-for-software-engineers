@@ -233,6 +233,660 @@
           "output_cost": 0.00028,
           "total_cost": 0.000286
         }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 20,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 20,
+          "estimated_total": 520,
+          "remaining": 4076,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.00076
+        },
+        "timestamp": "2026-06-24T14:22:22.285198"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 20,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 20,
+          "estimated_total": 520,
+          "remaining": 4076,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.00076
+        },
+        "timestamp": "2026-06-24T14:29:52.122554"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 36,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 36,
+          "estimated_total": 536,
+          "remaining": 4060,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.8e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000768
+        },
+        "timestamp": "2026-06-24T14:42:57.323527"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 36,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 4096,
+          "used": 36,
+          "estimated_total": 536,
+          "remaining": 4060,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.8e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000768
+        },
+        "timestamp": "2026-06-24T15:03:16.769478"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 36,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 36,
+          "estimated_total": 536,
+          "remaining": 16349,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.8e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000768
+        },
+        "timestamp": "2026-06-24T15:16:00.488333"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 36,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 36,
+          "estimated_total": 536,
+          "remaining": 16349,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.8e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000768
+        },
+        "timestamp": "2026-06-24T17:25:59.089122"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"Do you have green table\"\n        Provide a detailed response with best practices. read all our products",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 39,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 39,
+          "estimated_total": 539,
+          "remaining": 16346,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.9e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.00077
+        },
+        "timestamp": "2026-06-24T17:28:57.194148"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"Do you have green table\"\n        Provide a detailed response with best practices. read all our products and ensure your answer from our latest",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 48,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 48,
+          "estimated_total": 548,
+          "remaining": 16337,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2.4e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000774
+        },
+        "timestamp": "2026-06-24T17:30:48.385780"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What is the cost?\"\n        Provide a detailed response with best practices. read all our products and ensure your answer from our latest. [Here is a list of previous communications: []]",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 58,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 58,
+          "estimated_total": 558,
+          "remaining": 16327,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2.9e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000779
+        },
+        "timestamp": "2026-06-24T17:53:16.675397"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What is the cost?\"\n        Provide a detailed response with best practices. read all our products and ensure your answer from our latest. [Here is a list of previous communications: []]",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 58,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 58,
+          "estimated_total": 558,
+          "remaining": 16327,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2.9e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000779
+        },
+        "timestamp": "2026-06-24T17:53:26.486119",
+        "actual_response": "Hello! Thank you for reaching out to us. In order to provide you with accurate pricing information, could you please specify which product or service you are inquiring about? Our pricing may vary depending on the product or service you are interested in, as well as any current promotions or discounts that may be available.\n\nIf you could provide me with the specific product or service you are interested in, I would be happy to give you the most up-to-date pricing information. Alternatively, you can visit our website or contact our sales team directly for detailed pricing information.\n\nThank you for your understanding, and I look forward to assisting you further.",
+        "actual_usage": {
+          "prompt_tokens": 61,
+          "completion_tokens": 126,
+          "total_tokens": 187
+        },
+        "actual_cost": {
+          "input_cost": 3e-05,
+          "output_cost": 0.000189,
+          "total_cost": 0.000219
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 36,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 36,
+          "estimated_total": 536,
+          "remaining": 16349,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.8e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000768
+        },
+        "timestamp": "2026-06-24T18:13:40.767464"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\n        Provide a detailed response with best practices.",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 36,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 36,
+          "estimated_total": 536,
+          "remaining": 16349,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 1.8e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000768
+        },
+        "timestamp": "2026-06-24T18:20:53.155178",
+        "actual_response": "Thank you for reaching out to us! Our company offers a wide range of products and services to meet the needs of our customers. \n\nIn terms of products, we offer a variety of options depending on your requirements. This includes but is not limited to electronics, home appliances, clothing, accessories, beauty products, and more. Our products are sourced from reputable brands and suppliers to ensure quality and customer satisfaction.\n\nWhen it comes to services, we provide a range of options to enhance your overall shopping experience. This includes efficient and secure online shopping through our website or mobile app, convenient payment methods, fast and reliable shipping, easy returns and exchanges, as well as dedicated customer support to assist you with any inquiries or concerns you may have.\n\nAdditionally, we also offer promotions, discounts, and loyalty programs to reward our loyal customers and provide value for money on your purchases.\n\nIf you have any specific questions about our products or services, or if you need assistance with anything else, please feel free to ask. We are here to help and ensure that your experience with us is a positive one. Thank you for considering our company for your shopping needs.",
+        "actual_usage": {
+          "prompt_tokens": 41,
+          "completion_tokens": 227,
+          "total_tokens": 268
+        },
+        "actual_cost": {
+          "input_cost": 2.1e-05,
+          "output_cost": 0.00034,
+          "total_cost": 0.000361
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"What product and services do you offer?\"\nHere are a list of our products: [Shoe: $10, Table: $2, Bag: $45]\n        Provide a detailed response with best practices. ",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 54,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 54,
+          "estimated_total": 554,
+          "remaining": 16331,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2.7e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000777
+        },
+        "timestamp": "2026-06-24T18:22:57.032572",
+        "actual_response": "Hello! Thank you for reaching out to us. We offer a variety of products and services to meet your needs. Our current product offerings include shoes priced at $10, tables priced at $2, and bags priced at $45. \n\nIn addition to our products, we also provide excellent customer service, fast shipping, and easy returns. Our goal is to ensure that you have a positive shopping experience with us. \n\nIf you have any specific questions about our products or would like more information about our services, please feel free to ask. We are here to help you in any way we can. Thank you for considering us for your shopping needs.",
+        "actual_usage": {
+          "prompt_tokens": 67,
+          "completion_tokens": 130,
+          "total_tokens": 197
+        },
+        "actual_cost": {
+          "input_cost": 3.4e-05,
+          "output_cost": 0.000195,
+          "total_cost": 0.000228
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How may shoes are available?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. ",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 59,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 59,
+          "estimated_total": 559,
+          "remaining": 16326,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2.9e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.00078
+        },
+        "timestamp": "2026-06-24T18:24:26.245087",
+        "actual_response": "Hello! Thank you for your inquiry. Currently, we have a total of 2 pairs of shoes available for purchase at $10 each. If you are interested in any of our other products, we also have 3 tables available for $2 each and 5 bags available for $45 each. Please let us know if you have any further questions or if you would like to place an order. Thank you for considering our products!",
+        "actual_usage": {
+          "prompt_tokens": 76,
+          "completion_tokens": 87,
+          "total_tokens": 163
+        },
+        "actual_cost": {
+          "input_cost": 3.8e-05,
+          "output_cost": 0.000131,
+          "total_cost": 0.000169
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. ",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 55,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 55,
+          "estimated_total": 555,
+          "remaining": 16330,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2.8e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000777
+        },
+        "timestamp": "2026-06-24T18:24:49.519084",
+        "actual_response": "Hello! Thank you for your inquiry. \n\nHere are the prices for our products:\n- Shoe: $10 each (quantity available: 2)\n- Table: $2 each (quantity available: 3)\n- Bag: $45 each (quantity available: 5)\n\nIf you are interested in purchasing any of these products, please let me know the specific item and quantity you would like to buy. I can provide you with further assistance and help you with the purchase process. \n\nIf you have any other questions or need more information, feel free to ask. Thank you for considering our products!",
+        "actual_usage": {
+          "prompt_tokens": 73,
+          "completion_tokens": 121,
+          "total_tokens": 194
+        },
+        "actual_cost": {
+          "input_cost": 3.6e-05,
+          "output_cost": 0.000181,
+          "total_cost": 0.000218
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. \n[Here is a list of previous communication: \"How many shoes do you have?\"]",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 72,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 72,
+          "estimated_total": 572,
+          "remaining": 16313,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3.6e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000786
+        },
+        "timestamp": "2026-06-24T18:25:48.582448",
+        "actual_response": "Hello! I see you are interested in the prices of our products. Here is a breakdown of the prices for each item:\n\n- Shoe: $10 each, with a quantity of 2 available\n- Table: $2 each, with 3 tables available\n- Bag: $45 each, with 5 bags available\n\nIf you have any specific products in mind or would like to know the total cost of a specific combination of products, please let me know and I can provide you with a more detailed quote. Thank you for reaching out!",
+        "actual_usage": {
+          "prompt_tokens": 91,
+          "completion_tokens": 110,
+          "total_tokens": 201
+        },
+        "actual_cost": {
+          "input_cost": 4.6e-05,
+          "output_cost": 0.000165,
+          "total_cost": 0.00021
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. \n[Here is a list of previous communication: \"I am interested in a shoe\"]",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 72,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 72,
+          "estimated_total": 572,
+          "remaining": 16313,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3.6e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000786
+        },
+        "timestamp": "2026-06-24T18:27:04.152716",
+        "actual_response": "Hello! Thank you for your interest in our products. \nBased on your previous communication about being interested in a shoe, the price for a shoe is $10 each and we have a quantity of 2 available. \nIn addition to the shoe, we also have Tables priced at $2 each with 3 tables available, and Bags priced at $45 each with 5 bags available. \nPlease let me know if you would like to purchase any of these items and how many you would like. \nIf you have any other questions or need further assistance, feel free to ask.",
+        "actual_usage": {
+          "prompt_tokens": 90,
+          "completion_tokens": 117,
+          "total_tokens": 207
+        },
+        "actual_cost": {
+          "input_cost": 4.5e-05,
+          "output_cost": 0.000175,
+          "total_cost": 0.00022
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. ",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 55,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 55,
+          "estimated_total": 555,
+          "remaining": 16330,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2.8e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000777
+        },
+        "timestamp": "2026-06-24T18:31:37.852963",
+        "actual_response": "Hello! Thank you for your inquiry. \n\nHere is a list of our products and their respective prices:\n1. Shoe: $10 each (quantity available: 2)\n2. Table: $2 each (quantity available: 3)\n3. Bag: $45 each (quantity available: 5)\n\nIf you would like to purchase any of these items, please let us know the quantity and type of product you are interested in, so we can provide you with the total cost including any applicable taxes or shipping fees. \n\nFeel free to ask any further questions or provide more specific details about your purchase preferences. Thank you for considering our products!",
+        "actual_usage": {
+          "prompt_tokens": 73,
+          "completion_tokens": 131,
+          "total_tokens": 204
+        },
+        "actual_cost": {
+          "input_cost": 3.6e-05,
+          "output_cost": 0.000197,
+          "total_cost": 0.000233
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. \nHere is a list of previous responses: [I like the shoe, I want 2 pairs]",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 75,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 75,
+          "estimated_total": 575,
+          "remaining": 16310,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3.7e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000788
+        },
+        "timestamp": "2026-06-24T19:14:18.907331",
+        "actual_response": "Hello! Thank you for your inquiry about our products. Here is a breakdown of the prices for each item:\n\n- Shoe: $10 each (quantity available: 2 pairs)\n- Table: $2 each (quantity available: 3 tables)\n- Bag: $45 each (quantity available: 5 bags)\n\nIf you have any specific product in mind or would like to inquire about the total cost for a specific quantity of items, please let me know. I am here to assist you with any further questions or clarifications you may have.",
+        "actual_usage": {
+          "prompt_tokens": 93,
+          "completion_tokens": 110,
+          "total_tokens": 203
+        },
+        "actual_cost": {
+          "input_cost": 4.6e-05,
+          "output_cost": 0.000165,
+          "total_cost": 0.000211
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. \nHere is a list of previous responses: [I like the shoe, I want 2 pairs]",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 75,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 75,
+          "estimated_total": 575,
+          "remaining": 16310,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3.7e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000788
+        },
+        "timestamp": "2026-06-24T19:14:26.248990"
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. \nHere is a list of previous responses: [I like the shoe, I want 2 pairs]",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 75,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 75,
+          "estimated_total": 575,
+          "remaining": 16310,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3.7e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000788
+        },
+        "timestamp": "2026-06-24T19:14:29.674363",
+        "actual_response": "Hello! Thank you for your inquiry. Could you please specify which product you are referring to when you ask \"How much?\" Our current product list includes the following items with their respective prices and quantities: \n\n1. Shoe: $10 each (quantity available: 2 pairs)\n2. Table: $2 each (quantity available: 3 tables)\n3. Bag: $45 each (quantity available: 5 bags)\n\nIf you could provide more information on the product you are interested in, I would be happy to assist you further with pricing details. Thank you for your interest in our products!",
+        "actual_usage": {
+          "prompt_tokens": 93,
+          "completion_tokens": 121,
+          "total_tokens": 214
+        },
+        "actual_cost": {
+          "input_cost": 4.6e-05,
+          "output_cost": 0.000181,
+          "total_cost": 0.000228
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much is it?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. \nHere are a list of previous responses: \"I like the shoe, I want 2 pairs\"",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 78,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 78,
+          "estimated_total": 578,
+          "remaining": 16307,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3.9e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000789
+        },
+        "timestamp": "2026-06-24T19:14:59.549469",
+        "actual_response": "Hello! Thank you for your inquiry. Our products and prices are as follows:\n\n- Shoe: $10 each (quantity available: 2)\n- Table: $2 each (quantity available: 3)\n- Bag: $45 each (quantity available: 5)\n\nIf you could please specify which product you are interested in and how many units you would like to purchase, I can provide you with the total amount including any applicable taxes or shipping fees. Feel free to let me know if you have any further questions or need assistance with anything else. Thank you!",
+        "actual_usage": {
+          "prompt_tokens": 95,
+          "completion_tokens": 114,
+          "total_tokens": 209
+        },
+        "actual_cost": {
+          "input_cost": 4.8e-05,
+          "output_cost": 0.000171,
+          "total_cost": 0.000218
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much is it?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. \nHere are a list of previous responses: \"I want the shoe. I want 2 pairs\"",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 78,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 78,
+          "estimated_total": 578,
+          "remaining": 16307,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3.9e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000789
+        },
+        "timestamp": "2026-06-24T19:15:22.830688",
+        "actual_response": "Hello! Thank you for your inquiry about our products. The price for each item is as follows: Shoe - $10 each (quantity: 2), Table - $2 each (quantity: 3 tables), Bag - $45 each (quantity: 5 bags). \n\nIf you have a specific product in mind, please let me know which item you are interested in purchasing and how many you would like to buy. I would be happy to assist you further with the pricing information. Feel free to provide me with more details so I can give you an accurate total cost. Thank you for considering our products!",
+        "actual_usage": {
+          "prompt_tokens": 95,
+          "completion_tokens": 123,
+          "total_tokens": 218
+        },
+        "actual_cost": {
+          "input_cost": 4.8e-05,
+          "output_cost": 0.000185,
+          "total_cost": 0.000232
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much is it?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n        Provide a detailed response with best practices. ",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 58,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 58,
+          "estimated_total": 558,
+          "remaining": 16327,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 2.9e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000779
+        },
+        "timestamp": "2026-06-24T19:15:43.513735",
+        "actual_response": "Hello! Thank you for your inquiry. \nThe prices for our products are as follows:\n- Shoe: $10 each (quantity available: 2)\n- Table: $2 each (quantity available: 3)\n- Bag: $45 each (quantity available: 5)\n\nIf you would like to purchase any of these items, please let me know the specific product and quantity you are interested in so I can provide you with the total cost. Feel free to ask any further questions or for assistance with placing an order. Thank you for considering our products!",
+        "actual_usage": {
+          "prompt_tokens": 75,
+          "completion_tokens": 113,
+          "total_tokens": 188
+        },
+        "actual_cost": {
+          "input_cost": 3.7e-05,
+          "output_cost": 0.00017,
+          "total_cost": 0.000207
+        }
+      },
+      {
+        "prompt": "You are a Customer Care AI assistant for a company.\n        A customer asks: \"How much is it?\"\nHere are a list of our products: [Shoe: $10 (quantity: 2), Table: $2 (3 tables), Bag: $45 (5 bags)]\n\nHere are a list of previous discussion: \"I want the shoe. I want 2 pairs\"",
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 68,
+        "estimated_completion_tokens": 500,
+        "context_analysis": {
+          "fits": true,
+          "window_size": 16385,
+          "used": 68,
+          "estimated_total": 568,
+          "remaining": 16317,
+          "warning": null
+        },
+        "estimated_cost": {
+          "input_cost": 3.4e-05,
+          "output_cost": 0.00075,
+          "total_cost": 0.000784
+        },
+        "timestamp": "2026-06-24T19:16:57.339895",
+        "actual_response": "Based on your previous request, the total cost for 2 pairs of shoes would be $20 ($10 per pair). Would you like to proceed with purchasing the shoes?",
+        "actual_usage": {
+          "prompt_tokens": 85,
+          "completion_tokens": 34,
+          "total_tokens": 119
+        },
+        "actual_cost": {
+          "input_cost": 4.3e-05,
+          "output_cost": 5.1e-05,
+          "total_cost": 9.3e-05
+        }
       }
     ]
   }

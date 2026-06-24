@@ -1,4 +1,4 @@
-# AI For Software Engineers - Curriculum (Draft v1)
+# AI For Software Engineers - Curriculum
 
 ## Module 1: AI Shift for Engineers
 

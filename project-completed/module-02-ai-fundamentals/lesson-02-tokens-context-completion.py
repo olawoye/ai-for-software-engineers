@@ -28,6 +28,7 @@ from shared.tokens import (
     estimate_tokens,
     count_message_tokens,
     get_context_window,
+    get_output_window,
     calculate_cost,
     check_context_fit,
 )
@@ -133,22 +134,24 @@ def render_lesson_2_2():
         )
 
     # Input: User prompt or fallback to hardcoded example
-    input_method = st.radio("Input method:", ["Interactive", "Use Example"])
+    input_method = st.radio("Input method:", ["Interactive", "Use Example"], index=1)
 
     if input_method == "Interactive":
         user_prompt = st.text_area(
             "Enter your prompt:",
-            value="Explain quantum computing in simple terms.",
-            height=100,
+            value="""You are a Customer Care AI assistant for a company.
+        A customer asks: "What product and services do you offer?"
+        Provide a detailed response with best practices.""",
+            height=120,
         )
     else:
-        hardcoded_example = """You are an AI assistant for a software engineering course.
-        A student asks: "How should I design a token-efficient prompt for an LLM?"
+        hardcoded_example = """You are a Customer Care AI assistant for a company.
+        A customer asks: "What product and services do you offer?"
         Provide a detailed response with best practices."""
         user_prompt = st.text_area(
             "Example prompt:",
             value=hardcoded_example,
-            height=100,
+            height=120,
             disabled=True,
         )
 
@@ -168,6 +171,8 @@ def render_lesson_2_2():
         # Display results - FULL WIDTH
         st.markdown("### Analysis Results")
 
+        output_window = get_output_window(model)
+
         col1a, col2a, col3a, col4a = st.columns(4)
         with col1a:
             st.metric("Prompt Tokens", analysis["prompt_tokens"])
@@ -178,12 +183,27 @@ def render_lesson_2_2():
                      analysis["prompt_tokens"] + analysis["estimated_completion_tokens"])
         with col4a:
             window = analysis["context_analysis"]["window_size"]
-            st.metric("Context Window", f"{window:,}")
+            st.metric("Total Context Window", f"{window:,}")
+
+        col5a, col6a = st.columns(2)
+        with col5a:
+            st.metric("Output Context Window", f"{output_window:,}")
+        with col6a:
+            completion_fits = analysis["estimated_completion_tokens"] <= output_window
+            st.metric(
+                "Completion vs Output Window",
+                "✅ Fits" if completion_fits else "❌ Exceeds",
+            )
 
         # Context fit status
         fits = analysis["context_analysis"]["fits"]
         status = "✅ Fits" if fits else "❌ Exceeds"
-        st.info(f"**Status**: {status} | Remaining: {analysis['context_analysis']['remaining']:,} tokens")
+        output_status = "✅ Fits" if completion_fits else "❌ Exceeds"
+        st.info(
+            f"**Total Context Status**: {status} | Remaining Total Context: "
+            f"{analysis['context_analysis']['remaining']:,} tokens | "
+            f"**Output Context Status**: {output_status}"
+        )
 
         if analysis["context_analysis"]["warning"]:
             st.warning(analysis["context_analysis"]["warning"])
@@ -303,16 +323,18 @@ def render_lesson_2_2():
     # ========================================================================
     st.subheader("2️⃣ Context Window Comparison")
 
-    from shared.tokens import CONTEXT_WINDOWS
+    from shared.tokens import CONTEXT_WINDOWS, OUTPUT_WINDOWS
     context_df = {
         "Model": list(CONTEXT_WINDOWS.keys()),
-        "Context Window": list(CONTEXT_WINDOWS.values()),
+        "Total Context Window": list(CONTEXT_WINDOWS.values()),
+        "Output Context Window": [OUTPUT_WINDOWS.get(model, 4096) for model in CONTEXT_WINDOWS.keys()],
     }
     st.dataframe(context_df, use_container_width=True)
 
     st.caption(
-        "Models with larger context windows can handle longer prompts but may cost more."
+        "Total Context Window = prompt + output budget. Output Context Window = maximum generated tokens per response."
     )
+    st.caption("Last verified: 2026-06-24. Model limits and pricing can change over time; re-check provider docs before production use.")
 
     # ========================================================================
     # SECTION 3: Token Budget Scenarios
@@ -335,12 +357,14 @@ def render_lesson_2_2():
     }
 
     word_limit = scenario_words[scenario]
-    estimated_tokens = int(word_limit * 0.75)
+    # Use shared estimator so scenarios stay aligned with app-wide token math.
+    estimated_tokens = estimate_tokens("word " * word_limit)
+    gpt35_total_window = get_context_window("gpt-3.5-turbo")
 
     st.write(f"**Word Limit**: {word_limit}")
     st.write(f"**Estimated Tokens**: {estimated_tokens}")
     st.write(
-        f"**Remaining Budget** (gpt-3.5-turbo): {4096 - estimated_tokens:,} tokens"
+        f"**Remaining Total Context Budget** (gpt-3.5-turbo): {gpt35_total_window - estimated_tokens:,} tokens"
     )
 
     # ========================================================================
@@ -350,7 +374,7 @@ def render_lesson_2_2():
     st.markdown(
         """
     ✅ **Token Management**:
-    - Text is broken into tokens (~0.75 tokens per word on average)
+    - Text is broken into tokens (~1.33 tokens per word for conservative planning)
     - Tokens affect both cost and context limits
     - Budget tokens early to avoid expensive failures
 
