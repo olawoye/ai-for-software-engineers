@@ -106,3 +106,70 @@ After implementing Output 1 & 2, always:
 - **Consistent style** across all lessons and modules
 - **Educational value** maintained through thoughtful TODO scaffolding
 - **Reusable pattern** for all future module implementations
+
+## Code Example Generation Pattern/Architecture (Modules 4-6+)
+
+Use this pattern for code-screencast lessons in Modules 4, 5, and 6 (and future modules unless explicitly overridden):
+
+### 1) Proposal-First Pattern (Before Writing Code)
+- For each code lesson, propose exactly 1 primary example method.
+- A 2nd method is allowed only when it provides a clearly different implementation angle.
+- Each proposed example must include:
+   - Lesson objective alignment
+   - What the method achieves
+   - Inputs and outputs
+   - Shared dependencies it references
+   - Why this is the minimum useful implementation for the lesson
+- Wait for learner approval before implementation.
+
+### 2) Template-First Design Rule
+- Each code example serves **dual purpose**: teaching the lesson concept AND providing a reusable template.
+- Structure examples as production-ready patterns that learners can extract and adapt for their own projects.
+- Include clear interfaces, minimal external dependencies, and intentional design choices that are transportable.
+- Code must be self-contained enough to copy-paste into a new project with only minor configuration changes.
+
+### 3) Method-Level Demo Rule
+- Each example snippet is a single method.
+- The method may call shared classes/utilities from `shared/`, `src/`, or prior modules.
+- Keep each method modular and reusable so learners can copy it into personal projects with minimal coupling.
+
+### 4) Single Facilitator Interface Rule
+- Use exactly one facilitator per lesson demo set:
+   - 1 Streamlit UI OR
+   - 1 interactive CLI
+- If there are 2 methods, both are demonstrated through the same facilitator.
+- Interface selection guideline:
+   - Streamlit UI: multiple inputs, mixed input types, uploads, or richer visual output
+   - Interactive CLI: 1-2 text-only inputs and concise text output
+
+### 5) UI/CLI Scope Rule
+- UI/CLI is only an input/output bridge, not the core lesson.
+- The core teaching artifact is the method implementation itself.
+- Methods must include concise instructional comments explaining the implementation logic.
+
+### 6) Learner Traceability Rule
+- The facilitator must display:
+   - Exact file path
+   - Exact method name
+   - Start line number (and end line when practical)
+- This enables learners to jump directly from runtime behavior to source implementation.
+
+### 7) Implementation Constraints
+- Keep examples intentionally small but production-shaped.
+- Reuse shared helpers where appropriate; do not duplicate infrastructure logic.
+- Preserve compatibility with the existing module architecture and downstream lesson flow.
+- Ensure outputs can be persisted when needed for subsequent lessons.
+
+### 8) Delivery Sequence Per Lesson
+1. Submit proposal with 1 (or at most 2) method demos.
+2. Receive learner approval.
+3. Implement completed version.
+4. Implement TODO scaffold version.
+5. Update README run instructions and data-flow notes.
+
+### 9) Business Scenario Cohesion Rule
+- Every example must be anchored to a realistic business scenario.
+- Prefer the business scenario explicitly defined in `docs/curriculum_v1.md` for that lesson.
+- If a lesson does not define one, choose a common, practical scenario that fits the lesson objective.
+- For modules with a lesson-6 capstone (for example Modules 4 and 5), lessons before the capstone should be designed so their examples can converge into the capstone system.
+- This means earlier lessons may address different technical topics, but their outputs, data shapes, and design choices should intentionally support the capstone goal.

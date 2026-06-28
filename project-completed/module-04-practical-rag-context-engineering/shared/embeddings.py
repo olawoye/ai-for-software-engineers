@@ -1,34 +1,104 @@
 """
 Embedding generation and management for RAG systems.
-Supports Cohere embeddings (primary, free tier) with TF-IDF fallback.
+Supports OpenRouter embeddings via Jina, Cohere, and TF-IDF fallback.
 """
 
 import numpy as np
 from typing import List, Dict, Tuple, Optional
 from sklearn.feature_extraction.text import TfidfVectorizer
+import os
+import json
+import requests
 
 
 class EmbeddingEngine:
-    """Unified interface for generating embeddings."""
+    """Unified interface for generating embeddings.
+    
+    Supports:
+    - OpenRouter (via Jina Embeddings v3, primary)
+    - Cohere embeddings (fallback)
+    - TF-IDF (keyword-based fallback)
+    """
 
-    def __init__(self, method: str = "cohere", cohere_api_key: Optional[str] = None):
+    def __init__(
+        self,
+        method: str = "openrouter",
+        openrouter_key: Optional[str] = None,
+        openrouter_url: str = "https://api.openrouter.ai/v1",
+        cohere_api_key: Optional[str] = None,
+    ):
+        """Initialize embedding engine.
+        
+        Args:
+            method: "openrouter", "cohere", or "tfidf"
+            openrouter_key: OpenRouter API key (uses env var if not provided)
+            openrouter_url: OpenRouter base URL
+            cohere_api_key: Cohere API key for fallback
+        """
         self.method = method
-        self.cohere_api_key = cohere_api_key
+        self.openrouter_key = openrouter_key or os.getenv("OPENROUTER_API_KEY")
+        self.openrouter_url = openrouter_url
+        self.cohere_api_key = cohere_api_key or os.getenv("COHERE_API_KEY")
         self.tfidf_vectorizer = None
 
     def embed_documents(self, documents: List[str]) -> np.ndarray:
         """Generate embeddings for multiple documents."""
-        if self.method == "cohere" and self.cohere_api_key:
+        if self.method == "openrouter" and self.openrouter_key:
+            return self._embed_openrouter(documents)
+        elif self.method == "cohere" and self.cohere_api_key:
             return self._embed_cohere(documents)
         else:
             return self._embed_tfidf(documents)
 
     def embed_query(self, query: str) -> np.ndarray:
         """Generate embedding for a single query."""
-        if self.method == "cohere" and self.cohere_api_key:
+        if self.method == "openrouter" and self.openrouter_key:
+            return self._embed_openrouter([query])[0]
+        elif self.method == "cohere" and self.cohere_api_key:
             return self._embed_cohere([query])[0]
         else:
             return self._embed_tfidf([query])[0]
+
+    def _embed_openrouter(self, texts: List[str]) -> np.ndarray:
+        """Generate embeddings using OpenRouter (Jina Embeddings v3).
+        
+        OpenRouter provides access to multiple embedding models via a single API.
+        We use Jina Embeddings v3 for robust semantic understanding.
+        """
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.openrouter_key}",
+                "Content-Type": "application/json",
+            }
+
+            payload = {
+                "model": "jinaai/jina-embeddings-v3",
+                "input": texts,
+                "encoding_format": "float",
+            }
+
+            response = requests.post(
+                f"{self.openrouter_url}/embeddings",
+                headers=headers,
+                json=payload,
+                timeout=30,
+            )
+
+            if response.status_code != 200:
+                print(f"OpenRouter error ({response.status_code}): {response.text}")
+                print("Falling back to Cohere or TF-IDF.")
+                return self._embed_cohere(texts) if self.cohere_api_key else self._embed_tfidf(texts)
+
+            result = response.json()
+            
+            # Extract embeddings from response
+            embeddings = [item["embedding"] for item in result["data"]]
+            return np.array(embeddings, dtype=np.float32)
+
+        except Exception as e:
+            print(f"OpenRouter embedding failed: {e}")
+            print("Falling back to Cohere or TF-IDF.")
+            return self._embed_cohere(texts) if self.cohere_api_key else self._embed_tfidf(texts)
 
     def _embed_cohere(self, texts: List[str]) -> np.ndarray:
         """Generate embeddings using Cohere API."""

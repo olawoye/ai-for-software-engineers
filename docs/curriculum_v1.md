@@ -388,7 +388,7 @@ By the end of this lesson, students will understand the architectural building b
 
 ---
 
-### Lesson 3.2: Calling LLM APIs (Python)
+### Lesson 3.2: Calling LLM APIs
 
 **Type:** Code Screencast
 
