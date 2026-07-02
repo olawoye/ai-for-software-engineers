@@ -30,11 +30,29 @@ Foundation concepts for MCP communication protocols.
 
 ---
 
-### Lesson 5.3: Your First MCP Server
+### Lesson 5.3: Your First MCP Server - Personal Knowledge Server
 **Type:** Code Screencast  
-**Status:** ✅ Complete
+**Status:** ✅ Complete  
+**Template Pattern:** Method-level reusable template
 
-Build a local "Second Brain" MCP server that allows AI assistants to access files, notes, and documentation.
+Build a reusable MCP server that exposes local files and documents as resources, with tools for searching and retrieving knowledge base content.
+
+#### Core Template Method
+The lesson demonstrates **`create_knowledge_server()`**, the foundational server initialization pattern that learners can extract and adapt for their own projects.
+
+**Method Signature:**
+```python
+def create_knowledge_server(
+    knowledge_dir: str,
+    server_name: str = "PersonalKnowledge",
+    file_extensions: List[str] | None = None,
+) -> MCPServer:
+```
+
+**Returns:** Configured MCPServer with:
+- Registered Resources for each discovered file
+- Tools: `search_knowledge()`, `get_document()`, `get_knowledge_stats()`
+- Ready to accept JSON-RPC requests from AI clients
 
 #### Run Instructions
 ```bash
@@ -43,104 +61,416 @@ pip install -r requirements-module-05.txt
 python lesson-03-personal-knowledge-server.py
 ```
 
-**What You'll Learn:**
-- Create MCPServer implementing JSON-RPC protocol
-- Register resources (file access, documents)
-- Register tools (search, retrieval)
-- Handle server requests and responses
-- Build knowledge base integrations
+**Demonstrations:**
+1. **Core Template Execution** — Show `create_knowledge_server()` initializing with sample files
+2. **Resource Discovery** — List registered resources with URIs and metadata
+3. **Tool Invocation** — Execute search and retrieval tools with test queries
+4. **JSON-RPC Protocol** — Show actual JSON-RPC request/response pairs
 
-**Key Concepts:**
-- Resource registration and discovery
-- Tool definition with input schemas
-- JSON-RPC request/response handling
-- Local knowledge access patterns
+#### What You'll Learn
+- **Resource Registration:** Discover files and expose them as discoverable resources
+- **Tool Definition:** Create tools with input schemas for client requests
+- **File Handling:** Implement secure file access patterns
+- **JSON-RPC Protocol:** Understand MCP client-server communication
+- **Template Reusability:** Extract this method for your own knowledge sources
+
+#### Key Concepts
+- MCP Resources as discoverable documents
+- Tool handlers with structured input schemas
+- JSON-RPC 2.0 request/response protocol
+- File discovery and registration patterns
+- Closure patterns for handler functions
+
+#### Business Scenario
+*A software engineer wants Claude, Cursor, or another MCP-enabled client to access local project files, notes, and documentation repositories.*
+
+#### Template Reusability
+This method is designed for extraction into your own projects. To adapt it:
+1. Change `knowledge_dir` to point to your data source
+2. Adjust `file_extensions` for your file types
+3. Customize tool implementations (search, retrieval, analysis)
+4. Add metadata fields for your domain
+5. Implement additional tools as needed
+
+#### Data Flow
+```
+Local Files (knowledge_dir)
+    ↓
+discover via file_extensions
+    ↓
+register as Resources (file://)
+    ↓
+AI Client (Claude, Cursor, etc.)
+    ↓
+list resources / call tools (JSON-RPC)
+    ↓
+search_knowledge() / get_document() / get_knowledge_stats()
+    ↓
+Return JSON results to client
+```
 
 ---
 
-### Lesson 5.4: Connecting Real-World Tools
+### Lesson 5.4: Connecting Real-World Tools - Email Analyst Server
 **Type:** Code Screencast  
-**Status:** ✅ Complete
+**Status:** ✅ Complete  
+**Template Pattern:** Method-level reusable template
 
-Build an MCP server that integrates email processing and analysis tools.
+Build an MCP server that analyzes emails, extracts business intelligence, and routes messages for action. Demonstrates how MCP enables AI systems to participate in real business workflows.
+
+#### Core Template Method
+The lesson demonstrates **`create_email_analyst_server()`**, the foundational email analysis server initialization that learners can extract and adapt for their own email/messaging systems.
+
+**Method Signature:**
+```python
+def create_email_analyst_server(
+    server_name: str = "EmailAnalyst",
+) -> MCPServer:
+```
+
+**Returns:** Configured MCPServer with:
+- 5 registered tools for email analysis
+- Tools: `parse_email()`, `categorize_email()`, `analyze_sentiment()`, `extract_action_items()`, `extract_keywords()`
+- Ready to accept JSON-RPC requests from AI clients
 
 #### Run Instructions
 ```bash
 source .venv/bin/activate
+pip install -r requirements-module-05.txt
 python lesson-04-email-analyst-server.py
 ```
 
-**What You'll Learn:**
-- Integrate external services (email, CRM, APIs)
-- Build tool handlers for business workflows
-- Structure complex input schemas
-- Handle tool execution and responses
-- Create workflow automation patterns
+**Demonstrations:**
+1. **Tool Registration** — Show all 5 tools with input schemas
+2. **Email Analysis Pipeline** — Process complex email through full analysis
+3. **Business Workflow** — Show email triage and routing decisions
 
-**Features:**
-- Email parsing and structuring
-- Sentiment analysis
-- Category classification
-- Action item extraction
+#### What You'll Learn
+- **Complex Tool Schemas:** Design inputs with multiple fields (email structure)
+- **Sentiment & Urgency:** Extract emotion and priority indicators from text
+- **Business Intelligence:** Identify action items, categories, and routing rules
+- **Tool Composition:** Combine tools into workflows (parse → analyze → route)
+- **Enterprise Integration:** Enable AI participation in business processes
+
+#### Key Concepts
+- MCP tool integration with external utilities (EmailTools, TextTools)
+- JSON-RPC for email analysis requests
+- Business workflow automation patterns
+- Sentiment analysis and urgency scoring
+- Email triage and routing logic
+
+#### Business Scenario
+*"A manager wants to know which customer emails require follow-up, which messages remain unanswered, and which communications should be escalated."*
+
+#### Tools Provided
+1. **parse_email()** — Structure raw email into components (sender, subject, body, sentiment)
+2. **categorize_email()** — Classify message type (meeting, support, report, general)
+3. **extract_action_items()** — Find TODOs and action requirements
+4. **analyze_sentiment()** — Determine tone and urgency level
+5. **extract_keywords()** — Identify important topics
+
+#### Template Reusability
+This method is designed for extraction into your own projects. To adapt it:
+1. Add email data source (Gmail API, IMAP, Slack, Teams, webhooks)
+2. Customize categorization rules for your business
+3. Add domain-specific sentiment/urgency indicators
+4. Implement custom routing logic
+5. Integrate with ticketing or workflow systems
+
+#### Data Flow
+```
+Raw Email (sender, subject, body)
+    ↓
+parse_email() → Structure + sentiment
+    ↓
+categorize_email() → Type classification
+    ↓
+analyze_sentiment() → Urgency & priority
+    ↓
+extract_action_items() → TODO items
+    ↓
+extract_keywords() → Topic extraction
+    ↓
+AI Client receives full analysis
+    ↓
+Route via workflow rules:
+  - URGENT + SUPPORT → Escalate
+  - MEETING_REQUEST → Calendar
+  - STATUS_REPORT → Archive & notify
+  - ACTION_ITEMS → Create tickets
+```
+
+#### Workflow Integration
+Email analysis tools compose into automated triage workflows. Combined with security guardrails (Lesson 5.5), these tools scale email processing without human bottlenecks.
 
 ---
 
-### Lesson 5.5: Debugging & Security
+### Lesson 5.5: Debugging & Security - Permission Sandboxes
 **Type:** Code Screencast  
-**Status:** ✅ Complete
+**Status:** ✅ Complete  
+**Template Pattern:** Method-level reusable wrapper
 
-Learn testing, debugging, and securing MCP servers for production.
+Build security guardrails that protect MCP servers from unsafe operations, data leaks, and privilege escalation. Demonstrates how to wrap existing servers with validation, logging, and access control.
+
+#### Core Template Method
+The lesson demonstrates **`add_security_guardrails()`**, the foundational security wrapper that learners can extract and use to protect any MCPServer.
+
+**Method Signature:**
+```python
+def add_security_guardrails(
+    server: MCPServer,
+    permission_strategy: str = "read_only",
+    enable_audit_logging: bool = True,
+    enable_approval_workflow: bool = False,
+    user_id: str = "default_user",
+) -> MCPServer:
+```
+
+**Returns:** Same MCPServer interface, but all tool execution now intercepts with:
+- Permission checking (role-based access control)
+- Input sanitization (path traversal prevention)
+- Secret scrubbing (protect credentials in logs)
+- Audit logging (complete execution trail)
+- Optional approval workflow for dangerous operations
 
 #### Run Instructions
 ```bash
 source .venv/bin/activate
+pip install -r requirements-module-05.txt
 python lesson-05-security-guardrails.py
 ```
 
-**What You'll Learn:**
-- Implement role-based permissions
-- Validate and sanitize inputs
-- Rate limit tool access
-- Test security boundaries
-- Debug MCP interactions
+**Demonstrations:**
+1. **Permission System** — Show role-based access matrix (USER, POWER_USER, ADMIN)
+2. **Input Sanitization** — Demonstrate path traversal and injection protection
+3. **Secret Scrubbing** — Show removal of API keys/passwords from logs
+4. **Audit Trail** — Display complete execution log with timestamps
+5. **Approval Workflow** — Show human-in-the-loop for dangerous operations
 
-**Security Patterns:**
-- Role-based access control (RBAC)
-- Input validation and sanitization
-- Rate limiting and throttling
-- Permission enforcement
-- Audit logging
+#### What You'll Learn
+- **Role-Based Access Control:** Enforce permissions before tool execution
+- **Input Validation:** Sanitize paths, emails, and user inputs
+- **Secret Protection:** Automatically remove credentials from logs
+- **Audit Logging:** Maintain compliance trail with operation hashes
+- **Approval Workflows:** Require human review for dangerous operations
+- **Defense in Depth:** Layer multiple security mechanisms
+
+#### Key Concepts
+- Permission inference from tool names (delete → DELETE, write → WRITE, etc.)
+- Closure-based handler wrapping to intercept execution
+- Regex-based secret scrubbing for common patterns
+- Hash-based audit trails (preserve privacy, enable verification)
+- Role strategy mapping to enforce different security postures
+
+#### Business Scenario
+*"An organization wants AI systems to access business tools while preventing data leaks, accidental deletions, privilege escalation, and unsafe actions."*
+
+#### Security Features
+1. **Permission Strategy** — "read_only" (default), "power_user", "admin"
+2. **Input Sanitization** — Clean paths, emails, prevent injection attacks
+3. **Secret Protection** — Remove API keys, passwords, tokens from logs
+4. **Audit Logging** — Track all operations with user, timestamp, result hash
+5. **Approval Workflow** — Flag delete/drop operations for human review
+
+#### Template Reusability
+This method wraps ANY MCPServer (Knowledge, Email, Custom). To adapt it:
+1. Wrap existing server: `secure_server = add_security_guardrails(my_server, 'read_only')`
+2. Adjust permission_strategy for your use case
+3. Customize secret patterns for your environment
+4. Add resource-specific permissions using ResourcePermissions
+5. Implement approval handlers for your workflow system
+
+#### Permission Matrix
+```
+Operation    | USER  | POWER_USER | ADMIN
+─────────────┼───────┼────────────┼─────
+READ         | ✅    | ✅         | ✅
+WRITE        | ❌    | ✅         | ✅
+DELETE       | ❌    | ❌         | ✅
+EXECUTE      | ❌    | ✅         | ✅
+ADMIN        | ❌    | ❌         | ✅
+```
+
+#### Data Flow
+```
+Tool Call Request
+    ↓
+add_security_guardrails() wrapper intercepts
+    ├─ Check 1: Permission validation
+    │   └─ If denied → Return error + audit log
+    ├─ Check 2: Dangerous operation detection
+    │   └─ If dangerous + approval → Return pending + audit log
+    ├─ Check 3: Input sanitization
+    │   └─ Clean paths, emails, remove secrets
+    ├─ Check 4: Execute original handler
+    │   └─ With sanitized inputs
+    ├─ Check 5: Scrub secrets from results
+    ├─ Check 6: Log to audit trail
+    └─ Return result to client
+
+Audit Trail Entry:
+  Timestamp | Tool | User | Operation | Args Hash | Success | Result Hash
+```
+
+#### Integration with Other Lessons
+- **5.3 (Knowledge Server):** Wrap to limit READ access to documents
+- **5.4 (Email Analyst):** Wrap to require approval for deletions
+- **5.6 (MCP Toolkit):** Apply security to all tools in single call
 
 ---
 
 ### Lesson 5.6: MCP Toolkit (Capstone)
 **Type:** Code Screencast  
-**Status:** ✅ Complete
+**Status:** ✅ Complete  
+**Template Pattern:** Orchestration method combining all module concepts
 
-Build a complete, production-ready MCP server combining all concepts.
+This capstone lesson combines everything learned throughout Module 5 into a complete, production-ready MCP toolkit for autonomous AI agents (Module 6). Demonstrates how to orchestrate multiple MCP servers, implement cross-tool workflows, and apply unified security across all tools.
+
+#### Core Template Method
+The lesson demonstrates **`create_mcp_toolkit()`**, the orchestration method that combines:
+- Personal Knowledge Server (lesson 5.3)
+- Email Analyst Server (lesson 5.4)
+- Security Guardrails (lesson 5.5)
+
+**Method Signature:**
+```python
+def create_mcp_toolkit(
+    knowledge_dir: str = "./knowledge",
+    email_data_dir: str = "./emails",
+    permission_strategy: str = "power_user",
+    enable_audit_logging: bool = True,
+) -> MCPServer:
+```
+
+**Returns:** Complete MCPServer with:
+- Unified tool registry (10 tools total)
+- Categorized by type (knowledge, email, system)
+- Shared security layer applied to all tools
+- Complete audit trail for compliance
+- Ready for agent integration
 
 #### Run Instructions
 ```bash
 source .venv/bin/activate
+pip install -r requirements-module-05.txt
 python lesson-06-mcp-toolkit-server.py
 ```
 
-**What You'll Learn:**
-- Combine multiple tool categories
-- Manage complex permissions
-- Handle cross-tool workflows
-- Implement production patterns
-- Deploy ready-to-use toolkit
+#### Demonstrations (5 Total)
 
-**Features:**
-- Knowledge search
-- Email processing
-- Text analysis
-- Permission management
-- Rate limiting
-- Error handling
+1. **Tool Discovery** — Show all tools grouped by category (knowledge: 2, email: 5, system: 3)
+2. **Resource Access** — Demonstrate querying knowledge base with example searches
+3. **Tool Execution** — Execute email analysis pipeline on sample email
+4. **Cross-Tool Workflow** — Link email analysis results to knowledge base search
+5. **Security Across Toolkit** — Show unified permission matrix and audit trail
 
-**Output:** Production-ready MCP toolkit server
+#### What You'll Learn
+- **Tool Orchestration:** Combine resources and tools from different sources
+- **Tool Registry:** Implement discovery mechanism for agents
+- **Cross-Tool Workflows:** Compose tools into complex multi-step processes
+- **Unified Security:** Apply consistent permissions across all tools
+- **Audit Compliance:** Maintain complete execution trail
+- **Agent Readiness:** Build toolkit that agents can discover and use
+
+#### Toolkit Structure
+
+**Knowledge Tools (2):**
+- `search_knowledge` — Full-text search across files
+- `get_document` — Retrieve specific documents
+
+**Email Tools (5):**
+- `parse_email` — Structure email data
+- `categorize_email` — Classify by type
+- `analyze_sentiment` — Detect urgency
+- `extract_action_items` — Find TODOs
+- `extract_keywords` — Extract topics
+
+**System Tools (3):**
+- `get_toolkit_info` — Toolkit metadata
+- `list_tools` — Tool discovery
+- `get_audit_trail` — Execution history
+
+#### ToolkitRegistry Class
+Manages tool discovery and organization:
+- `register_tool(tool, category)` — Add tool to category
+- `register_resource(resource)` — Register knowledge base
+- `get_summary()` — Return discovery metadata
+
+#### Cross-Tool Workflow Example
+
+```
+Email Arrives
+    ↓
+analyze_sentiment() → [URGENT]
+    ↓
+extract_keywords() → [database, connection, ...]
+    ↓
+search_knowledge() → [matching docs]
+    ↓
+get_document() → [full context]
+    ↓
+compose_response() → [informed reply with references]
+    ↓
+Agent returns result
+```
+
+#### Permission Matrix (Unified)
+```
+Operation    | READ_ONLY | POWER_USER | ADMIN
+─────────────┼───────────┼────────────┼──────
+search_*     | ✅        | ✅         | ✅
+get_*        | ✅        | ✅         | ✅
+analyze_*    | ✅        | ✅         | ✅
+extract_*    | ✅        | ✅         | ✅
+parse_*      | ✅        | ✅         | ✅
+list_tools   | ✅        | ✅         | ✅
+delete_*     | ❌        | ❌         | ✅
+modify_*     | ❌        | ❌         | ✅
+```
+
+#### Template Reusability
+This method can be adapted for:
+1. Add new tool categories (support, sales, accounting, etc.)
+2. Change permission strategy per environment (dev, staging, prod)
+3. Customize audit logging and approval workflows
+4. Integrate with external systems (CRM, help desk, databases)
+5. Deploy as standalone MCP server or within larger platform
+
+#### Data Flow
+```
+Agent Requests Tool Discovery
+    ↓
+get_toolkit_info() / list_tools()
+    ↓
+ToolkitRegistry returns all tools by category
+    ↓
+Agent selects tool(s) for workflow
+    ↓
+Tool execution intercepts via security layer
+    ├─ Permission check
+    ├─ Input sanitization
+    ├─ Execute original tool
+    ├─ Scrub secrets from output
+    └─ Log to audit trail
+    ↓
+Agent receives result + audit record
+```
+
+#### Integration with Module 6
+- **Agents discover tools** via `list_tools()` 
+- **Agents execute workflows** using multiple tools
+- **Agents verify operations** through audit trail
+- **Agents operate safely** within permission boundaries
+- **Agents build complex tasks** through tool composition
+
+#### Module 5 Complete!
+All 6 lessons complete. Toolkit ready for autonomous agents in Module 6.
+
+Next Steps:
+- Lesson 5.6 output files stored in `datasets/lesson-06-output.json`
+- Module 6 agents will use this toolkit for autonomous workflows
+- Security guardrails ensure safe agent operation
+- Audit trails enable transparency and compliance
 
 ---
 
