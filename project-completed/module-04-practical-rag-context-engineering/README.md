@@ -770,6 +770,116 @@ All lessons leverage utilities in `shared/`:
 - **`prompts.py`** — RAG-specific prompt templates
 - **`rag_pipeline.py`** — Complete RAG orchestration and evaluation
 
+## Resource Scripts
+
+### `resource_rag_pipeline.py`
+A production-grade Hybrid RAG engine combining dense embeddings with lexical (BM25-style) search and Reciprocal Rank Fusion (RRF) re-ranking. Designed to be imported and reused in your own RAG applications.
+
+**Location:** `resource_rag_pipeline.py`
+
+**Classes:**
+
+#### 1. `RecursiveChunker`
+Intelligent document chunking that respects semantic boundaries (paragraphs, sentences) instead of hard character cuts.
+
+**Constructor:**
+```python
+chunker = RecursiveChunker(chunk_size=500, chunk_overlap=50)
+```
+
+**Methods:**
+- **`split_text(text: str) -> List[str]`** — Splits document by semantic boundaries
+  - Tries paragraph breaks (\n\n), then newlines, then sentences, then words
+  - Preserves overlap for context continuity
+  - Returns: List of chunk strings
+
+**Key Feature:** Prevents mid-sentence/thought breaks that degrade embedding quality.
+
+#### 2. `HybridRAGEngine`
+Full-featured RAG pipeline combining dense embeddings with keyword search and intelligent fusion.
+
+**Constructor:**
+```python
+engine = HybridRAGEngine(embedding_model="text-embedding-3-small")
+```
+
+**Methods:**
+
+1. **`get_embedding(text: str) -> List[float]`**
+   - Generates dense embedding vector via OpenAI API
+   - Returns: Normalized embedding vector
+   - Use when: You need semantic understanding of text
+
+2. **`ingest_document(text: str, doc_id: str = "doc_1")`**
+   - Chunks document, embeds all chunks, stores in vector memory
+   - Prints ingestion statistics
+   - Use when: Adding new documents to RAG system
+   - **Example:**
+     ```python
+     engine.ingest_document("Your document text...", doc_id="policy_1")
+     # Output: [Ingestion Complete] Ingested 12 chunks into Vector Memory.
+     ```
+
+3. **`dense_search(query: str, top_k: int = 5) -> List[Tuple[Dict, float]]`**
+   - Semantic search using dense embeddings
+   - Returns: List of (chunk_dict, similarity_score) tuples
+   - Scores range [0.0, 1.0] where 1.0 = perfect match
+   - Use when: You need semantic understanding (meaning-based search)
+
+4. **`lexical_search(query: str, top_k: int = 5) -> List[Tuple[Dict, float]]`**
+   - Keyword-based BM25-style search
+   - Returns: List of (chunk_dict, relevance_score) tuples
+   - Use when: You need keyword/exact match retrieval
+
+5. **`reciprocal_rank_fusion(dense_results, lexical_results, k=60, top_n=3) -> List[Dict]`**
+   - Merges and re-ranks results from both search methods using RRF formula
+   - RRF Formula: `Score = SUM(1 / (k + rank_i))` for each result
+   - Returns: Top-N combined results ranked by fused score
+   - Use when: You want best of both worlds (semantic + keyword)
+
+**Usage Example:**
+```python
+from resource_rag_pipeline import RecursiveChunker, HybridRAGEngine
+
+# Initialize engine
+engine = HybridRAGEngine(embedding_model="text-embedding-3-small")
+
+# Ingest a document
+document_text = """RAG systems combine retrieval with generation.
+They embed documents, search for relevant chunks, and augment LLM prompts..."""
+engine.ingest_document(document_text, doc_id="rag_guide_1")
+
+# Search using dense embeddings (semantic)
+query = "How do RAG systems work?"
+dense_results = engine.dense_search(query, top_k=3)
+for chunk, score in dense_results:
+    print(f"[{score:.3f}] {chunk['text'][:100]}...")
+
+# Search using keywords
+lexical_results = engine.lexical_search(query, top_k=3)
+
+# Combine both for best results
+fused = engine.reciprocal_rank_fusion(dense_results, lexical_results, top_n=2)
+for chunk in fused:
+    print(f"Fused Result: {chunk['text'][:100]}...")
+```
+
+**Design Patterns Demonstrated:**
+- **Semantic Chunking:** Preserve context by respecting document structure
+- **Hybrid Search:** Combine dense (semantic) + sparse (keyword) for robustness
+- **Reciprocal Rank Fusion:** Intelligently merge results from multiple retrieval methods
+- **Metadata Tracking:** Associate chunks with source and position info
+- **Efficient Storage:** Use in-memory storage with optional FAISS acceleration
+
+**Run Sample:**
+```bash
+python resource_rag_pipeline.py
+```
+
+This demonstrates document ingestion, dense search, lexical search, and RRF fusion on sample text.
+
+---
+
 ## Setup & Dependencies
 
 ### First-Time Setup

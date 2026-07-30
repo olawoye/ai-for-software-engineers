@@ -485,6 +485,148 @@ All lessons leverage utilities in `shared/`:
 - **`validation.py`** — Input validation and sanitization
 - **`registry.py`** — Tool and resource registry
 
+## Resource Scripts
+
+### `resource_mcp_server.py`
+A lightweight, production-ready MCP (Model Context Protocol) Server implementation. Designed to be imported and extended for building MCP-compliant tool services.
+
+**Location:** `resource_mcp_server.py`
+
+**Class: `MCPServer`**
+
+Implements the core MCP Server protocol handler supporting JSON-RPC 2.0 communication, tool discovery, and execution over Stdio.
+
+**Key Features:**
+- **JSON-RPC 2.0 Compliance** — Standard protocol for tool negotiation and execution
+- **Tool Registration** — Dynamic registration of tools with name, description, and input schema
+- **Capability Discovery** — MCP clients can discover available tools and their signatures
+- **Tool Execution** — Safe execution of registered tool handlers with error handling
+- **Request Routing** — Handles `initialize`, `tools/list`, and `tools/call` methods
+
+**Methods:**
+
+1. **`register_tool(name, description, input_schema, handler)`**
+   - Registers a tool capability with JSON schema for inputs
+   - `handler`: Callable that executes the tool
+   - Use when: Adding new capabilities to your MCP server
+   - **Example:**
+     ```python
+     server.register_tool(
+         name="get_weather",
+         description="Retrieves weather for a city",
+         input_schema={
+             "type": "object",
+             "properties": {
+                 "city": {"type": "string"},
+                 "units": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+             },
+             "required": ["city"]
+         },
+         handler=lambda city, units="celsius": f"Weather in {city}: 22°{units[0].upper()}"
+     )
+     ```
+
+2. **`handle_request(request: dict) -> dict`**
+   - Routes incoming JSON-RPC 2.0 requests to appropriate handler
+   - Supports three methods:
+     - `initialize` — Server initialization handshake
+     - `tools/list` — Discover all available tools
+     - `tools/call` — Execute a tool with arguments
+   - Returns: JSON-RPC 2.0 response (result or error)
+   - Use when: Processing messages from MCP clients (like Claude, VS Code)
+
+**Usage Example:**
+```python
+from resource_mcp_server import MCPServer
+
+# Create server
+server = MCPServer(name="MyToolServer", version="1.0.0")
+
+# Register tool: System metrics
+def get_cpu_status(mode: str = "simple") -> str:
+    if mode == "simple":
+        return "CPU: 45% utilization"
+    return "CPU: 45% (load avg: 2.1)\nMemory: 8GB/16GB"
+
+server.register_tool(
+    name="cpu_status",
+    description="Get current CPU and memory metrics",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "mode": {"type": "string", "enum": ["simple", "detailed"]}
+        }
+    },
+    handler=get_cpu_status
+)
+
+# Handle a tool call request
+request = {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {"name": "cpu_status", "arguments": {"mode": "detailed"}}
+}
+
+response = server.handle_request(request)
+print(response["result"]["content"][0]["text"])
+# Output: CPU: 45% (load avg: 2.1)\nMemory: 8GB/16GB
+```
+
+**Request/Response Examples:**
+
+**Initialize Handshake:**
+```json
+Request:
+  {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}}
+
+Response:
+  {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "protocolVersion": "2024-11-05",
+      "capabilities": {"tools": {"listChanged": false}},
+      "serverInfo": {"name": "MyToolServer", "version": "1.0.0"}
+    }
+  }
+```
+
+**Tool Discovery:**
+```json
+Request:
+  {"jsonrpc": "2.0", "id": 2, "method": "tools/list"}
+
+Response:
+  {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "result": {
+      "tools": [
+        {
+          "name": "get_system_metrics",
+          "description": "Retrieves real-time system performance metrics.",
+          "inputSchema": {...}
+        }
+      ]
+    }
+  }
+```
+
+**Design Patterns Demonstrated:**
+- **Protocol Compliance** — Full JSON-RPC 2.0 support for AI tool integration
+- **Tool Registry** — Centralized registration with schema validation
+- **Error Handling** — Graceful error responses for missing/failed tools
+- **Extensibility** — Easy to add new tools without modifying core server
+- **Isolation** — Tool errors don't crash the server
+
+**Run Sample:**
+```bash
+python resource_mcp_server.py
+```
+
+This demonstrates initialization, tool discovery, and tool execution flows.
+
 ---
 
 ## Setup & Dependencies

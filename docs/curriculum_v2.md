@@ -1,163 +1,255 @@
 # AI For Software Engineers - Curriculum
 
-## Module 1: AI Shift for Engineers
+## Module 1: Foundations & Mindset – Your AI Transition Begins Here
 
-**Module Slug:** `module-01-ai-shift-for-engineers`
+**Module Slug:** `module-01-foundations-and-mindset`
 
 ### Module Objective
 
-This module establishes the strategic foundation for the entire course by helping experienced software engineers understand why AI represents a platform shift comparable to the emergence of the internet, cloud computing, and mobile platforms. Rather than focusing on tools, students will learn how the role of the engineer is evolving and what skills remain valuable in an AI-first world.
-
-By the end of this module, students will understand the major AI patterns used in modern software systems, the realities of AI engineering work, and how to create a practical roadmap for transitioning from traditional software development into AI-native engineering roles.
+This module establishes the strategic and emotional foundation for your transition into AI-native engineering by exploring why AI represents a fundamental platform shift comparable to the internet and cloud computing, introducing the three core AI patterns (chat interfaces, retrieval systems, autonomous agents) that power modern systems, and directly addressing career anxieties while providing a concrete roadmap for your personal AI transition. By the end of this module, you will understand how your foundational engineering skills remain MORE valuable than ever, have identified one concrete AI project to build, and will have your complete technical environment ready to begin learning.
 
 ---
 
-### Lesson 1.1: Why This Course Matters Now
+### Lesson 1.1: Why This Shift Matters – The Three Patterns That Power AI
 
-**Type:** Talking Head
-
+**Type:** Talking Head  
+**Duration:** 10 minutes  
 **Code File:** N/A
 
 #### Lesson Objective
 
-This lesson establishes the urgency behind AI adoption within software engineering. Students will examine how leading technology companies, researchers, and AI labs are reshaping engineering workflows through AI-assisted development and increasingly autonomous systems.
-
-By the end of this lesson, students will understand why AI literacy is becoming a core engineering competency and why adapting early creates significant career advantages over waiting for industry-wide disruption.
+This lesson establishes the urgency and reality of AI transformation by exploring how AI represents a fundamental platform shift (like web and cloud before it), demonstrating what AI can do today (generate functions, debug, analyze codebases), and introducing the three core architectural patterns—chat interfaces, retrieval systems, and autonomous agents—that power all modern AI systems. By the end of this lesson, you will understand that this is a real transformation (not hype), see the three patterns that define every AI system you'll build, and recognize why your foundational systems thinking skills are MORE valuable than ever.
 
 #### Keywords
 
-* AI transformation
-* Future of software engineering
-* AI-assisted development
-* Industry disruption
-* Career relevance
-* Market shifts
-
----
-
-### Lesson 1.2: AI at Work Today
-
-**Type:** Talking Head
-
-**Code File:** N/A
-
-#### Lesson Objective
-
-This lesson explores how AI is already being integrated into real-world software products and engineering workflows. Students will review modern AI application patterns including chat interfaces, retrieval systems, copilots, and autonomous agents.
-
-By the end of this lesson, students will recognize that AI is no longer merely a development tool but increasingly acts as a software consumer and decision-making participant within modern applications.
-
-#### Keywords
-
+* Platform shift
+* Three core patterns
 * Chat interfaces
-* RAG systems
-* Agents
-* AI-native applications
-* Voice interfaces
-* AI as a client
-
----
-
-### Lesson 1.3: Core AI Patterns
-
-**Type:** Talking Head
-
-**Code File:** N/A
-
-#### Lesson Objective
-
-This lesson introduces the most important architectural patterns that underpin modern AI systems. Students will learn how retrieval systems, chat interfaces, copilots, workflows, and agentic systems differ, where they are used, and what trade-offs exist between them.
-
-By the end of this lesson, students will be able to identify common AI architectures in the wild and reason about when each pattern is appropriate for a particular business problem.
-
-#### Keywords
-
-* RAG
-* Agents
-* Copilots
-* Human-in-the-loop
-* Agentic loops
-* Fine-tuning
-* Context injection
-* AI failure modes
-
----
-
-### Lesson 1.4: AI Engineers at Work
-
-**Type:** Talking Head
-
-**Code File:** N/A
-
-#### Lesson Objective
-
-This lesson examines what AI engineers actually do on a day-to-day basis and how the role differs from traditional software engineering. Students will compare corporate AI teams, startups, SaaS builders, consultants, and freelance practitioners to understand the opportunities available in the AI economy.
-
-By the end of this lesson, students will understand the practical workflows, tools, responsibilities, and product decisions that define modern AI engineering roles.
-
-#### Keywords
-
-* AI engineer workflow
-* Corporate AI
-* Freelance AI
-* SaaS development
-* Product-first mindset
-* Cost vs latency vs quality
-
----
-
-### Lesson 1.5: Mindset & Skills
-
-**Type:** Talking Head
-
-**Code File:** N/A
-
-#### Lesson Objective
-
-This lesson focuses on the mindset shifts required to thrive in an AI-assisted engineering environment. Students will learn why verification, systems thinking, experimentation, and orchestration are becoming more valuable than memorizing syntax or framework details.
-
-By the end of this lesson, students will understand which technical and non-technical skills will remain durable and how to position themselves as high-leverage engineers in an AI-native future.
-
-#### Keywords
-
+* Retrieval-Augmented Generation
+* Autonomous agents
+* AI transformation
 * Systems thinking
-* Verification mindset
-* T-shaped skills
-* Prompt engineering
-* AI literacy
-* Engineering leverage
+* Skill relevance
+
+#### Prerequisites
+
+None (this is the course introduction)
+
+#### Next Lesson
+
+→ Lesson 1.2: Why This Matters for You – Mindset, Leverage & Your Path Forward
 
 ---
 
-### Lesson 1.6: Your AI Transition Plan
 
-**Type:** Talking Head + Worksheet
+### Lesson 1.2: Why This Matters for You – Mindset, Leverage & Your Path Forward
 
+**Type:** Talking Head  
+**Duration:** 12-15 minutes  
 **Code File:** N/A
 
 #### Lesson Objective
 
-This lesson helps students convert the concepts from the module into a personalized action plan. Students will assess their current skills, identify gaps, select a target outcome, and create a practical roadmap for achieving their desired AI-related career objective.
-
-By the end of this lesson, students will leave with a documented transition strategy and a clear understanding of how the remaining modules support their long-term goals.
+This lesson translates the three patterns from Lesson 1.1 into concrete implications for your career and thinking, addressing the shift from code executor to system designer, clarifying five essential mindset changes, and showing the leverage you gain from understanding AI patterns while building on your existing engineering foundation. By the end of this lesson, you will understand how your role is evolving, have internalized the mindset shifts required for AI-first thinking, know the leverage you're gaining (not losing), and be ready to commit to this transition.
 
 #### Keywords
 
-* Self-assessment
-* Career planning
-* Learning roadmap
-* Goal setting
-* AI transition
-* Skills audit
+* Career implications
+* Mindset shifts
+* System design
+* Leverage
+* Role evolution
+* Uncertainty design
+* Strategic thinking
+* AI-first architecture
+
+#### Prerequisites
+
+Lesson 1.1 (understanding the shift and three patterns)
+
+#### Next Lesson
+
+→ Lesson 1.3: Your Skills Are Safe (address career concerns)
+
+---
+
+### Lesson 1.3: Your Skills Are Safe
+
+**Type:** Talking Head  
+**Duration:** 7-8 minutes  
+**Code File:** N/A
+
+#### Lesson Objective
+
+This lesson directly addresses the three most common anxieties experienced engineers face—obsolescence, skill devaluation, and being left behind—by examining each fear honestly and showing that your 10+ years of experience is a foundation, not a liability, and that you're positioned for advantage precisely because you understand systems deeply. By the end of this lesson, you will understand that your role is being elevated (not automated), that your foundational skills are more valuable than ever, and that starting "late" in AI is actually starting at exactly the right time for your experience to matter most.
+
+#### Keywords
+
+* Career relevance
+* Skills transferability
+* Obsolescence vs elevation
+* Durable skills
+* Systems thinking
+* Debugging expertise
+
+#### Prerequisites
+
+Lessons 1.1-1.2 (understanding the shift and patterns)
+
+#### Next Lesson
+
+→ Lesson 1.4: The Opportunity is Real
+
+---
+
+### Lesson 1.4: The Opportunity is Real
+
+**Type:** Talking Head  
+**Duration:** 5-6 minutes  
+**Code File:** N/A
+
+#### Lesson Objective
+
+This lesson addresses the final two fears holding engineers back—skepticism about hype and paralysis about getting started—by grounding both in economic reality and providing a concrete 5-step action framework that gives you permission to start before you understand everything. By the end of this lesson, you will understand that AI's economic impact is real and durable (not hype), and you will have a simple framework for moving from anxiety to action with one concrete project.
+
+#### Keywords
+
+* Hype vs fundamental shift
+* Economic reality
+* Action framework
+* Getting started
+* Mindset shifts
+* Project-based learning
+
+#### Prerequisites
+
+Lesson 1.3 (reassurance about relevance)
+
+#### Next Lesson
+
+→ Lesson 1.5: Build Your First Project
+
+---
+
+### Lesson 1.5: Build Your First Project
+
+**Type:** Talking Head  
+**Duration:** 4-5 minutes  
+**Code File:** N/A
+
+#### Lesson Objective
+
+This lesson helps you convert the concepts and mindsets from Lessons 1.1-1.4 into a concrete personal commitment by defining one clear goal that will anchor your learning through the remaining 10 modules, moving from abstract understanding to specific action. By the end of this lesson, you will have written down your project, identified its AI pattern (Chat/RAG/Agent/Copilot), and created a clear "By end of course" goal statement that serves as your north star throughout the course.
+
+#### Keywords
+
+* Personal project
+* Concrete commitment
+* Learning anchor
+* North star goal
+* Permission to start
 
 #### Deliverables
 
-* Skills Assessment Worksheet
-* AI Career Roadmap Template
-* 90-Day Learning Plan
-* Personal North Star Goal Definition
+* One sentence project description
+* Pattern mapping (Chat/RAG/Agent/Copilot)
+* "By end of course" goal statement
 
+#### Prerequisites
 
+Lessons 1.3-1.4 (understanding fears and opportunity)
+
+#### Next Lesson
+
+→ Lesson 1.6: Your Complete Learning Path
+
+---
+
+### Lesson 1.6: Your Complete Learning Path
+
+**Type:** Talking Head + Animated Graphics  
+**Duration:** 18-20 minutes (Trimmed)  
+**Code File:** N/A
+
+#### Lesson Objective
+
+This lesson provides a comprehensive overview of the 10-module learning architecture, showing you not just what you'll learn but what you'll be able to build at each stage, how modules build on each other, and how your personal project from Lesson 1.5 will be supported by each subsequent module. By the end of this lesson, you will understand the complete pathway from foundational concepts through production deployment, recognize how each module serves your learning goals, and feel confident about the entire journey ahead.
+
+#### Keywords
+
+* Module architecture
+* Learning dependencies
+* AI fundamentals
+* Production systems
+* Career outcomes
+* Skill progression
+
+#### Prerequisites
+
+Lesson 1.5 (you've committed to your project)
+
+#### Next Lesson
+
+→ Module 2: AI Fundamentals (technical foundation begins)
+
+---
+
+### Lesson 1.7: Technical Environment Setup
+
+**Type:** Screencast + Talking Head (3 Sub-Lessons)  
+**Duration:** 12-15 minutes total  
+**Code File:** Repository provided
+
+#### Lesson Objective
+
+This lesson ensures you have a fully working technical environment for the entire course through three focused sub-lessons covering OS-level Python setup (Mac native or Windows WSL2), VS Code configuration with AI development extensions, and secure LLM API access, with verification steps at each stage. By the end of this lesson, you will have Python installed and working, the course repository cloned and organized, a virtual environment created, and your first successful API call to an LLM—ready to begin Module 2 with zero technical blockers.
+
+#### Sub-Lessons
+
+**1.7a: Getting Your OS Ready** (4-5 min)
+- Mac native setup or Windows WSL2/Ubuntu installation
+- Python 3.10+ verification
+- Platform-specific configuration
+
+**1.7b: VS Code & Project Setup** (4-5 min)
+- VS Code configuration and extensions
+- Course repository clone
+- Virtual environment creation and Streamlit installation
+- First demo run verification
+
+**1.7c: LLM Access Setup** (3-4 min)
+- Anthropic Claude API key management
+- Environment variable configuration and security
+- First API call verification
+- Optional: Additional LLM setup
+
+#### Keywords
+
+* Development environment
+* Python setup
+* Virtual environments
+* VS Code configuration
+* API security
+* Repository management
+
+#### Deliverables
+
+* Working Python 3.10+ environment
+* VS Code configured with AI extensions
+* Course repository cloned
+* Virtual environment created and activated
+* First successful API call to LLM
+* Secure .env file with API keys
+
+#### Prerequisites
+
+None (this is setup for everything that follows)
+
+#### Next Lesson
+
+→ Module 2, Lesson 2.1: Introduction to Large Language Models
+
+---
 
 
 ## Module 2: AI Fundamentals

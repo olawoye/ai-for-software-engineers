@@ -165,6 +165,56 @@ All lessons in this module leverage shared utilities in `shared/`:
 - **`embeddings.py`** — Embedding generation and comparison
 - **`streamlit_app.py`** — Multi-lesson dashboard framework
 
+## Resource Scripts
+
+### `resource_token_economics.py`
+A production-grade toolkit for token budgeting, cost estimation, and text chunking. Designed to be imported and reused in your own projects.
+
+**Location:** `resource_token_economics.py`
+
+**Functions:**
+
+1. **`budget_and_truncate_context(prompt, max_token_budget=2048, model="gpt-4o")`**
+   - Validates prompt stays within token limits before API dispatch
+   - Truncates if needed
+   - Returns: `(safe_prompt: str, token_count: int)`
+
+2. **`calculate_request_cost(input_tokens, output_tokens, cached_tokens=0, model="gpt-4o")`**
+   - Computes total API cost factoring in prompt caching discounts
+   - Supports: GPT-4o, GPT-4o-mini, Claude 3.5 Sonnet
+   - Returns: `{input_cost, cache_cost, output_cost, total_cost}` (in USD)
+
+3. **`chunk_prompt_by_tokens(text, chunk_size=512, overlap=50, model="gpt-4o")`**
+   - Splits long text into token-aware overlapping chunks
+   - Useful for splitting documents before RAG indexing
+   - Returns: `List[str]` of chunks
+
+**Usage Example:**
+```python
+from resource_token_economics import budget_and_truncate_context, calculate_request_cost
+
+# Ensure prompt stays within budget
+safe_prompt, count = budget_and_truncate_context("Your long text...", max_token_budget=2048)
+
+# Estimate cost with prompt caching
+cost = calculate_request_cost(
+    input_tokens=5000, 
+    output_tokens=500, 
+    cached_tokens=3000, 
+    model="gpt-4o"
+)
+print(f"Total cost: ${cost['total_cost']}")
+```
+
+**Run Sample:**
+```bash
+python resource_token_economics.py
+```
+
+This prints token counts, cost breakdowns, and chunking results.
+
+---
+
 ## Data Flow
 
 Each lesson outputs results to `datasets/lesson-XX-output.json`:

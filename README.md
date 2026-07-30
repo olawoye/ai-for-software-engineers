@@ -61,11 +61,36 @@ This repository is the code companion for the "AI For Software Engineers" course
    streamlit run project-completed/module-02-ai-fundamentals/shared/streamlit_app.py
    ```
 
-5. **Testing & Validation** (future):
+5. **Testing & Validation**:
    ```bash
+   # Run all resource script tests (validates resource_*.py files)
+   pytest test_module_resources.py -v
+   
+   # Run module-specific tests
    pytest tests/
-   python src/lessons/example_validation.py
    ```
+
+## Resource Scripts
+
+Each module includes `resource_*.py` files — reusable code snippets and utilities you can import into your own projects. These are production-quality, well-tested helpers that complement the lesson code.
+
+**Finding & Testing Resource Scripts:**
+- All resource files follow the `resource_[name].py` naming convention
+- Located in each module's folder (e.g., `project-completed/module-02-ai-fundamentals/resource_token_economics.py`)
+- Run the automated test suite to validate all resource scripts:
+  ```bash
+  pytest test_module_resources.py -v
+  ```
+- This validates syntax, imports, callable functions, and the sample `__main__` block
+
+**Using Resource Scripts:**
+```python
+from project-completed.module-02-ai-fundamentals.resource_token_economics import budget_and_truncate_context, calculate_request_cost
+
+# Use the utilities in your own projects
+safe_prompt, token_count = budget_and_truncate_context("Your text here", max_token_budget=2048)
+cost = calculate_request_cost(input_tokens=5000, output_tokens=500)
+```
 
 ## Docs Reference
 Detailed procedures live in `docs/`, including the numbered guides (`docs/01-local-setup.md` through `docs/10-deployment-guide.md`) plus the agent-frameworks primer. Review the relevant guide whenever you move to a new module or toolchain.

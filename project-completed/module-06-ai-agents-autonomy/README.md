@@ -495,3 +495,217 @@ By end of Module 6, learners can:
 - Data analysis workflows (autonomous multi-step research)
 - Content generation pipelines (agent collaboration)
 - Business process automation (scheduled autonomous workflows)
+
+---
+
+## Resource Scripts
+
+### `resource_agent_loop.py`
+A stateful ReAct (Reason + Act) agent loop implementation with execution guardrails. Designed to be imported and adapted for building safe, bounded autonomous systems.
+
+**Location:** `resource_agent_loop.py`
+
+**Classes:**
+
+#### 1. `ExecutionGuardrails`
+Real-time safety watcher enforcing step limits, token budgets, and detecting repetitive tool loops (stagnation).
+
+**Constructor:**
+```python
+guardrails = ExecutionGuardrails(max_steps=5, max_token_budget=4000)
+```
+
+**Methods:**
+
+- **`verify_step(action_signature: str, estimated_tokens: int)`**
+  - Enforces execution rules before running an LLM or tool turn
+  - Checks three guardrails:
+    1. **Step Limit** — Raises exception if max_steps exceeded
+    2. **Token Budget** — Raises exception if total tokens exceeded
+    3. **Stagnation Detection** — Raises exception if action repeated 2+ times
+  - Use when: Each agent iteration (thinking, tool call, observation)
+  - Raises: `AgentGuardrailException` if any guardrail triggered
+  - **Example:**
+    ```python
+    try:
+        guardrails.verify_step(
+            action_signature="query_database:users",
+            estimated_tokens=150
+        )
+        # Safe to execute
+    except AgentGuardrailException as e:
+        print(f"Execution halted: {e}")
+    ```
+
+**Properties:**
+- `current_step` — Current step count
+- `accumulated_tokens` — Total tokens used so far
+- `action_history` — List of all actions taken
+
+#### 2. `StatefulReActAgent`
+Implements the ReAct loop with explicit state management and guardrail checking.
+
+**Constructor:**
+```python
+agent = StatefulReActAgent(guardrails=ExecutionGuardrails())
+```
+
+**Methods:**
+
+1. **`log_state(role: str, content: str)`**
+   - Appends message turn to agent's working memory
+   - Roles: `"user"`, `"observation"`, `"reasoning"`
+   - Use when: Recording each decision or observation
+   - **Example:**
+     ```python
+     agent.log_state("user", "Fix the failing test")
+     agent.log_state("reasoning", "I need to run tests first")
+     agent.log_state("observation", "Tests show 3 failures")
+     ```
+
+2. **`run_loop(user_goal: str)`**
+   - Executes the full agent reasoning and action loop
+   - Implements Think → Act → Observe cycle with guardrails
+   - Logs each step and catches execution guardrail exceptions
+   - Use when: Running complete autonomous tasks
+   - **Example:**
+     ```python
+     agent.run_loop("Debug and fix authentication timeout")
+     # Output shows: Thinking, Action, Observation, Success or Guardrail Trigger
+     ```
+
+**Usage Example:**
+```python
+from resource_agent_loop import ExecutionGuardrails, StatefulReActAgent
+
+# Setup guardrails
+guardrails = ExecutionGuardrails(
+    max_steps=5,           # Max 5 iterations
+    max_token_budget=2000  # Max 2000 tokens
+)
+
+# Create agent
+agent = StatefulReActAgent(guardrails=guardrails)
+
+# Run autonomous task
+try:
+    agent.run_loop("Analyze failed API tests and apply fixes")
+except Exception as e:
+    print(f"Task failed: {e}")
+
+# Access agent's execution state
+for turn in agent.state:
+    print(f"{turn['role']}: {turn['content'][:100]}...")
+```
+
+**Agent Execution Flow:**
+```
+Step 1: THINK (Reasoning)
+  "I need to run the test suite to understand failures"
+  [GuardrailCheck: step=1, tokens=350 ✓]
+  
+Step 2: ACT (Tool Execution)
+  Execute: run_tests("test_auth.py")
+  Result: "4 passed, 1 failed (test_auth_timeout)"
+  [GuardrailCheck: step=2, tokens=400 ✓]
+  
+Step 3: OBSERVE (Process Result)
+  "Tests show timeout issue. I should fix auth.py"
+  
+Step 4: ACT (Apply Fix)
+  Execute: fix_code("auth.py")
+  Result: "Successfully applied patch. Auth timeout updated to 30s."
+  [GuardrailCheck: step=3, tokens=300 ✓]
+  
+Step 5: VERIFY (Re-test)
+  Execute: run_tests("test_auth.py")
+  Result: "4 passed, 0 failed ✓"
+  [GuardrailCheck: step=4, tokens=300 ✓]
+  
+[Execution Success] Goal achieved within guardrail constraints
+```
+
+**Guardrail Examples:**
+
+**Example 1: Max Steps Exceeded**
+```python
+guardrails = ExecutionGuardrails(max_steps=2)
+# After 2 steps, next verify_step() raises:
+# "[GUARDRAIL TRIGGERED] Max step limit reached (2 steps). Terminating execution loop."
+```
+
+**Example 2: Token Budget Exceeded**
+```python
+guardrails = ExecutionGuardrails(max_token_budget=500)
+guardrails.verify_step("action_1", 300)  # OK
+guardrails.verify_step("action_2", 300)  # Raises:
+# "[GUARDRAIL TRIGGERED] Token budget exceeded (600 / 500 tokens)."
+```
+
+**Example 3: Stagnation Detection**
+```python
+guardrails = ExecutionGuardrails(max_steps=5)
+guardrails.verify_step("query_db:users", 100)  # OK
+guardrails.verify_step("query_db:users", 100)  # Raises:
+# "[GUARDRAIL TRIGGERED] Stagnation detected. Action 'query_db:users' repeated multiple times."
+```
+
+**Design Patterns Demonstrated:**
+- **Bounded Autonomy** — Execution limits prevent runaway loops
+- **Stateful Reasoning** — Explicit state tracking for transparency
+- **Think → Act → Observe** — ReAct loop with guardrails
+- **Observable Execution** — Full action history logged for debugging
+- **Graceful Fallback** — Guardrail triggers escalate to human-in-the-loop
+
+**Run Sample:**
+```bash
+python resource_agent_loop.py
+```
+
+This demonstrates normal execution, stagnation detection, and token budget enforcement.
+
+---
+
+## Shared Resources
+
+All lessons leverage utilities in `shared/`:
+
+- **`memory.py`** — 4-layer memory system (short-term, long-term, episodic, semantic)
+- **`tool_registry.py`** — Dynamic tool registration and execution
+- **`agent.py`** — Agent class with memory integration
+- **`workflow.py`** — Multi-step workflow orchestration and scheduling
+- **`multi_agent.py`** — Multi-agent system with coordination
+
+---
+
+## Setup & Dependencies
+
+### First-Time Setup
+```bash
+rm -rf .venv
+./setup.sh
+source .venv/bin/activate
+
+pip install -r requirements-module-06.txt
+```
+
+**Dependencies:**
+- Base: No external requirements (uses built-in Python libraries)
+- Optional: `schedule` library for advanced workflow scheduling
+
+### API Keys
+```bash
+# Optional: OpenRouter for LLM-powered agents (lessons 6.2-6.6)
+export OPENROUTER_API_KEY='your-key-here'
+
+# OpenRouter signup: https://openrouter.ai
+```
+
+### Verify Installation
+```bash
+# Test resource script
+python resource_agent_loop.py
+
+# Run a lesson
+python lesson-02-agent-memory-systems.py
+```

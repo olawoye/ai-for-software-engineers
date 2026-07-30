@@ -342,6 +342,201 @@ After this lesson, you will understand:
 
 ---
 
+## Resource Scripts
+
+### `resource_llm_evaluator.py`
+A lightweight, production-ready LLM evaluation pipeline combining heuristic checks and LLM-as-a-Judge scoring. Designed to be imported and integrated into your own AI systems for quality assurance and observability.
+
+**Location:** `resource_llm_evaluator.py`
+
+**Classes:**
+
+#### 1. `HeuristicEvaluator`
+Fast, zero-cost deterministic checks for output validation.
+
+**Static Methods:**
+
+- **`check_json_schema(response_text: str) -> bool`**
+  - Validates that response is valid JSON format
+  - Use when: Output must be structured data
+  - Returns: `True` if valid JSON, `False` otherwise
+  - **Example:**
+    ```python
+    is_valid = HeuristicEvaluator.check_json_schema('{"name": "John"}')
+    # Returns: True
+    ```
+
+- **`check_latency_sla(elapsed_ms: float, max_allowed_ms: float = 1500.0) -> bool`**
+  - Checks if response latency satisfies SLA limits
+  - Use when: Performance is constrained by SLAs
+  - Returns: `True` if within SLA, `False` if exceeded
+  - **Example:**
+    ```python
+    within_sla = HeuristicEvaluator.check_latency_sla(850.0, max_allowed_ms=1000.0)
+    # Returns: True (850ms < 1000ms)
+    ```
+
+**Design Pattern:** Fail-fast validation before expensive LLM scoring
+
+#### 2. `LLMAsAJudgeEvaluator`
+Evaluates response quality using LLM-as-a-Judge pattern for Faithfulness (Groundedness) and Answer Relevance.
+
+**Constructor:**
+```python
+evaluator = LLMAsAJudgeEvaluator(target_threshold=0.85)
+```
+
+**Methods:**
+
+- **`evaluate_faithfulness(context: str, response: str) -> Dict[str, Any]`**
+  - Scores whether claims in response are supported by retrieved context
+  - Detects potential hallucinations
+  - Returns: `{metric, score, passed, reason}`
+    - `score` ranges [0.0, 1.0]
+    - `passed` = `True` if score >= target_threshold
+    - `reason` explains pass/fail
+  - Use when: You need groundedness scoring for RAG systems
+  - **Example:**
+    ```python
+    context = "RAG systems use retrieval to augment LLM generation."
+    response = "RAG combines retrieval with LLM generation for better answers."
+    
+    result = evaluator.evaluate_faithfulness(context, response)
+    # Returns: 
+    # {
+    #   "metric": "faithfulness",
+    #   "score": 0.92,
+    #   "passed": True,
+    #   "reason": "Claims grounded in retrieved context."
+    # }
+    ```
+
+**Design Pattern:** Lightweight LLM-as-Judge without API calls (uses heuristic word overlap as mock)
+
+#### 3. `ObservabilityPipeline`
+Aggregates telemetry, run logs, and evaluation metrics for production observability.
+
+**Constructor:**
+```python
+pipeline = ObservabilityPipeline()
+```
+
+**Methods:**
+
+- **`log_run(trace_id, prompt, context, response, latency_ms) -> Dict[str, Any]`**
+  - Logs an inference trace and executes evaluation checks
+  - Combines deterministic checks + LLM-as-Judge scoring
+  - Stores all results for audit trail and metrics aggregation
+  - Returns: Complete evaluation record
+    - `trace_id`: Unique request identifier
+    - `timestamp`: When inference was run
+    - `latency_ms`: Total inference time
+    - `valid_json`: Result of JSON schema check
+    - `within_sla`: Result of latency SLA check
+    - `faithfulness_score`: Groundedness score
+    - `eval_passed`: Overall evaluation passed (all checks)
+  - Use when: Each inference in your production pipeline
+  - **Example:**
+    ```python
+    result = pipeline.log_run(
+        trace_id="req_12345",
+        prompt="What is RAG?",
+        context="RAG uses retrieval-augmented generation...",
+        response="RAG combines retrieval with generation...",
+        latency_ms=523.4
+    )
+    # Result stored in pipeline.telemetry_store
+    # Can be aggregated for dashboards and alerts
+    ```
+
+**Design Pattern:** Observability aggregation — collect all evaluation signals in one place
+
+**Usage Example:**
+```python
+from resource_llm_evaluator import HeuristicEvaluator, LLMAsAJudgeEvaluator, ObservabilityPipeline
+
+# Setup pipeline
+pipeline = ObservabilityPipeline()
+evaluator = LLMAsAJudgeEvaluator(target_threshold=0.85)
+
+# Process each inference
+for inference in my_ai_system.run_batch(queries):
+    start = time.time()
+    response = my_ai_system.generate(inference.prompt)
+    latency_ms = (time.time() - start) * 1000
+    
+    # Log with full evaluation
+    record = pipeline.log_run(
+        trace_id=inference.id,
+        prompt=inference.prompt,
+        context=inference.retrieved_context,
+        response=response,
+        latency_ms=latency_ms
+    )
+    
+    # Act on evaluation results
+    if not record["eval_passed"]:
+        alert(f"Quality drop detected: {record}")
+
+# Generate observability report
+total_tests = len(pipeline.telemetry_store)
+pass_rate = sum(1 for r in pipeline.telemetry_store if r["eval_passed"]) / total_tests
+avg_latency = sum(r["latency_ms"] for r in pipeline.telemetry_store) / total_tests
+
+print(f"Pass Rate: {pass_rate:.1%}")
+print(f"Avg Latency: {avg_latency:.0f}ms")
+```
+
+**Integration with Production Systems:**
+
+```
+┌─────────────────┐
+│ AI System       │
+│ (Agent/RAG)     │
+└────────┬────────┘
+         │
+    [Inference Run]
+         │
+    ┌────▼──────────────────────────────┐
+    │ ObservabilityPipeline              │
+    │ 1. HeuristicEvaluator              │
+    │    - JSON schema validation        │
+    │    - Latency SLA check             │
+    │ 2. LLMAsAJudgeEvaluator            │
+    │    - Faithfulness scoring          │
+    │    - Hallucination detection       │
+    │ 3. Record aggregation              │
+    │    - Trace logging                 │
+    │    - Metric tracking               │
+    └────┬──────────────────────────────┘
+         │
+    [Result Record]
+         │
+    ┌────▼──────────────────────────────┐
+    │ Actions                            │
+    │ - Dashboard metrics                │
+    │ - Alert thresholds                 │
+    │ - Regression testing               │
+    │ - Performance reports              │
+    └────────────────────────────────────┘
+```
+
+**Design Patterns Demonstrated:**
+- **Defense in Depth** — Multiple evaluation layers (heuristic + LLM)
+- **Observability** — Comprehensive trace logging for debugging
+- **Fail-Fast** — Quick deterministic checks before expensive evaluations
+- **Extensibility** — Easy to add new checks without modifying core pipeline
+- **Audit Trail** — Complete record of all inferences for compliance
+
+**Run Sample:**
+```bash
+python resource_llm_evaluator.py
+```
+
+This demonstrates JSON validation, latency checking, and faithfulness scoring.
+
+---
+
 ## Module-Level Architecture
 
 ```

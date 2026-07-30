@@ -64,6 +64,39 @@ After implementing Output 1 & 2, always:
 5. ✅ Link to full curriculum in docs/
 6. ✅ Update main repo README.md if adding new dependencies or setup changes
 
+## Resource Scripts (`resource_*.py` Files)
+
+Each module can include reusable utility scripts following the `resource_[name].py` naming convention. These are production-grade helper functions and utilities that learners can extract and use in their own projects.
+
+### What Are Resource Scripts?
+- **Purpose**: Provide copy-paste utilities that complement lesson code (token budgeting, cost calculation, embedding generation, etc.)
+- **Location**: `project-completed/module-XX-[name]/resource_[name].py`
+- **Quality Bar**: Must be well-tested, documented, and include a working `__main__` block
+- **Scope**: Focused helpers (3-5 functions per file), not full applications
+
+### Creating & Updating Resource Scripts
+1. **Naming**: Always use `resource_[descriptive_name].py` format
+2. **Functions**: Export 2-5 public functions with clear docstrings and type hints
+3. **Example**: Include a `__main__` block that demonstrates each function with realistic data
+4. **Testing**: All resource scripts are auto-tested by `test_module_resources.py`
+   ```bash
+   pytest test_module_resources.py -v
+   ```
+5. **Documentation**: When a resource script is added/updated, document it in the module's README under "Resource Scripts" section
+
+### Example: Module 2's `resource_token_economics.py`
+Located at `project-completed/module-02-ai-fundamentals/resource_token_economics.py`:
+- `budget_and_truncate_context()` — ensure prompts stay within token limits
+- `calculate_request_cost()` — compute API costs with prompt caching discounts
+- `chunk_prompt_by_tokens()` — split text into overlapping token-aware chunks
+
+Learners can import and reuse these in their projects:
+```python
+from resource_token_economics import budget_and_truncate_context, calculate_request_cost
+safe_prompt, token_count = budget_and_truncate_context(text, max_token_budget=2048)
+cost = calculate_request_cost(input_tokens=5000, output_tokens=500, cached_tokens=3000)
+```
+
 ## Lesson-by-Lesson Implementation Workflow
 
 ### When Implementing Code Screencast Lessons

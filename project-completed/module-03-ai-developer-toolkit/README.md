@@ -575,6 +575,82 @@ All lessons leverage utilities in `shared/`:
 - **`config.py`** — Model definitions, temperature constants, context limits
 - **`prompts.py`** — Reusable prompt templates for classification, summarization, chat
 
+## Resource Scripts
+
+### `resource_llm_gateway.py`
+A production-grade LLM API gateway with resilience patterns. Designed to be imported and reused in your own applications.
+
+**Location:** `resource_llm_gateway.py`
+
+**Class: `ResilientLLMGateway`**
+
+Features:
+- **Exponential Backoff Retries** — Automatic retry with jitter for transient failures (rate limits, connection errors)
+- **Primary/Fallback Model Routing** — Seamlessly fall back to secondary model if primary fails
+- **Async Streaming** — Stream response tokens as they arrive for real-time UX
+- **Latency Tracking** — Measure end-to-end request time
+- **Token Accounting** — Track input/output tokens for cost estimation
+
+**Key Methods:**
+
+1. **`execute_with_retry(messages, model=None, **kwargs)`**
+   - Executes completion with full-jitter exponential backoff
+   - Returns: `{content, model_used, latency_sec, prompt_tokens, completion_tokens}`
+   - Use when: You need reliable API calls with automatic retries
+
+2. **`execute_with_fallback(messages, **kwargs)`**
+   - Tries primary model first, automatically routes to fallback on failure
+   - Returns: Same as `execute_with_retry`
+   - Use when: Primary model may be overloaded or unavailable
+
+3. **`stream_tokens(messages, model=None, **kwargs)`**
+   - Async generator that yields response tokens as they arrive
+   - Returns: `AsyncGenerator[str]` of token chunks
+   - Use when: Building real-time streaming UIs (chat, live responses)
+
+**Usage Example:**
+```python
+from resource_llm_gateway import ResilientLLMGateway
+
+gateway = ResilientLLMGateway(
+    primary_model="gpt-4o",
+    fallback_model="gpt-4o-mini",
+    max_retries=3
+)
+
+messages = [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Explain circuit breakers in LLM gateways."}
+]
+
+# Method 1: Reliable completion with automatic retries
+result = await gateway.execute_with_retry(messages, max_tokens=200)
+print(f"Response: {result['content']}")
+print(f"Latency: {result['latency_sec']}s")
+
+# Method 2: With fallback routing
+result = await gateway.execute_with_fallback(messages, max_tokens=200)
+
+# Method 3: Stream tokens for real-time UI
+async for token in gateway.stream_tokens(messages, max_tokens=100):
+    print(token, end="", flush=True)
+```
+
+**Design Patterns Demonstrated:**
+- **Resilience:** Retries with jitter prevent thundering herd
+- **Fallback Routing:** Multi-model availability
+- **Async-First:** Non-blocking I/O for production apps
+- **Observability:** Token and latency tracking for cost/performance analysis
+
+**Run Sample:**
+```bash
+python resource_llm_gateway.py
+```
+
+This runs test cases for retry logic, fallback routing, and token streaming.
+
+---
+
 ## Setup & Dependencies
 
 ### First-Time Setup (Required Once)
