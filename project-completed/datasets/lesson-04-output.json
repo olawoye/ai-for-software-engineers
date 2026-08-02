@@ -560,6 +560,498 @@
             ]
           }
         }
+      },
+      {
+        "question": "What is the remote work policy?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-07-31T21:19:32.633272",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "A remote work policy is a set of guidelines and rules established by an organization that outlines the expectations, responsibilities, and procedures for employees who work remotely. This policy typically covers topics such as work hours, communication protocols, data security, equipment and technology requirements, performance evaluation, and eligibility criteria for remote work. It is designed to ensure that remote employees are able to work effectively and efficiently while maintaining a strong connection with the organization and their colleagues.",
+                "tokens": 102,
+                "cost": 0.000139,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "A remote work policy is a set of guidelines and procedures established by an organization to govern the expectations, responsibilities, and procedures related to employees working outside of a traditional office setting. This policy typically outlines eligibility criteria for remote work, expectations around work hours and availability, communication protocols, data security measures, equipment and technology requirements, performance management standards, and any other relevant considerations. It is important for organizations to have a clear and comprehensive remote work policy in place to ensure consistency, productivity, and compliance with legal and organizational requirements.",
+                "tokens": 135,
+                "cost": 0.000171,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Review the organization's current policies and procedures related to remote work, if any.\n\nStep 2: Consider the specific needs and preferences of the organization, such as the type of work being done remotely, the frequency of remote work, and the tools and technology available for remote work.\n\nStep 3: Develop a remote work policy that includes guidelines for eligibility, expectations for communication and availability, data security and confidentiality measures, performance evaluation criteria, and any other relevant considerations.\n\nStep 4: Clearly outline the procedures for requesting and approving remote work, as well as the process for addressing any issues or concerns related to remote work.\n\nStep 5: Communicate the remote work policy to all employees and ensure that they understand and agree to comply with the policy.\n\nStep 6: Monitor the implementation of the remote work policy and make any necessary adjustments based on feedback and experience.\n\nIn summary, the remote work policy should be a comprehensive document that addresses all relevant aspects of remote work and provides clear guidelines for employees and managers to follow.",
+                "tokens": 251,
+                "cost": 0.000333,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000643,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy states that full-time employees whose roles permit remote work may request approval. Remote work is a privilege subject to business needs and manager approval. The company provides a laptop and monitor, a $500 annual home office stipend for desk, chair, and lighting, and up to $50/month internet reimbursement for employees without company broadband. Core hours are from 10 AM to 3 PM local time, Monday-Friday, with a minimum of 2 days in the office per month for team meetings and collaboration. Employees must use company communication tools (Slack, Teams) during business hours. Security measures include the requirement of a VPN for all work access, no use of public WiFi for work activities, and all devices must be encrypted and password-protected.",
+            "retrieved_policies": [
+              "Remote Work Policy"
+            ],
+            "tokens": 361,
+            "cost": 0.000334,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.01",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy? Any special policy on food?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-07-31T21:23:17.723825",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "The remote work policy allows employees to work from home or another location outside of the office. This policy outlines guidelines for communication, productivity expectations, and technology requirements for remote work.\n\nThere may be a special policy on food that outlines guidelines for employees who are working remotely. This policy may include guidelines for meal breaks, reimbursement for meals purchased while working remotely, or restrictions on ordering food delivery during work hours. It is important for employees to familiarize themselves with any specific policies related to food while working remotely.",
+                "tokens": 120,
+                "cost": 0.00016,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "Remote work policy refers to guidelines and procedures set by an organization regarding employees working from a location other than the traditional office setting. This policy typically outlines expectations for remote work arrangements, such as communication protocols, work hours, performance metrics, equipment and technology requirements, data security measures, and reporting procedures.\n\nAs for a special policy on food, some organizations may choose to have guidelines in place regarding food consumption during remote work hours, such as reimbursement for meals purchased while working remotely, restrictions on expensing certain types of food or beverages, or guidelines on taking breaks for meals during the workday. It is important for organizations to clearly communicate any policies related to food while working remotely to ensure consistency and compliance among employees.",
+                "tokens": 178,
+                "cost": 0.00023,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Remote Work Policy Requirements\n- Define who is eligible for remote work (e.g. full-time employees, certain departments, etc.)\n- Outline expectations for remote work hours, communication, and productivity\n- Address equipment and technology requirements for remote work\n- Include guidelines for data security and confidentiality\n- Specify how performance will be measured for remote employees\n- Establish procedures for requesting and approving remote work arrangements\n- Address liability and insurance considerations for remote work\n\nStep 2: Remote Work Policy\nOur remote work policy allows eligible employees to work remotely on a regular or occasional basis, subject to approval from their supervisor. Remote employees are expected to adhere to their regular work hours, maintain open communication with their team, and meet productivity goals. Employees must ensure they have the necessary equipment and technology to perform their job duties effectively from a remote location. Additionally, remote employees are required to follow data security protocols and maintain the confidentiality of company information. Performance will be evaluated based on agreed-upon metrics and goals, with regular check-ins with supervisors to ensure alignment and productivity. Requests for remote work arrangements should be submitted to HR for review and approval. Liability and insurance considerations for remote work are outlined in the policy to protect both the employee and the company.\n\nStep 3: Special Policy on Food\nAs part of our remote work policy, we do not have a specific policy on providing food for remote employees. However, we encourage employees to take breaks and maintain a healthy work-life balance by providing suggestions",
+                "tokens": 349,
+                "cost": 0.000474,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000864,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy allows full-time employees whose roles permit remote work to request approval, subject to business needs and manager approval. The company provides equipment such as a laptop and monitor, as well as a $500 annual home office stipend for desk, chair, and lighting. Employees without company broadband can receive up to $50/month for internet reimbursement. \n\nThe policy also outlines core hours of 10 AM - 3 PM local time, Monday-Friday, with a minimum requirement of 2 days in the office per month for team meetings and collaboration. Employees are expected to use company communication tools (Slack, Teams) during business hours. \n\nIn terms of security and data protection, VPN is required for all work access, and employees are not allowed to use public WiFi for work activities. All devices must be encrypted and password-protected. \n\nThere is no special policy on food mentioned in the remote work policy provided.",
+            "retrieved_policies": [
+              "Remote Work Policy"
+            ],
+            "tokens": 398,
+            "cost": 0.000384,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.01",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy? Any policy on food",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-07-31T21:24:29.660944",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "The remote work policy outlines guidelines for employees who work remotely, including expectations for communication, work hours, and productivity. It may also include details on equipment and technology requirements, data security measures, and reporting procedures.\n\nAs for a policy on food, it could include guidelines for employees who work from home, such as providing meal reimbursement for virtual team lunches, encouraging healthy eating habits, or setting boundaries on personal food consumption during work hours. It may also address any dietary restrictions or allergies that need to be accommodated for remote team members.",
+                "tokens": 124,
+                "cost": 0.000168,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "A remote work policy outlines guidelines and expectations for employees who work from home or another location outside of the traditional office setting. This policy typically includes details on communication, work hours, productivity expectations, data security, and equipment requirements.\n\nAs for a policy on food, some companies may have guidelines regarding food consumption in the workplace, such as prohibiting strong-smelling foods or requiring employees to clean up after themselves in shared spaces. It is important for employees to be mindful of their colleagues and maintain a clean and respectful work environment when it comes to food consumption.",
+                "tokens": 144,
+                "cost": 0.000181,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Remote Work Policy:\nThe remote work policy outlines guidelines and expectations for employees who work remotely or telecommute. This policy should include details on eligibility criteria, expectations for availability and communication, work hours, equipment and technology requirements, data security protocols, and performance evaluation measures. It is important to clearly define the remote work arrangement, including how and when employees should request to work remotely, and any limitations or restrictions that may apply.\n\nStep 2: Food Policy:\nThe food policy addresses guidelines and expectations related to food and beverages in the workplace. This policy may cover topics such as food safety and hygiene practices, restrictions on certain types of food or beverages, guidelines for storing and disposing of food, and rules for communal food areas such as refrigerators or kitchens. It is important to promote a healthy and safe work environment by establishing clear guidelines for food consumption in the workplace.",
+                "tokens": 224,
+                "cost": 0.000289,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000638,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy allows full-time employees whose roles permit remote work to request approval, subject to business needs and manager approval. The company provides equipment such as a laptop and monitor, as well as a $500 annual home office stipend for desk, chair, and lighting. Employees without company broadband can receive up to $50/month for internet reimbursement. The schedule includes core hours of 10 AM - 3 PM local time, Monday-Friday, with a minimum of 2 days in the office per month for team meetings and collaboration. Employees are required to use company communication tools (Slack, Teams) during business hours. In terms of security and data protection, VPN is required for all work access, no public WiFi is allowed for work activities, and all devices must be encrypted and password-protected. There is no specific policy mentioned regarding food in the remote work policy.",
+            "retrieved_policies": [
+              "Remote Work Policy"
+            ],
+            "tokens": 388,
+            "cost": 0.00037,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.01",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy? Any policy on food?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-07-31T21:26:47.097993",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "The remote work policy states that employees may work remotely on a case-by-case basis with approval from their manager. Employees must have a designated workspace at home and maintain regular communication with their team.\n\nThere is no specific policy on food, but employees are encouraged to take regular breaks and have access to snacks and beverages throughout the workday. Lunch breaks are flexible and can be taken at the employee's discretion.",
+                "tokens": 99,
+                "cost": 0.00013,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "The remote work policy outlines guidelines and expectations for employees who are working remotely, including communication protocols, work hours, and equipment requirements. It may also cover data security measures and guidelines for maintaining productivity while working from a different location.\n\nAs for a policy on food, some companies may have guidelines around food in the office, such as restrictions on strong-smelling foods or communal food etiquette. This could also include policies on meal reimbursement for employees working late or policies on providing meals during meetings or events. It is important for companies to have clear policies on food to ensure a comfortable and respectful work environment for all employees.",
+                "tokens": 157,
+                "cost": 0.000199,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Remote Work Policy\n- The remote work policy should outline the guidelines and expectations for employees who work remotely. This policy should cover topics such as eligibility for remote work, hours of work, communication expectations, data security measures, equipment and technology requirements, and performance evaluations.\n- The policy should also address how employees should request remote work, how their work will be monitored, and what steps should be taken if there are any issues with remote work arrangements.\n- It is important for the policy to clearly outline the responsibilities of both the employer and the employee when it comes to remote work.\n\nStep 2: Policy on Food\n- The policy on food can include guidelines for employees who bring food to the workplace, rules for using communal kitchen areas, and expectations for food storage and cleanliness.\n- This policy can also address any guidelines for company-provided meals or snacks, such as whether there are any restrictions on types of food that can be provided, how often meals or snacks are offered, and any reimbursement procedures for employees who purchase food for work-related events.\n- It is important for the policy on food to promote a healthy and inclusive workplace environment, while also addressing any potential food safety concerns.",
+                "tokens": 288,
+                "cost": 0.000384,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000713,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy allows full-time employees whose roles permit remote work to request approval, subject to business needs and manager approval. The policy includes eligibility criteria, equipment and allowance provisions, schedule and communication guidelines, and security and data protection requirements. As for the food policy, all employees get free soda and free lunch.",
+            "retrieved_policies": [
+              "Remote Work Policy",
+              "Food Policy"
+            ],
+            "tokens": 290,
+            "cost": 0.000208,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 2 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.01",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-08-01T00:42:48.439619",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "A remote work policy is a set of guidelines and rules established by an organization to govern how employees can work remotely. It typically outlines expectations for communication, work hours, availability, data security, equipment and technology requirements, performance evaluation, and other key aspects of remote work. The policy helps ensure that employees understand their responsibilities and helps maintain productivity and efficiency while working outside of a traditional office setting.",
+                "tokens": 92,
+                "cost": 0.000124,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "A remote work policy is a set of guidelines and rules established by an organization to govern employees who work outside of a traditional office setting, typically from home or another location. This policy outlines expectations, procedures, requirements, and best practices for remote work, including communication protocols, work hours, equipment and technology requirements, data security measures, performance evaluations, and other relevant considerations. It is important for organizations to have a well-defined remote work policy in place to ensure consistency, productivity, and compliance with legal and regulatory requirements.",
+                "tokens": 134,
+                "cost": 0.00017,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Understand the policy requirements\n- Remote work policy outlines the guidelines, expectations, and procedures for employees who work remotely, outside of the traditional office setting.\n- It should cover topics such as eligibility criteria, remote work agreements, communication protocols, work hours, data security measures, equipment and technology requirements, performance expectations, and reporting procedures.\n\nStep 2: Provide a clear answer\n- The remote work policy at a company should be tailored to its specific needs and circumstances.\n- It should be communicated clearly to all employees and regularly reviewed and updated as needed.\n- A sample remote work policy might include:\n- Eligibility criteria: Only employees in good standing who have demonstrated the ability to work independently and maintain productivity may be eligible for remote work.\n- Remote work agreement: Employees must sign a remote work agreement outlining their responsibilities, expectations, and compliance with company policies.\n- Communication protocols: Employees must be reachable during working hours via phone, email, or messaging platforms. Regular check-ins with supervisors and team members may be required.\n- Work hours: Employees must adhere to their regular work hours unless otherwise agreed upon. Overtime should be pre-approved by a supervisor.\n- Data security measures: Employees must follow company policies for data security, including using secure networks, protecting company devices, and not sharing sensitive information.\n- Equipment and technology requirements: Employees must have a suitable workspace, high-speed internet connection, and necessary equipment to perform their job effectively.\n- Performance expectations: Remote employees are expected to meet",
+                "tokens": 343,
+                "cost": 0.000471,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.0007650000000000001,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy states that full-time employees whose roles permit remote work may request approval, which is subject to business needs and manager approval. The company provides a laptop and monitor, a $500 annual home office stipend for desk, chair, and lighting, and up to $50/month for internet reimbursement for employees without company broadband. Core hours for remote work are 10 AM - 3 PM local time, Monday-Friday, with a minimum requirement of 2 days in the office per month for team meetings and collaboration. Employees must use company communication tools during business hours and follow security measures such as using a VPN for work access, avoiding public WiFi for work activities, and ensuring all devices are encrypted and password-protected.",
+            "retrieved_policies": [
+              "Remote Work Policy"
+            ],
+            "tokens": 353,
+            "cost": 0.000322,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.01",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy? What about food policy?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-08-01T00:45:37.651717",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "Remote work policy typically outlines guidelines for employees who are working outside of the traditional office setting. This may include expectations for communication, availability, work hours, productivity, and security measures.\n\nFood policy can vary depending on the company, but it often includes guidelines for meal breaks, food storage, and whether or not employees are allowed to bring outside food into the office. Some companies may also have policies regarding reimbursement for meals while traveling for work or expensing meals during business meetings.",
+                "tokens": 113,
+                "cost": 0.00015,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "Remote work policy refers to guidelines and rules established by an organization regarding employees working from a location other than the traditional office setting. This policy typically outlines expectations for remote work arrangements, such as working hours, communication methods, equipment provided, data security measures, and performance evaluations.\n\nFood policy, on the other hand, pertains to guidelines set by an organization regarding food in the workplace. This may include rules about eating at desks, communal food areas, catering for meetings, food storage and cleanliness, reimbursement for meals, and restrictions on certain types of food (e.g. allergens or strong-smelling foods).\n\nIt is important for organizations to clearly communicate their remote work and food policies to employees to ensure clarity and consistency in their implementation.",
+                "tokens": 182,
+                "cost": 0.000237,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Understand the policy requirements\n- Remote work policy: The remote work policy outlines the guidelines and expectations for employees who work remotely, including eligibility criteria, communication protocols, productivity expectations, equipment and security measures, and performance evaluations.\n- Food policy: The food policy pertains to rules and regulations regarding food consumption in the workplace, including guidelines for communal snacks, meal breaks, food storage, and cleanliness standards.\n\nStep 2: Provide a clear answer\n- Remote work policy: The remote work policy at our organization allows eligible employees to work remotely on a case-by-case basis with prior approval from their manager. Remote employees are expected to maintain regular communication with their team, be available during core business hours, and adhere to the same performance standards as in-office employees. They are responsible for ensuring they have the necessary equipment and secure internet connection to effectively perform their job duties. Performance evaluations for remote employees will be based on agreed-upon metrics and expectations.\n- Food policy: Our food policy encourages employees to enjoy communal snacks and meals in designated areas while respecting their colleagues' dietary restrictions and preferences. Meal breaks are to be taken at appropriate times to minimize disruptions to work flow. Employees are responsible for cleaning up after themselves and properly storing any communal food items. Additionally, employees are encouraged to maintain a clean and hygienic work environment by following food safety guidelines and disposing of waste properly.\n\nBy following these policies, employees can effectively work remotely and enjoy food-related activities in a safe and respectful manner.",
+                "tokens": 348,
+                "cost": 0.000474,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000861,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy allows full-time employees whose roles permit remote work to request approval, subject to business needs and manager approval. The company provides a laptop and monitor, a $500 annual home office stipend for desk, chair, lighting, and internet reimbursement of up to $50/month for employees without company broadband. Core hours are from 10 AM to 3 PM local time, Monday-Friday, with a minimum of 2 days in the office per month for team meetings and collaboration. Employees must use company communication tools (Slack, Teams) during business hours. Security measures include requiring a VPN for all work access, prohibiting the use of public WiFi for work activities, and requiring all devices to be encrypted and password-protected.\n\nThere is no specific food policy mentioned in the provided policies.",
+            "retrieved_policies": [
+              "Remote Work Policy"
+            ],
+            "tokens": 372,
+            "cost": 0.000346,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 1 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.01",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
+      },
+      {
+        "question": "What is the remote work policy? What about food policy?",
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 300,
+        "timestamp": "2026-08-01T00:47:31.086153",
+        "approaches": {
+          "prompt_engineering": {
+            "approach": "Prompt Engineering",
+            "results": {
+              "basic": {
+                "response": "The remote work policy outlines guidelines and expectations for employees who work from home or another location outside of the office. This policy typically covers topics such as eligibility for remote work, communication expectations, availability during work hours, data security measures, and any required equipment or technology.\n\nThe food policy typically outlines guidelines for food and drink consumption in the workplace, including rules for eating at desks, kitchen cleanliness expectations, and any restrictions on bringing outside food into the office. This policy may also address topics such as office catering, communal snacks, and appropriate behavior in shared dining areas.",
+                "tokens": 131,
+                "cost": 0.000177,
+                "prompt_variation": "basic"
+              },
+              "detailed": {
+                "response": "Remote work policy refers to the guidelines and expectations set by an organization for employees who work from home or another location outside of the traditional office setting. This policy typically outlines the eligibility criteria for remote work, expectations for communication and availability, data security protocols, equipment and technology requirements, and performance evaluation criteria for remote employees.\n\nFood policy, on the other hand, pertains to the rules and regulations set by an organization regarding food and beverage consumption in the workplace. This policy may cover topics such as restrictions on eating at workstations, guidelines for communal kitchen usage, rules on food storage and cleanliness, guidelines for company-sponsored meals or events, and any dietary restrictions or accommodations for employees.\n\nIt is important for organizations to have clear and well-defined remote work and food policies in place to ensure alignment with company culture, compliance with legal requirements, and effective communication of expectations to employees. These policies help create a productive and healthy work environment for all employees, whether they are working remotely or in the office.",
+                "tokens": 233,
+                "cost": 0.000313,
+                "prompt_variation": "detailed"
+              },
+              "chain_of_thought": {
+                "response": "Step 1: Remote Work Policy\n1.1 Review current company policies and procedures related to remote work, if any.\n1.2 Consider the needs and preferences of employees, as well as the nature of the work being performed remotely.\n1.3 Determine eligibility criteria for remote work, such as job roles, performance standards, and technology requirements.\n1.4 Establish guidelines for remote work hours, communication expectations, and reporting procedures.\n1.5 Address data security and confidentiality concerns, including the use of company-provided devices and secure networks.\n1.6 Outline procedures for requesting and approving remote work arrangements, as well as monitoring and evaluating remote work performance.\n1.7 Provide guidance on ergonomics, health, and safety considerations for remote work environments.\n1.8 Communicate the remote work policy to all employees and ensure understanding and compliance.\n\nStep 2: Food Policy\n2.1 Assess the company culture and values related to food, such as the importance of health and wellness, team-building, and employee satisfaction.\n2.2 Consider the physical workspace and facilities available for food-related activities, such as kitchens, dining areas, and vending machines.\n2.3 Determine the types of food and beverages allowed in the workplace, considering dietary restrictions, allergies, and cultural preferences.\n2.4 Establish guidelines for food storage, preparation, and cleanliness, to ensure food safety and hygiene standards are met.\n2.5 Address policies related to company-sponsored meals, snacks, and events, including budgetary",
+                "tokens": 348,
+                "cost": 0.000474,
+                "prompt_variation": "chain_of_thought"
+              }
+            },
+            "best_variant": "basic",
+            "total_cost": 0.000964,
+            "complexity": "Low",
+            "maintainability": "High",
+            "latency": "Fast"
+          },
+          "rag": {
+            "approach": "RAG",
+            "response": "The remote work policy allows full-time employees whose roles permit remote work to request approval, subject to business needs and manager approval. The company provides a laptop, monitor, $500 annual home office stipend, and internet reimbursement for employees without company broadband. Core hours are from 10 AM - 3 PM local time, Monday-Friday, with a minimum of 2 days in the office per month for team meetings. Employees must use company communication tools during business hours and adhere to security measures such as using a VPN for work access and not using public WiFi. \n\nThe food policy provides free lunch and free soda for employees.",
+            "retrieved_policies": [
+              "Remote Work Policy",
+              "Food Policy"
+            ],
+            "tokens": 351,
+            "cost": 0.0003,
+            "complexity": "Medium",
+            "maintainability": "Medium",
+            "latency": "Medium",
+            "retrieval_quality": "Retrieved 2 policies"
+          },
+          "finetuning": {
+            "approach": "Fine-tuning",
+            "response": "[Would generate custom model trained on your policies - not implemented in demo]",
+            "complexity": "High",
+            "maintainability": "Low",
+            "latency": "Fast (once fine-tuned)",
+            "setup_cost": "$0.01",
+            "cost_per_inference": "$0.001",
+            "notes": "Fine-tuning requires training time (hours to days) and minimum investment (~$10-50). Best for high-volume use cases.",
+            "pros": [
+              "Lowest inference cost",
+              "Fast responses",
+              "Custom model"
+            ],
+            "cons": [
+              "High setup cost",
+              "Takes time to train",
+              "Less flexible",
+              "Requires training data"
+            ]
+          }
+        }
       }
     ],
     "recommendations": []

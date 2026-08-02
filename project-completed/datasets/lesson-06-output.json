@@ -7,34 +7,19 @@
       "Code of Conduct": "CODE OF CONDUCT & WORKPLACE STANDARDS\n\n1. PROFESSIONAL BEHAVIOR\nTreat all colleagues with respect and professionalism.\nMaintain appropriate workplace language and communication.\nZero tolerance for harassment, discrimination, or bullying.\n\n2. CONFLICT OF INTEREST\nDisclose any conflicts of interest to HR immediately.\nDo not work for competitors without written approval.\nBoard positions and consulting work require executive sign-off.\n\n3. CONFIDENTIALITY & IP\nProtect company trade secrets and proprietary information.\nDo not share customer data or pricing without authorization.\nAll work created during employment belongs to the company.\n\n4. POLICY VIOLATIONS & CONSEQUENCES\nViolations reported to HR or ethics hotline.\nRetaliation against reporters strictly prohibited.\nDisciplinary action: warning, probation, suspension, or termination.",
       "Contractor Agreement": "INDEPENDENT CONTRACTOR AGREEMENT\n\n1. CLASSIFICATION\nContractor is an independent contractor, not an employee.\nNo employment relationship, benefits, or tax withholding.\nContractor responsible for own taxes, insurance, and compliance.\n\n2. SCOPE OF WORK\nDeliverables: [Specific scope of work]\nTimeline: [Project start and end dates]\nPayment: $[Amount] upon completion and acceptance.\n\n3. INTELLECTUAL PROPERTY\nAll work product created is owned by the Company.\nContractor retains rights to pre-existing intellectual property.\nCompany may use deliverables for any purpose.\n\n4. LIABILITY & INSURANCE\nContractor maintains professional liability insurance.\nCompany not responsible for contractor's equipment or injuries.\nEither party may terminate with 5 business days written notice.",
       "Paid Time Off": "PAID TIME OFF POLICY\n\n1. ANNUAL ALLOWANCE\nYears 0-2: 15 days vacation + 10 sick days\nYears 3-5: 20 days vacation + 10 sick days\nYears 5+: 25 days vacation + 10 sick days\n\n2. REQUEST PROCESS\nSubmit requests 2 weeks in advance\nUse company time-off system\nManager approval required\n\n3. CARRYOVER\nMaximum 5 days carryover to next year\nUse it or lose it after Dec 31\nExceptions require executive approval\n\n4. PAYOUT\nUnused vacation paid out at termination\nSick days not paid out",
-      "Product Policy": "Groceries: No return; Electronics and Others: 15 days return"
+      "Food Policy": "We give free lunch and free soda"
     },
     "search_history": [
       {
-        "query": "remote policy",
-        "timestamp": "2026-06-23T14:41:42.331725",
-        "result_count": 5
-      },
-      {
-        "query": "remote policy",
-        "timestamp": "2026-06-23T14:45:56.297382",
-        "result_count": 5
-      },
-      {
-        "query": "do you have a product return policy",
-        "timestamp": "2026-06-23T14:46:56.442738",
-        "result_count": 5
-      },
-      {
-        "query": "do you have a product return policy",
-        "timestamp": "2026-06-23T14:47:25.837944",
+        "query": "do you offer any freebies",
+        "timestamp": "2026-08-01T02:05:15.105951",
         "result_count": 5
       }
     ],
     "metadata": {
-      "timestamp": "2026-06-23T14:47:25.883457",
+      "timestamp": "2026-08-01T02:05:15.813634",
       "document_count": 7,
-      "search_count": 4,
+      "search_count": 1,
       "embedding_method": "TF-IDF"
     }
   }

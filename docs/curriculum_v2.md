@@ -98,74 +98,11 @@ Lessons 1.1-1.2 (understanding the shift and patterns)
 
 #### Next Lesson
 
-→ Lesson 1.4: The Opportunity is Real
+→ Lesson 1.4: Your Complete Learning Pathway
 
 ---
 
-### Lesson 1.4: The Opportunity is Real
-
-**Type:** Talking Head  
-**Duration:** 5-6 minutes  
-**Code File:** N/A
-
-#### Lesson Objective
-
-This lesson addresses the final two fears holding engineers back—skepticism about hype and paralysis about getting started—by grounding both in economic reality and providing a concrete 5-step action framework that gives you permission to start before you understand everything. By the end of this lesson, you will understand that AI's economic impact is real and durable (not hype), and you will have a simple framework for moving from anxiety to action with one concrete project.
-
-#### Keywords
-
-* Hype vs fundamental shift
-* Economic reality
-* Action framework
-* Getting started
-* Mindset shifts
-* Project-based learning
-
-#### Prerequisites
-
-Lesson 1.3 (reassurance about relevance)
-
-#### Next Lesson
-
-→ Lesson 1.5: Build Your First Project
-
----
-
-### Lesson 1.5: Build Your First Project
-
-**Type:** Talking Head  
-**Duration:** 4-5 minutes  
-**Code File:** N/A
-
-#### Lesson Objective
-
-This lesson helps you convert the concepts and mindsets from Lessons 1.1-1.4 into a concrete personal commitment by defining one clear goal that will anchor your learning through the remaining 10 modules, moving from abstract understanding to specific action. By the end of this lesson, you will have written down your project, identified its AI pattern (Chat/RAG/Agent/Copilot), and created a clear "By end of course" goal statement that serves as your north star throughout the course.
-
-#### Keywords
-
-* Personal project
-* Concrete commitment
-* Learning anchor
-* North star goal
-* Permission to start
-
-#### Deliverables
-
-* One sentence project description
-* Pattern mapping (Chat/RAG/Agent/Copilot)
-* "By end of course" goal statement
-
-#### Prerequisites
-
-Lessons 1.3-1.4 (understanding fears and opportunity)
-
-#### Next Lesson
-
-→ Lesson 1.6: Your Complete Learning Path
-
----
-
-### Lesson 1.6: Your Complete Learning Path
+### Lesson 1.4: Your Complete Learning Path
 
 **Type:** Talking Head + Animated Graphics  
 **Duration:** 18-20 minutes (Trimmed)  
@@ -186,15 +123,15 @@ This lesson provides a comprehensive overview of the 10-module learning architec
 
 #### Prerequisites
 
-Lesson 1.5 (you've committed to your project)
+Lesson 1.3 (Your Skills are Safe)
 
 #### Next Lesson
 
-→ Module 2: AI Fundamentals (technical foundation begins)
+→ Lesson 1.5: Technical Environment Setup
 
 ---
 
-### Lesson 1.7: Technical Environment Setup
+### Lesson 1.5: Technical Environment Setup
 
 **Type:** Screencast + Talking Head (3 Sub-Lessons)  
 **Duration:** 12-15 minutes total  

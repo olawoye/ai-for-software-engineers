@@ -1,8 +1,14 @@
 """Streamlit entry point for navigating the companion lessons."""
 
+import sys
 from pathlib import Path
 
 import streamlit as st
+
+# Ensure the repo root is in the Python path so shared/ imports work
+repo_root = Path(__file__).parent.parent
+if str(repo_root) not in sys.path:
+    sys.path.insert(0, str(repo_root))
 
 from shared.utils import describe_lesson, list_lessons, load_settings
 

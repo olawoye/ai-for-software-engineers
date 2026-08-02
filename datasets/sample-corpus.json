@@ -10,7 +10,9 @@
 
     "Contractor Agreement": "INDEPENDENT CONTRACTOR AGREEMENT\n\n1. CLASSIFICATION\nContractor is an independent contractor, not an employee.\nNo employment relationship, benefits, or tax withholding.\nContractor responsible for own taxes, insurance, and compliance.\n\n2. SCOPE OF WORK\nDeliverables: [Specific scope of work]\nTimeline: [Project start and end dates]\nPayment: $[Amount] upon completion and acceptance.\n\n3. INTELLECTUAL PROPERTY\nAll work product created is owned by the Company.\nContractor retains rights to pre-existing intellectual property.\nCompany may use deliverables for any purpose.\n\n4. LIABILITY & INSURANCE\nContractor maintains professional liability insurance.\nCompany not responsible for contractor's equipment or injuries.\nEither party may terminate with 5 business days written notice.",
 
-    "Paid Time Off": "PAID TIME OFF POLICY\n\n1. ANNUAL ALLOWANCE\nYears 0-2: 15 days vacation + 10 sick days\nYears 3-5: 20 days vacation + 10 sick days\nYears 5+: 25 days vacation + 10 sick days\n\n2. REQUEST PROCESS\nSubmit requests 2 weeks in advance\nUse company time-off system\nManager approval required\n\n3. CARRYOVER\nMaximum 5 days carryover to next year\nUse it or lose it after Dec 31\nExceptions require executive approval\n\n4. PAYOUT\nUnused vacation paid out at termination\nSick days not paid out"
+    "Paid Time Off": "PAID TIME OFF POLICY\n\n1. ANNUAL ALLOWANCE\nYears 0-2: 15 days vacation + 10 sick days\nYears 3-5: 20 days vacation + 10 sick days\nYears 5+: 25 days vacation + 10 sick days\n\n2. REQUEST PROCESS\nSubmit requests 2 weeks in advance\nUse company time-off system\nManager approval required\n\n3. CARRYOVER\nMaximum 5 days carryover to next year\nUse it or lose it after Dec 31\nExceptions require executive approval\n\n4. PAYOUT\nUnused vacation paid out at termination\nSick days not paid out",
+
+    "Food Policy": "We give free lunch and free soda"
   },
   "metadata": {
     "created": "2024-06-23",

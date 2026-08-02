@@ -11,6 +11,12 @@ DEFAULT APPROACH: TF-IDF (lightweight, fast, works everywhere)
 OPTIONAL UPGRADES: See Lesson 2.5 README for sentence-transformers or OpenRouter
 """
 
+# ============================================================================
+# COMPANY CONFIGURATION
+# ============================================================================
+COMPANY_NAME = "TechCorp Inc."
+COMPANY_TAGLINE = "Your trusted technology partner"
+
 import os
 import json
 import streamlit as st
@@ -18,6 +24,7 @@ import numpy as np
 from datetime import datetime
 from pathlib import Path
 from typing import List, Tuple, Dict
+import httpx
 
 # Primary: Cohere embeddings (free tier, semantic)
 import cohere
@@ -247,6 +254,87 @@ def semantic_search(query: str, corpus: Dict[str, str], vectorizer: TfidfVectori
 
     return results
 
+def generate_contextual_answer(query: str, source_document: str, doc_name: str) -> Tuple[str, bool]:
+    """
+    Generate a formatted, contextual answer using OpenRouter LLM API.
+    Returns: (answer_text, is_rag_active)
+    
+    This demonstrates RAG (Retrieval-Augmented Generation):
+    1. Retrieve relevant document via semantic search (Cohere embeddings + TF-IDF)
+    2. Augment the query with retrieved context
+    3. Generate a natural language answer via OpenRouter LLM
+    
+    Tech stack: Cohere (embeddings) + OpenRouter (answer generation)
+    """
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    
+    if not api_key:
+        # Fallback: return formatted document without LLM enhancement
+        return source_document, False
+    
+    # Create a system prompt that explicitly instructs contextual rewriting
+    system_prompt = f"""You are a friendly and professional company support assistant for {COMPANY_NAME}.
+
+Your role:
+- Answer employee and guest questions about company policies, benefits, and information
+- Be warm, welcoming, and conversational (NOT robotic or copy-pasted)
+- Rewrite and contextualize information rather than quoting verbatim
+- Always lead with the company name when appropriate (e.g., "At {COMPANY_NAME}, we...")
+
+Style guidelines:
+- Use natural, conversational language
+- Be concise but informative
+- Sound like a real person, not a document
+- Show enthusiasm about {COMPANY_NAME}"""
+
+    user_message = f"""Company member question: "{query}"
+
+Here's the relevant company information to base your answer on:
+---
+{source_document}
+---
+
+IMPORTANT: Please provide a warm, conversational answer that rewrites and contextualizes this information. Do NOT copy text verbatim from the document. Sound like a friendly colleague explaining company policies, not a bot reading from a document."""
+    
+    try:
+        model_name = "gpt-3.5-turbo"  # Use bare model name, not provider/model format
+        url = "https://openrouter.ai/api/v1/chat/completions"
+        headers = {"Authorization": f"Bearer {api_key}"}
+        
+        with httpx.Client() as client:
+            response = client.post(
+                url,
+                headers=headers,
+                json={
+                    "model": model_name,
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_message}
+                    ],
+                    "max_tokens": 500,
+                    "temperature": 0.8,  # Slightly higher temp for more natural language
+                },
+                timeout=30.0,
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                answer = result["choices"][0]["message"]["content"]
+                return answer.strip(), True
+            else:
+                # Return error info for debugging
+                try:
+                    error_detail = response.json()
+                    error_msg = f"OpenRouter API error {response.status_code}: {error_detail.get('error', {}).get('message', 'Unknown error')}"
+                except Exception:
+                    error_msg = f"OpenRouter API error: {response.status_code} (empty or invalid response body)"
+                return error_msg, False
+    
+    except Exception as e:
+        # Return error for debugging
+        error_str = str(e)
+        return f"Error generating answer: {error_str}", False
+
 # ============================================================================
 # PHASE 3: Streamlit Dashboard
 # ============================================================================
@@ -254,7 +342,7 @@ def semantic_search(query: str, corpus: Dict[str, str], vectorizer: TfidfVectori
 def render_lesson_2_6():
     """Main Streamlit interface for Lesson 2.6 - Mini Search Demo."""
 
-    st.set_page_config(page_title="Semantic Search Demo", layout="wide")
+    st.set_page_config(page_title=f"{COMPANY_NAME} Knowledge Base", layout="wide")
 
     # ========================================================================
     # SECTION 0: Initialization & Data Loading
@@ -299,9 +387,11 @@ def render_lesson_2_6():
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.markdown("<h1 style='text-align: center;'>🔍 Semantic Search Demo</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='text-align: center;'>{COMPANY_NAME}</h2>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; color: gray; font-size: 14px;'>{COMPANY_TAGLINE}</p>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center;'>🔍 Knowledge Base</h1>", unsafe_allow_html=True)
         st.markdown(
-            "<p style='text-align: center; color: gray;'>Find information across documents using natural language</p>",
+            "<p style='text-align: center; color: gray;'>Find answers to your questions using natural language search</p>",
             unsafe_allow_html=True
         )
 
@@ -321,7 +411,7 @@ def render_lesson_2_6():
                 total_chars = sum(len(text) for text in st.session_state.corpus.values())
                 st.metric("Total Size", f"{total_chars / 1024:.1f} KB")
         with col4:
-            st.metric("Method", "TF-IDF")
+            st.metric("Method", st.session_state.get("search_method", "TF-IDF"))
 
         # Data source indicator
         st.caption(f"📁 Data loaded from: `{st.session_state.data_source}`")
@@ -381,10 +471,10 @@ def render_lesson_2_6():
         col1, col2 = st.columns([4, 1])
         with (col1):
             search_query = st.text_input(
-                "🔎 Search across documents",
+                "🔎 Ask your question",
                 value=st.session_state.get("last_search_query", ""),
-                placeholder="What are you looking for? (e.g., 'What is the remote work policy?')",
-                help="Type a natural language question or keywords"
+                placeholder=f"What would you like to know about {COMPANY_NAME}? (e.g., 'What benefits do we offer?')",
+                help="Type a natural language question"
             )
         with col2:
             search_button_clicked = st.button("🔍 Search", use_container_width=True, help="Click to search or press Enter")
@@ -448,48 +538,85 @@ def render_lesson_2_6():
                 st.session_state.search_results = results
 
             st.markdown("---")
-            st.markdown(f"## Search Results ({len(results)} documents)")
-            st.caption(f"Using: **{st.session_state.search_method}**")
+            st.markdown(f"## 📋 Answer")
+            st.caption(f"🔍 Search: {st.session_state.search_method} | Query: \"{search_query}\"")
 
-            # Display results as cards
-            for idx, result in enumerate(results, 1):
-                with st.container(border=True):
-                    # Header: Document name + Relevance score
-                    col1, col2 = st.columns([3, 1])
-                    with col1:
-                        st.markdown(f"**{idx}. {result['document']}**")
+            if results:
+                # ================================================================
+                # MAIN CONTENT: Top result (highest relevance) with LLM Answer
+                # ================================================================
+                top_result = results[0]
+                
+                # Generate LLM-powered contextual answer
+                answer, is_rag_active = generate_contextual_answer(
+                    search_query,
+                    top_result['full_text'],
+                    top_result['document']
+                )
+                
+                # Create tabs for Answer and Sources
+                tab1, tab2 = st.tabs(["💬 Answer", "📚 Sources"])
+                
+                # TAB 1: Answer
+                with tab1:
+                    if not is_rag_active:
+                        st.warning("⚠️ RAG not active (set OPENROUTER_API_KEY environment variable)")
+                    
+                    with st.container(border=True):
+                        st.markdown(answer)
+                    
+                    # RAG status and source indicator at bottom
+                    st.markdown("---")
+                    rag_badge = "🤖 RAG Active" if is_rag_active else "📄 Raw Document"
+                    col1, col2, col3 = st.columns([1, 2, 1])
                     with col2:
-                        st.metric(
-                            "Match Score",
-                            f"{result['relevance_percent']}%",
-                            delta=None,
-                            label_visibility="collapsed"
-                        )
+                        st.markdown(f"<p style='text-align: center; font-size: 13px;'>{rag_badge} | 📁 Source: <strong>{top_result['document']}</strong> ({top_result['relevance_percent']}% match)</p>", unsafe_allow_html=True)
+                
+                # TAB 2: Sources
+                with tab2:
+                    st.markdown("### 🎯 Top Matching Document")
+                    st.info(f"📁 **{top_result['document']}** | **Match Score:** {top_result['relevance_percent']}%")
+                    
+                    with st.expander("📋 View Full Document Content", expanded=True):
+                        st.text(top_result['full_text'])
+                    
+                    # ============================================================
+                    # Other matching documents (for deeper exploration)
+                    # ============================================================
+                    if len(results) > 1:
+                        st.divider()
+                        st.markdown(f"### 🔎 Other Matching Documents ({len(results) - 1} more)")
+                        
+                        for idx, result in enumerate(results[1:], 2):
+                            with st.container(border=True):
+                                # Header: Document name + Relevance score
+                                col1, col2 = st.columns([3, 1])
+                                with col1:
+                                    st.markdown(f"**{idx}. {result['document']}**")
+                                with col2:
+                                    st.metric(
+                                        "Match Score",
+                                        f"{result['relevance_percent']}%",
+                                        delta=None,
+                                        label_visibility="collapsed"
+                                    )
 
-                    # Relevance bar (visual indicator)
-                    relevance_pct = result['relevance_percent']
-                    bar_color = "🟢" if relevance_pct > 70 else "🟡" if relevance_pct > 50 else "🔴"
-                    st.markdown(
-                        f"{bar_color} Relevance: {'█' * (relevance_pct // 10)}{'░' * (10 - relevance_pct // 10)}"
-                    )
+                                # Relevance bar (visual indicator)
+                                relevance_pct = result['relevance_percent']
+                                bar_color = "🟢" if relevance_pct > 70 else "🟡" if relevance_pct > 50 else "🔴"
+                                st.markdown(
+                                    f"{bar_color} Relevance: {'█' * (relevance_pct // 10)}{'░' * (10 - relevance_pct // 10)}"
+                                )
 
-                    # Snippet
-                    st.markdown("**Preview:**")
-                    st.markdown(f"> {result['snippet']}")
+                                # Snippet preview
+                                st.markdown("**Preview:**")
+                                st.markdown(f"> {result['snippet']}")
 
-                    # View full document
-                    if st.button(
-                        "📄 View Full Document",
-                        key=f"view_{idx}",
-                        use_container_width=True
-                    ):
-                        with st.expander(f"Full content: {result['document']}", expanded=True):
-                            st.text(result['full_text'])
-
-                    st.divider()
-
-            # Pagination info
-            st.caption(f"Showing {len(results)} results. Results are ranked by relevance to your query.")
+                                # View full document in expander
+                                with st.expander(f"📄 View Full Content", expanded=False):
+                                    st.text(result['full_text'])
+            else:
+                st.warning("❌ No matching documents found. Try a different search query.")
 
         # ====================================================================
         # SECTION 4: Search Analytics
@@ -509,25 +636,30 @@ def render_lesson_2_6():
     st.markdown("---")
     st.subheader("🎓 What You've Built")
     st.markdown(
-        """
-    This semantic search application demonstrates:
+        f"""
+    This is a **Retrieval-Augmented Generation (RAG)** application that demonstrates:
 
     ✅ **Lesson 2.2 (Tokens)**: Understanding context and token budgets for your queries
 
-    ✅ **Lesson 2.4 (RAG)**: This IS retrieval-augmented generation! We retrieve relevant docs and can use them to augment prompts.
+    ✅ **Lesson 2.4 (RAG - The Real Thing!)**: 
+    - Retrieve relevant company documents using semantic search
+    - Augment LLM prompt with retrieved context
+    - Generate natural, friendly answers grounded in company policies
+    
+    ✅ **Lesson 2.5 (Embeddings)**: Converting documents and queries to semantic vectors for meaning-based matching (Cohere or TF-IDF)
 
-    ✅ **Lesson 2.5 (Embeddings)**: Converting documents and queries to semantic vectors for meaning-based matching
-
-    ✅ **Vector Search**: TF-IDF enables fast retrieval across your document corpus
+    ✅ **Integration Pattern**: Cohere embeddings (retrieval) + OpenRouter LLM (generation) = True RAG
 
     ---
 
     **Real-world applications:**
-    - Knowledge base search (internal docs, FAQ)
-    - Legal document discovery
-    - Medical record search
-    - HR policy lookup
-    - Foundation for RAG systems (feed top-K results to LLM for generating answers)
+    - Employee onboarding (answer policy questions automatically)
+    - Customer support automation (ground answers in product docs)
+    - Knowledge base chatbots (HR, IT, Legal)
+    - Internal documentation assistant
+    - FAQ automation
+    
+    **About {COMPANY_NAME}:** {COMPANY_TAGLINE}
     """
     )
 
