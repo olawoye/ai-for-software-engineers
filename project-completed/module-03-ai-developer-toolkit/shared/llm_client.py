@@ -14,7 +14,7 @@ class LLMClient:
     def __init__(self, api_key: Optional[str] = None, model: str = "gpt-3.5-turbo"):
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         self.model = model
-        self.base_url = "https://openrouter.io/api/v1"
+        self.base_url = "https://openrouter.ai/api/v1"
 
         if not self.api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable not set")
@@ -49,5 +49,14 @@ class LLMClient:
                 headers={"Authorization": f"Bearer {self.api_key}"},
                 json=payload,
             )
-            response.raise_for_status()
+            
+            # Better error handling to show actual error messages
+            if response.status_code != 200:
+                try:
+                    error_detail = response.json()
+                    error_msg = error_detail.get("error", {}).get("message", str(error_detail))
+                except:
+                    error_msg = response.text
+                raise Exception(f"OpenRouter API error {response.status_code}: {error_msg}")
+            
             return response.json()

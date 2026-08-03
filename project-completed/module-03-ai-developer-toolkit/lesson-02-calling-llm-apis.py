@@ -31,7 +31,7 @@ def validate_api_key():
         print("\nSetup required:")
         print("  export OPENROUTER_API_KEY='your-key-here'")
         print("\nGet free API key:")
-        print("  https://openrouter.io (supports 100+ models)")
+        print("  https://openrouter.ai (supports 100+ models)")
         print("\n" + "=" * 60)
         sys.exit(1)
 
@@ -115,7 +115,7 @@ def pattern_2_provider_switching():
         "from shared.llm_client import LLMClient",
         "",
         "# >>> CUSTOMIZE: Model choices",
-        "models = [\"gpt-3.5-turbo\", \"gpt-4\", \"claude-3-sonnet\"]",
+        "models = [\"gpt-3.5-turbo\", \"nvidia/nemotron-3-ultra-550b-a55b:free\"]",
         "",
         "prompt = \"Explain RAG in one sentence\"",
         "",
@@ -130,7 +130,7 @@ def pattern_2_provider_switching():
 
     print("\n💡 What you'll learn:")
     print("  • How to switch between different providers")
-    print("  • Same code works with GPT-3.5, GPT-4, Claude, etc.")
+    print("  • Same code works with GPT-3.5, Nvidia Nemotron, etc.")
     print("  • Trade-offs: speed, cost, quality")
     print("  • How to choose the right model")
 
@@ -139,7 +139,7 @@ def pattern_2_provider_switching():
 
     try:
         # >>> CUSTOMIZE: Model choices
-        models = ["gpt-3.5-turbo", "claude-3-sonnet"]
+        models = ["gpt-3.5-turbo", "nvidia/nemotron-3-ultra-550b-a55b:free"]
 
         prompt = "Explain Retrieval-Augmented Generation in one sentence"
 
@@ -154,7 +154,7 @@ def pattern_2_provider_switching():
                 elapsed = time.time() - start
 
                 print(f"✓ {model} ({elapsed:.2f}s):")
-                print(f"  \"{response[:70]}...\"")
+                print(f"  \"{response[:140]}...\"")
                 print()
             except Exception as e:
                 print(f"✗ {model}: {e}\n")
@@ -179,7 +179,7 @@ def pattern_3_temperature():
         "# >>> CUSTOMIZE: Temperature settings",
         "temps = [(0.3, 'Precise'), (0.7, 'Balanced'), (0.9, 'Creative')]",
         "",
-        "prompt = \"Write a creative sentence about AI\"",
+        "prompt = \"Complete this: The future of AI is...\"",
         "",
         "# >>> REFERENCE: Same prompt, different temperatures",
         "for temp, label in temps:",
@@ -217,7 +217,7 @@ def pattern_3_temperature():
                 elapsed = time.time() - start
 
                 print(f"[{label:12}] ({elapsed:.2f}s)")
-                print(f"  \"{response[:65]}...\"")
+                print(f"  \"{response[:150]}...\"")
                 print()
             except Exception as e:
                 print(f"[{label:12}] Error: {e}\n")
@@ -243,9 +243,9 @@ def pattern_4_use_case():
         "prompt_template = \"Classify this ticket: {ticket}\"",
         "",
         "tickets = [",
-        "    \"The app crashes when I save\",",
-        "    \"How do I reset my password?\",",
-        "    \"Great product, love the features!\"",
+        "    \"The app crashes when I save documents\",",
+        "    \"Can we add dark mode?\",",
+        "    \"How do I export my data?\"",
         "]",
         "",
         "# >>> REFERENCE: Classify each ticket",
@@ -357,9 +357,11 @@ def pattern_5_error_handling():
     print("✓ Scenario 3: Invalid Model Handling")
     try:
         client = LLMClient(model="invalid-model-xyz")
-        print("  Status: Would fail at API call")
+        # Model validation happens on API call, not initialization
+        response = client.complete("Test", max_tokens=10)
+        print("  Status: API call succeeded (unexpected)")
     except Exception as e:
-        print(f"  Error: {type(e).__name__}")
+        print(f"  Error caught: {type(e).__name__}: {str(e)[:100]}")
     print()
 
     print("-" * 70)

@@ -127,34 +127,47 @@ Lesson 1.3 (Your Skills are Safe)
 
 #### Next Lesson
 
-→ Lesson 1.5: Technical Environment Setup
+→ Module 2, Lesson 2.0: Technical Environment Setup
 
 ---
 
-### Lesson 1.5: Technical Environment Setup
 
-**Type:** Screencast + Talking Head (3 Sub-Lessons)  
+## Module 2: AI Fundamentals
+
+**Module Slug:** `module-02-ai-fundamentals`
+
+### Module Objective
+
+This module establishes the technical foundation required for every subsequent module in the course. Students will develop a practical understanding of how modern Large Language Models work, how they process information, how context influences behavior, and how retrieval and embeddings enable AI systems to reason over proprietary knowledge.
+
+By the end of this module, students will understand the core concepts that underpin RAG systems, agents, MCP tooling, fine-tuning, and production AI applications. Rather than treating AI as a black box, they will understand the major components and tradeoffs involved in modern AI systems.
+
+---
+
+### Lesson 2.0: Technical Environment Setup
+
+**Type:** Text / Artice Lesson (3 Sub-Lessons)  
 **Duration:** 12-15 minutes total  
 **Code File:** Repository provided
 
 #### Lesson Objective
 
-This lesson ensures you have a fully working technical environment for the entire course through three focused sub-lessons covering OS-level Python setup (Mac native or Windows WSL2), VS Code configuration with AI development extensions, and secure LLM API access, with verification steps at each stage. By the end of this lesson, you will have Python installed and working, the course repository cloned and organized, a virtual environment created, and your first successful API call to an LLM—ready to begin Module 2 with zero technical blockers.
+As a precursor to code-based lessons in Module 2 and above, this lesson ensures you have a fully working technical environment for the entire course through three focused sub-lessons covering OS-level Python setup (Mac native or Windows WSL2), VS Code configuration with AI development extensions, and secure LLM API access, with verification steps at each stage. By the end of this lesson, you will have Python installed and working, the course repository cloned and organized, a virtual environment created, and your first successful API call to an LLM—ready to begin Module 2 with zero technical blockers.
 
 #### Sub-Lessons
 
-**1.7a: Getting Your OS Ready** (4-5 min)
+**2.0a: Getting Your OS Ready** (4-5 min)
 - Mac native setup or Windows WSL2/Ubuntu installation
 - Python 3.10+ verification
 - Platform-specific configuration
 
-**1.7b: VS Code & Project Setup** (4-5 min)
+**2.0b: VS Code & Project Setup** (4-5 min)
 - VS Code configuration and extensions
 - Course repository clone
 - Virtual environment creation and Streamlit installation
 - First demo run verification
 
-**1.7c: LLM Access Setup** (3-4 min)
+**2.0c: LLM Access Setup** (3-4 min)
 - Anthropic Claude API key management
 - Environment variable configuration and security
 - First API call verification
@@ -185,19 +198,6 @@ None (this is setup for everything that follows)
 #### Next Lesson
 
 → Module 2, Lesson 2.1: Introduction to Large Language Models
-
----
-
-
-## Module 2: AI Fundamentals
-
-**Module Slug:** `module-02-ai-fundamentals`
-
-### Module Objective
-
-This module establishes the technical foundation required for every subsequent module in the course. Students will develop a practical understanding of how modern Large Language Models work, how they process information, how context influences behavior, and how retrieval and embeddings enable AI systems to reason over proprietary knowledge.
-
-By the end of this module, students will understand the core concepts that underpin RAG systems, agents, MCP tooling, fine-tuning, and production AI applications. Rather than treating AI as a black box, they will understand the major components and tradeoffs involved in modern AI systems.
 
 ---
 

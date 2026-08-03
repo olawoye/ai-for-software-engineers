@@ -8,9 +8,10 @@ import os
 # Available models via OpenRouter
 MODELS = {
     "GPT-3.5 Turbo": "gpt-3.5-turbo",
-    "GPT-4": "gpt-4",
-    "Claude 3 Sonnet": "claude-3-sonnet",
-    "Claude 3 Opus": "claude-3-opus",
+    "Nvidia Nemotron 3 Ultra (Free)": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "Nvidia Nemotron 3 Super (Free)": "nvidia/nemotron-3-super-120b-a12b:free",
+    "Cohere North Mini Code (Free)": "cohere/north-mini-code:free",
+    "OpenRouter Free": "openrouter/free",
 }
 
 # Default model for lessons

@@ -105,8 +105,8 @@ PATTERN 2: Provider Switching - Same Code, Different Models
 📝 Code:
   1 | from shared.llm_client import LLMClient
   2 |
-  3 | # >>> CUSTOMIZE: Model choices
-  4 | models = ["gpt-3.5-turbo", "claude-3-sonnet"]
+  3 | # >>> CUSTOMIZE: Model choices (use provider/model format for non-OpenAI)
+  4 | models = ["gpt-3.5-turbo", "anthropic/claude-3-sonnet"]
   ...
 
 🔄 Running with multiple models...
@@ -114,7 +114,7 @@ PATTERN 2: Provider Switching - Same Code, Different Models
 ✓ gpt-3.5-turbo (0.89s):
   "Retrieval-Augmented Generation combines retrieval..."
   
-✓ claude-3-sonnet (1.23s):
+✓ anthropic/claude-3-sonnet (1.23s):
   "RAG is a technique that augments LLMs with..."
 
 ✅ Pattern complete. Return to menu.
