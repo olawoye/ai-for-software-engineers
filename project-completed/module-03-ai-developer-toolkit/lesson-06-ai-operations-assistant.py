@@ -30,7 +30,7 @@ from shared.config import DEFAULT_MODEL, TEMP_BALANCED
 st.set_page_config(
     page_title="AI Operations Assistant",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 
@@ -183,6 +183,9 @@ if "tool_calls" not in st.session_state:
 if "total_tools_used" not in st.session_state:
     st.session_state.total_tools_used = 0
 
+if "tool_calling_enabled" not in st.session_state:
+    st.session_state.tool_calling_enabled = False
+
 
 # ============================================================================
 # FUNCTION CALLING LOGIC
@@ -201,24 +204,57 @@ def build_tool_context() -> str:
 
 {tools_description}
 
-When you need information, call a tool using this format:
-<tool_call>tool_name(parameter_name=value)</tool_call>
+INSTRUCTIONS FOR TOOL USE:
+1. Answer general knowledge questions directly (no tools needed)
+2. ONLY use tools when the user asks about:
+   - Real-time weather
+   - Ticket or issue status
+   - Company policies
+   - Mathematical calculations
+   - Data lookups from the database
 
-Only call ONE tool per response. Wait for the result, then respond.
+3. When you determine a tool is needed, call it using:
+   <tool_name: param=value>
+   Example: <weather: city=San Francisco>
+
+4. Use tools sparingly. Most questions can be answered with your knowledge.
+5. Only call ONE tool per response.
+
+If the user asks something outside these tool categories, just answer normally.
 """
 
 
 def extract_tool_call(text: str) -> tuple:
     """
     >>> REFERENCE: Parse tool calls from LLM output
-    Detects: <tool_call>tool_name(param=value)</tool_call>
+    Handles three formats:
+    1. <tool_call>tool_name(param=value)</tool_call>
+    2. <tool_name>tool_name(param=value)</tool_name>
+    3. <tool_name: param=value>  (LLM native format)
     """
     import re
-    pattern = r"<tool_call>(\w+)\((\w+)=([^)]+)\)</tool_call>"
-    match = re.search(pattern, text)
+    
+    # Try format 1: <tool_call>tool_name(param=value)</tool_call>
+    pattern1 = r"<tool_call>(\w+)\((\w+)=([^)]+)\)</tool_call>"
+    match = re.search(pattern1, text)
     if match:
         tool_name, param_name, param_value = match.groups()
         return tool_name.strip(), {param_name: param_value.strip().strip('"')}
+    
+    # Try format 2: <tool_name>tool_name(param=value)</tool_name>
+    pattern2 = r"<(\w+)>(\w+)\((\w+)=([^)]+)\)</\1>"
+    match = re.search(pattern2, text)
+    if match:
+        tag_name, tool_name, param_name, param_value = match.groups()
+        return tool_name.strip(), {param_name: param_value.strip().strip('"')}
+    
+    # Try format 3: <tool_name: param=value>
+    pattern3 = r"<(\w+):\s*(\w+)=([^>]+)>"
+    match = re.search(pattern3, text)
+    if match:
+        tool_name, param_name, param_value = match.groups()
+        return tool_name.strip(), {param_name: param_value.strip().strip('"')}
+    
     return None, None
 
 
@@ -239,11 +275,76 @@ def execute_tool(tool_name: str, params: dict) -> dict:
 
 
 # ============================================================================
+# SIDEBAR: SETTINGS & AVAILABLE TOOLS
+# ============================================================================
+
+with st.sidebar:
+    st.header("⚙️  Settings")
+    
+    # Toggle tool calling on/off
+    tool_mode = st.toggle(
+        "🔧 Enable Tool Calling",
+        value=st.session_state.tool_calling_enabled,
+        help="When ON: AI uses available tools to answer questions\nWhen OFF: AI responds with knowledge only (no tool calls)"
+    )
+    
+    # Check if toggle state CHANGED before updating it
+    tool_mode_changed = tool_mode != st.session_state.tool_calling_enabled
+    
+    # Update the state immediately
+    st.session_state.tool_calling_enabled = tool_mode
+    
+    # Only rerun if it actually changed
+    if tool_mode_changed:
+        st.session_state.messages = []
+        st.session_state.tool_calls = []
+        st.rerun()
+    
+    if tool_mode:
+        st.success("✅ Tool calling is **ON**")
+    else:
+        st.warning("❌ Tool calling is **OFF**")
+    
+    st.divider()
+    
+    # Available tools display
+    st.subheader("🛠️  Available Tools")
+    
+    if tool_mode:
+        st.markdown("*The AI can use these tools:*\n")
+        tools_disabled = False
+    else:
+        st.markdown("*These tools are currently disabled (toggle to enable):*\n")
+        tools_disabled = True
+    
+    # Conditionally style tools based on enabled/disabled state
+    for tool_name, tool_info in TOOLS.items():
+        with st.expander(f"**{tool_info['name'].upper()}**", expanded=False):
+            if tools_disabled:
+                st.markdown(f"<span style='opacity: 0.5;'>📝 {tool_info['description']}</span>", unsafe_allow_html=True)
+                st.markdown(f"<span style='opacity: 0.5;'>**Parameter:** {list(tool_info['parameters'].keys())[0]}</span>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"📝 {tool_info['description']}")
+                st.markdown(f"**Parameter:** {list(tool_info['parameters'].keys())[0]}")
+            st.caption(f"Try: '{tool_name}(...)'")
+    
+    st.divider()
+    
+    # Statistics
+    st.subheader("📊 Stats")
+    st.metric("Tools Used", st.session_state.total_tools_used)
+    st.metric("Messages", len(st.session_state.messages))
+
+# ============================================================================
 # HEADER
 # ============================================================================
 
 st.title("🤖 AI Operations Assistant")
-st.markdown("""
+
+# Dynamic mode display (updates when toggle changes)
+mode_text = "✅ **Tool Calling Enabled**" if st.session_state.tool_calling_enabled else "❌ **Tool Calling Disabled**"
+
+st.markdown(f"""
 This lesson demonstrates the **paradigm shift**: LLMs don't just generate text—they orchestrate actions.
 
 The assistant:
@@ -251,6 +352,8 @@ The assistant:
 2. **Selects** the appropriate tool
 3. **Executes** the tool safely
 4. **Responds** based on real results
+
+**Mode:** {mode_text} (see sidebar to toggle)
 
 This concept is the foundation for agents (Module 6), MCP (Module 5), and autonomous systems.
 """)
@@ -278,20 +381,25 @@ with message_container:
 
 st.divider()
 
-col1, col2 = st.columns([4, 1])
+# >>> PROPER STREAMLIT CHAT: Use st.chat_input()
+# This component automatically:
+# - Submits on Enter key press
+# - Clears the input after submission
+# - Has built-in chat styling
 
+col1, col2 = st.columns([1, 0.15])
 with col1:
-    user_input = st.text_input(
-        "Your message:",
-        placeholder="Ask me to look something up or perform an action...",
-        label_visibility="collapsed"
+    user_input = st.chat_input(
+        placeholder="Ask me to look something up or perform an action (press Enter to send)..."
     )
-
 with col2:
-    send_button = st.button("Send", use_container_width=True, type="primary")
+    if st.button("🗑️  Clear", help="Clear chat history", use_container_width=True):
+        st.session_state.messages = []
+        st.session_state.tool_calls = []
+        st.rerun()
 
 
-if send_button and user_input:
+if user_input:
     # Add user message to history
     st.session_state.messages.append({
         "role": "user",
@@ -300,20 +408,41 @@ if send_button and user_input:
 
     try:
         with st.spinner("Thinking..."):
-            # >>> REFERENCE: Initialize LLM with tool context
+            # >>> REFERENCE: Initialize LLM
             client = LLMClient(model=DEFAULT_MODEL)
-            tool_context = build_tool_context()
 
             # >>> REFERENCE: Build conversation for API
-            conversation = [
-                {"role": "system", "content": tool_context},
-                *st.session_state.messages,
-            ]
+            # Only include tool context if tool calling is enabled
+            if st.session_state.tool_calling_enabled:
+                tool_context = build_tool_context()
+                conversation = [
+                    {"role": "system", "content": tool_context},
+                    *st.session_state.messages,
+                ]
+            else:
+                # Standard system prompt without tool context - explicitly restrict to conversation history
+                system_prompt_disabled = """You are a helpful assistant. You do NOT have access to:
+- Real-time information (weather, news, stock prices, etc.)
+- External APIs or databases
+- The internet or current events
+- Any tools or functions
+
+You can ONLY work with information provided in this conversation. If you need information you don't have access to, clearly tell the user: "I don't have access to that information. I can't look up real-time data like weather, stock prices, or current events."
+
+Be honest about your limitations."""
+                conversation = [
+                    {"role": "system", "content": system_prompt_disabled},
+                    *st.session_state.messages,
+                ]
 
             # Format as prompt string for API
             prompt = ""
-            for msg in conversation[1:]:
-                prompt += f"{msg['role'].capitalize()}: {msg['content']}\n"
+            # >>> REFERENCE: Include system prompt in the formatted message
+            for msg in conversation:  # Include ALL messages, including system
+                if msg["role"] == "system":
+                    prompt += f"SYSTEM INSTRUCTIONS:\n{msg['content']}\n\n"
+                else:
+                    prompt += f"{msg['role'].capitalize()}: {msg['content']}\n"
             prompt += "Assistant:"
 
             # >>> REFERENCE: Get LLM response (may include tool call)
@@ -325,10 +454,12 @@ if send_button and user_input:
             )
             elapsed = time.time() - start_time
 
-            # >>> REFERENCE: Check if response contains tool call
-            tool_name, params = extract_tool_call(response)
+            # >>> REFERENCE: Check if response contains tool call (only if tool calling enabled)
+            tool_name, params = None, None
+            if st.session_state.tool_calling_enabled:
+                tool_name, params = extract_tool_call(response)
 
-            if tool_name and params:
+            if tool_name and params and st.session_state.tool_calling_enabled:
                 # >>> REFERENCE: Execute tool and get result
                 tool_result = execute_tool(tool_name, params)
 
@@ -367,7 +498,10 @@ Now respond to the user based on this result."""
                 })
 
             else:
-                # No tool call, just respond directly
+                # No tool call (either tool calling is disabled or AI didn't generate tool call)
+                if not st.session_state.tool_calling_enabled:
+                    st.info("ℹ️  Tool calling is disabled. Response generated from knowledge only.")
+                
                 st.session_state.messages.append({
                     "role": "assistant",
                     "content": response.strip()

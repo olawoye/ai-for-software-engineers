@@ -5,7 +5,6 @@ Supports OpenRouter embeddings via Jina, Cohere, and TF-IDF fallback.
 
 import numpy as np
 from typing import List, Dict, Tuple, Optional
-from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 import json
 import requests
@@ -15,16 +14,15 @@ class EmbeddingEngine:
     """Unified interface for generating embeddings.
     
     Supports:
-    - OpenRouter (via Jina Embeddings v3, primary)
-    - Cohere embeddings (fallback)
-    - TF-IDF (keyword-based fallback)
+    - Cohere embeddings (primary, reliable)
+    - OpenRouter via Jina Embeddings v3 (fallback, requires OpenRouter API key)
     """
 
     def __init__(
         self,
         method: str = "openrouter",
         openrouter_key: Optional[str] = None,
-        openrouter_url: str = "https://api.openrouter.ai/v1",
+        openrouter_url: str = "https://openrouter.ai/api/v1",
         cohere_api_key: Optional[str] = None,
     ):
         """Initialize embedding engine.
@@ -36,102 +34,85 @@ class EmbeddingEngine:
             cohere_api_key: Cohere API key for fallback
         """
         self.method = method
+        self.actual_method = method  # Track actual method after fallback
         self.openrouter_key = openrouter_key or os.getenv("OPENROUTER_API_KEY")
         self.openrouter_url = openrouter_url
         self.cohere_api_key = cohere_api_key or os.getenv("COHERE_API_KEY")
-        self.tfidf_vectorizer = None
 
     def embed_documents(self, documents: List[str]) -> np.ndarray:
-        """Generate embeddings for multiple documents."""
-        if self.method == "openrouter" and self.openrouter_key:
-            return self._embed_openrouter(documents)
-        elif self.method == "cohere" and self.cohere_api_key:
-            return self._embed_cohere(documents)
-        else:
-            return self._embed_tfidf(documents)
+        """Generate embeddings for documents using Cohere.
+        
+        Raises RuntimeError if Cohere is not available or fails.
+        """
+        if not self.cohere_api_key:
+            raise RuntimeError(
+                "Cohere API key required. Set COHERE_API_KEY environment variable. "
+                "Get a free key at https://cohere.com (100k requests/month free)"
+            )
+        
+        return self._embed_cohere(documents, input_type="search_document")
 
     def embed_query(self, query: str) -> np.ndarray:
-        """Generate embedding for a single query."""
-        if self.method == "openrouter" and self.openrouter_key:
-            return self._embed_openrouter([query])[0]
-        elif self.method == "cohere" and self.cohere_api_key:
-            return self._embed_cohere([query])[0]
-        else:
-            return self._embed_tfidf([query])[0]
+        """Generate embedding for a single query using Cohere."""
+        return self._embed_cohere([query], input_type="search_query")[0]
 
-    def _embed_openrouter(self, texts: List[str]) -> np.ndarray:
-        """Generate embeddings using OpenRouter (Jina Embeddings v3).
+    def _embed_cohere(self, texts: List[str], input_type: str = "search_document") -> np.ndarray:
+        """Generate embeddings using Cohere API.
         
-        OpenRouter provides access to multiple embedding models via a single API.
-        We use Jina Embeddings v3 for robust semantic understanding.
+        Args:
+            texts: List of texts to embed
+            input_type: "search_document" for documents, "search_query" for queries
+        
+        Raises RuntimeError if API call fails.
         """
         try:
-            headers = {
-                "Authorization": f"Bearer {self.openrouter_key}",
-                "Content-Type": "application/json",
-            }
-
-            payload = {
-                "model": "jinaai/jina-embeddings-v3",
-                "input": texts,
-                "encoding_format": "float",
-            }
-
-            response = requests.post(
-                f"{self.openrouter_url}/embeddings",
-                headers=headers,
-                json=payload,
-                timeout=30,
-            )
-
-            if response.status_code != 200:
-                print(f"OpenRouter error ({response.status_code}): {response.text}")
-                print("Falling back to Cohere or TF-IDF.")
-                return self._embed_cohere(texts) if self.cohere_api_key else self._embed_tfidf(texts)
-
-            result = response.json()
-            
-            # Extract embeddings from response
-            embeddings = [item["embedding"] for item in result["data"]]
-            return np.array(embeddings, dtype=np.float32)
-
-        except Exception as e:
-            print(f"OpenRouter embedding failed: {e}")
-            print("Falling back to Cohere or TF-IDF.")
-            return self._embed_cohere(texts) if self.cohere_api_key else self._embed_tfidf(texts)
-
-    def _embed_cohere(self, texts: List[str]) -> np.ndarray:
-        """Generate embeddings using Cohere API."""
-        try:
             import cohere
-
             client = cohere.ClientV2(api_key=self.cohere_api_key)
+            
             response = client.embed(
-                model="embed-english-v3.0",
-                input_type="search_document",
                 texts=texts,
+                model="embed-english-v3.0",
+                input_type=input_type
             )
-
-            # Extract embeddings
-            embeddings = []
-            for item in response.embeddings:
-                if hasattr(item, 'float'):
-                    embeddings.append(item.float)
-                else:
-                    embeddings.append(item)
-
-            return np.array(embeddings)
+            
+            # Extract embeddings from response (handles multiple Cohere versions)
+            embeddings_list = []
+            
+            if hasattr(response, 'embeddings'):
+                emb_data = response.embeddings
+                
+                # Method 1: Try .float attribute (Cohere v2+)
+                if hasattr(emb_data, 'float'):
+                    embeddings_list = emb_data.float
+                # Method 2: Try direct iteration on embeddings object
+                elif hasattr(emb_data, '__iter__'):
+                    for item in emb_data:
+                        if hasattr(item, 'float'):
+                            embeddings_list.append(item.float)
+                        elif hasattr(item, 'embedding'):
+                            embeddings_list.append(item.embedding)
+                        else:
+                            embeddings_list.append(list(item) if hasattr(item, '__iter__') else item)
+            
+            if not embeddings_list:
+                raise ValueError("Could not extract embeddings from Cohere response")
+            
+            embeddings = np.array(embeddings_list, dtype=np.float32)
+            
+            # Validate embeddings
+            if embeddings.ndim != 2:
+                raise ValueError(f"Expected 2D array, got {embeddings.ndim}D with shape {embeddings.shape}")
+            if embeddings.shape[1] < 10:
+                raise ValueError(
+                    f"Embeddings too small: shape {embeddings.shape}. "
+                    f"Expected 100+ dimensions, got {embeddings.shape[1]}."
+                )
+            
+            self.actual_method = "cohere"
+            return embeddings
+            
         except Exception as e:
-            print(f"Cohere embedding failed: {e}. Falling back to TF-IDF.")
-            return self._embed_tfidf(texts)
-
-    def _embed_tfidf(self, texts: List[str]) -> np.ndarray:
-        """Generate embeddings using TF-IDF (keyword-based fallback)."""
-        if self.tfidf_vectorizer is None:
-            self.tfidf_vectorizer = TfidfVectorizer(max_features=300)
-            self.tfidf_vectorizer.fit(texts)
-
-        return self.tfidf_vectorizer.transform(texts).toarray().astype(np.float32)
+            raise RuntimeError(f"Cohere embedding failed: {e}")
 
 
 def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:

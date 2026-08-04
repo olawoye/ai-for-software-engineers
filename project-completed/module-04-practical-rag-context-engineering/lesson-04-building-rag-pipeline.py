@@ -49,7 +49,7 @@ def build_rag_pipeline(
     top_k: int = 5,
     chunk_size: int = 512,
     chunk_overlap: int = 50,
-    embedding_provider: str = "openrouter",
+    embedding_provider: str = "cohere",
     openrouter_key: Optional[str] = None,
     llm_model: str = "meta-llama/llama-2-7b-chat",
 ) -> Dict:
@@ -268,7 +268,7 @@ def _generate_answer_with_llm(
 
     # Call OpenRouter API
     response = requests.post(
-        "https://api.openrouter.ai/v1/chat/completions",
+        "https://openrouter.ai/api/v1/chat/completions",
         headers={
             "Authorization": f"Bearer {api_key}",
             "HTTP-Referer": "https://github.com/AIForSoftwareEngineers",

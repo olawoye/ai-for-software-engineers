@@ -155,24 +155,21 @@ with message_container:
 # User input (bottom of screen)
 st.divider()
 
-col1, col2 = st.columns([4, 1])
-
-with col1:
-    user_input = st.text_input(
-        "Your message:",
-        placeholder="Type your question...",
-        label_visibility="collapsed"
-    )
-
-with col2:
-    send_button = st.button("Send", use_container_width=True, type="primary")
+# >>> PROPER STREAMLIT CHAT: Use st.chat_input()
+# This component automatically:
+# - Submits on Enter key press
+# - Clears the input after submission
+# - Has built-in chat styling
+user_input = st.chat_input(
+    placeholder="Your message... (press Enter to send)"
+)
 
 
 # ============================================================================
 # HANDLE USER MESSAGE
 # ============================================================================
 
-if send_button and user_input:
+if user_input:
     # >>> REFERENCE: Add user message to history
     # This happens immediately for responsiveness
     st.session_state.messages.append({

@@ -12,7 +12,7 @@ By the end of this module, students will be able to transform an AI idea into a 
 3. **Lesson 3.3** (Code): Rapid prototyping using Streamlit
 4. **Lesson 3.4** (Code): Building conversational interfaces
 5. **Lesson 3.5** (Code): DevOps, deployment, and operational concerns
-6. **Lesson 3.6** (Code): Capstone — Deploy a complete summarization service
+6. **Lesson 3.6** (Code): Capstone — AI Operations Assistant with Tool Calling
 
 ## Lessons
 
@@ -219,156 +219,7 @@ git push
 
 ---
 
-### Lesson 3.6: AI Operations Assistant with Tool Calling
-**Type:** Code Screencast (Capstone)  
-**Status:** ✅ Complete
-
-Learn how LLMs orchestrate actions through tool calling. This capstone introduces the paradigm shift from text generation to action orchestration—the foundation for agents, MCP, and autonomous systems.
-
-#### Run Instructions
-```bash
-source .venv/bin/activate
-export OPENROUTER_API_KEY='your-key-here'
-streamlit run lesson-06-ai-operations-assistant.py
-```
-
-**The Core Concept:**
-
-```
-User Input
-    ↓
-LLM Decides What Tool to Use
-    ↓
-Tool Selection & Execution
-    ↓
-Result Processing
-    ↓
-Intelligent Response
-```
-
-**What You'll Learn:**
-
-1. **Function Calling** — How LLMs decide which tools to use
-2. **Tool Orchestration** — Safely executing tools based on LLM decisions
-3. **Structured Outputs** — Parsing tool calls from LLM responses
-4. **Tool Execution Engine** — Running tools and handling results
-5. **Result Integration** — Using tool results to generate final responses
-6. **The Paradigm Shift** — "LLMs don't just generate text—they orchestrate actions"
-
-**5 Functional Tool Implementations:**
-
-| Tool | Purpose | Pattern | 
-|------|---------|---------|
-| **Weather** | Get city weather | External API integration |
-| **Ticket** | Look up support tickets | Database query pattern |
-| **Policy** | Search company policies | Semantic search pattern |
-| **SQL** | Execute read-only queries | Data analysis pattern |
-| **Calculator** | Perform calculations | Expression evaluation |
-
-**Key Architecture:**
-
-- **Tool Registry:** Centralized TOOLS dict with definitions
-- **Tool Context:** System prompt describing available tools
-- **Tool Call Detection:** Regex parsing of `<tool_call>...</tool_call>` format
-- **Safe Execution:** Error handling, validation, dangerous command blocking
-- **Result Injection:** Feed tool results back to LLM for context-aware responses
-- **Analytics Dashboard:** Track tool usage, success rates, execution times
-
-**Real-World Workflow:**
-
-1. **User:** "Look up ticket TKT-001"
-2. **LLM:** "I'll call the ticket tool to help you"
-3. **Response:** `<tool_call>ticket(ticket_id=TKT-001)</tool_call>`
-4. **System:** Executes tool, gets `{status: "open", priority: "high"}`
-5. **LLM Again:** "Ticket TKT-001 is open with high priority..."
-6. **User:** Sees tool call, result, and intelligent response
-
-**Why This Matters (Strategic Context):**
-
-This lesson is the **bridge between application building and agent systems**:
-
-- **Modules 3.1-3.5:** Build AI applications (UI, chat, deployment)
-- **Lesson 3.6:** Demonstrate LLM orchestration (tool calling)
-- **Module 5:** Standardize tool access (MCP servers)
-- **Module 6:** Autonomous decision-making (agents)
-- **Modules 7-8:** System design and operations at scale
-
-Students completing Lesson 3.6 understand that modern AI isn't just about generating text—it's about orchestrating complex workflows where LLMs make decisions and take actions.
-
-**Key Files:**
-
-- `lesson-06-ai-operations-assistant.py` — Full Streamlit assistant with tool calling
-- `shared/llm_client.py` — LLM client for API calls
-- `shared/config.py` — Model definitions and temperature constants
-
-**Code Markers (for reference):**
-
-```python
-# >>> REFERENCE: Why this matters (educational)
-# This tells the LLM what tools it can use and how to call them.
-
-# >>> REFERENCE: Implementation details
-# Don't change, but understand why this pattern is used.
-```
-
-**Expected Interaction:**
-
-```
-User: "What's the weather in San Francisco?"
-LLM: [thinks] "I need weather information"
-Response: <tool_call>weather(city=San Francisco)</tool_call>
-System: Executes tool → {temp: 65, condition: "sunny"}
-LLM: [responds using result]
-Output: "The weather in San Francisco is sunny, 65°F"
-```
-
-**Learning Outcomes:**
-
-After this lesson, students will understand:
-- ✅ How function calling works
-- ✅ How LLMs make tool selection decisions
-- ✅ How to safely execute external tools
-- ✅ How to use tool results in responses
-- ✅ Why tool orchestration is the foundation for agents
-- ✅ The paradigm: "LLMs orchestrate actions"
-
-**Production Considerations (Demonstrated):**
-
-- Parameter validation
-- Error handling and graceful failures
-- Dangerous command blocking (SQL safety)
-- Tool execution tracking
-- Result integrity checking
-- Safety guardrails
-
-**Deployment:**
-
-Fully deployable using Lesson 3.5 patterns:
-- Docker-ready
-- Environment variable configuration
-- Cloud platform compatible
-- Production error handling
-
-**Next Steps After This Lesson:**
-
-Students are now ready for:
-- **Module 4:** RAG systems (using tools to access knowledge bases)
-- **Module 5:** MCP servers (standardizing tool protocols)
-- **Module 6:** AI agents (autonomous tool selection)
-- **Modules 7-8:** Production AI systems
-
----
-**Type:** Code Screencast  
-**Status:** ✅ Complete
-
-Learn how to build multi-turn conversational AI interfaces with context management. Master state persistence, conversation history, and context window constraints—all with a clean, real-world UI.
-
-#### Run Instructions
-```bash
-source .venv/bin/activate
-export OPENROUTER_API_KEY='your-key-here'
-streamlit run lesson-04-building-chat-interface.py
-```
+### Lesson 3.4: Building Chat Interfaces
 
 **What You'll Learn:**
 
@@ -536,34 +387,143 @@ python lesson-05-devops-for-ai-apps.py
 
 ---
 
-### Lesson 3.6: Deploy a Mini AI Service (Capstone)
-**Type:** Code Screencast  
+### Lesson 3.6: AI Operations Assistant with Tool Calling
+**Type:** Code Screencast (Capstone)  
 **Status:** ✅ Complete
 
-Build, package, deploy, and validate a production-ready AI summarization service.
+Learn how LLMs orchestrate actions through tool calling. This capstone introduces the paradigm shift from text generation to action orchestration—the foundation for agents, MCP, and autonomous systems.
 
 #### Run Instructions
 ```bash
 source .venv/bin/activate
 export OPENROUTER_API_KEY='your-key-here'
-streamlit run lesson-06-ai-summarizer-service.py
+streamlit run lesson-06-ai-operations-assistant.py
+```
+
+**The Core Concept:**
+
+```
+User Input
+    ↓
+LLM Decides What Tool to Use
+    ↓
+Tool Selection & Execution
+    ↓
+Result Processing
+    ↓
+Intelligent Response
 ```
 
 **What You'll Learn:**
-- Combine all Module 3 concepts into one application
-- Implement business logic (SummarizationService class)
-- Add request tracking and analytics
-- Handle errors and edge cases
-- Deploy complete AI service
 
-**Features:**
-- Document summarization in multiple languages
-- Service statistics and request history
-- Error tracking and logging
-- Model selection and parameter tuning
-- Production-ready architecture
+1. **Function Calling** — How LLMs decide which tools to use
+2. **Tool Orchestration** — Safely executing tools based on LLM decisions
+3. **Structured Outputs** — Parsing tool calls from LLM responses
+4. **Tool Execution Engine** — Running tools and handling results
+5. **Result Integration** — Using tool results to generate final responses
+6. **The Paradigm Shift** — "LLMs don't just generate text—they orchestrate actions"
 
-**Output:** Deployable summarization service
+**5 Functional Tool Implementations:**
+
+| Tool | Purpose | Pattern | 
+|------|---------|---------|
+| **Weather** | Get city weather | External API integration |
+| **Ticket** | Look up support tickets | Database query pattern |
+| **Policy** | Search company policies | Semantic search pattern |
+| **SQL** | Execute read-only queries | Data analysis pattern |
+| **Calculator** | Perform calculations | Expression evaluation |
+
+**Key Architecture:**
+
+- **Tool Registry:** Centralized TOOLS dict with definitions
+- **Tool Context:** System prompt describing available tools
+- **Tool Call Detection:** Regex parsing of `<tool_call>...</tool_call>` format
+- **Safe Execution:** Error handling, validation, dangerous command blocking
+- **Result Injection:** Feed tool results back to LLM for context-aware responses
+- **Analytics Dashboard:** Track tool usage, success rates, execution times
+
+**Real-World Workflow:**
+
+1. **User:** "Look up ticket TKT-001"
+2. **LLM:** "I'll call the ticket tool to help you"
+3. **Response:** `<tool_call>ticket(ticket_id=TKT-001)</tool_call>`
+4. **System:** Executes tool, gets `{status: "open", priority: "high"}`
+5. **LLM Again:** "Ticket TKT-001 is open with high priority..."
+6. **User:** Sees tool call, result, and intelligent response
+
+**Why This Matters (Strategic Context):**
+
+This lesson is the **bridge between application building and agent systems**:
+
+- **Modules 3.1-3.5:** Build AI applications (UI, chat, deployment)
+- **Lesson 3.6:** Demonstrate LLM orchestration (tool calling)
+- **Module 5:** Standardize tool access (MCP servers)
+- **Module 6:** Autonomous decision-making (agents)
+- **Modules 7-8:** System design and operations at scale
+
+Students completing Lesson 3.6 understand that modern AI isn't just about generating text—it's about orchestrating complex workflows where LLMs make decisions and take actions.
+
+**Key Files:**
+
+- `lesson-06-ai-operations-assistant.py` — Full Streamlit assistant with tool calling
+- `shared/llm_client.py` — LLM client for API calls
+- `shared/config.py` — Model definitions and temperature constants
+
+**Code Markers (for reference):**
+
+```python
+# >>> REFERENCE: Why this matters (educational)
+# This tells the LLM what tools it can use and how to call them.
+
+# >>> REFERENCE: Implementation details
+# Don't change, but understand why this pattern is used.
+```
+
+**Expected Interaction:**
+
+```
+User: "What's the weather in San Francisco?"
+LLM: [thinks] "I need weather information"
+Response: <tool_call>weather(city=San Francisco)</tool_call>
+System: Executes tool → {temp: 65, condition: "sunny"}
+LLM: [responds using result]
+Output: "The weather in San Francisco is sunny, 65°F"
+```
+
+**Learning Outcomes:**
+
+After this lesson, students will understand:
+- ✅ How function calling works
+- ✅ How LLMs make tool selection decisions
+- ✅ How to safely execute external tools
+- ✅ How to use tool results in responses
+- ✅ Why tool orchestration is the foundation for agents
+- ✅ The paradigm: "LLMs orchestrate actions"
+
+**Production Considerations (Demonstrated):**
+
+- Parameter validation
+- Error handling and graceful failures
+- Dangerous command blocking (SQL safety)
+- Tool execution tracking
+- Result integrity checking
+- Safety guardrails
+
+**Deployment:**
+
+Fully deployable using Lesson 3.5 patterns:
+- Docker-ready
+- Environment variable configuration
+- Cloud platform compatible
+- Production error handling
+
+**Next Steps After This Lesson:**
+
+Students are now ready for:
+- **Module 4:** RAG systems (using tools to access knowledge bases)
+- **Module 5:** MCP servers (standardizing tool protocols)
+- **Module 6:** AI agents (autonomous tool selection)
+- **Modules 7-8:** Production AI systems
 
 ---
 

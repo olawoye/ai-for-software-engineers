@@ -95,7 +95,7 @@ def check_network():
     """
     try:
         import requests
-        response = requests.get("https://api.openrouter.ai", timeout=5)
+        response = requests.get("https://openrouter.ai", timeout=5)
         print_success("Network connectivity to API verified")
         return True
     except Exception as e:
@@ -558,12 +558,48 @@ LOGGING
     print(patterns)
 
 
-def main():
-    """Main interactive flow."""
+def show_menu():
+    """Display main lesson menu."""
     clear_screen()
-    print_section("LESSON 3.5: DEVOPS FOR AI APPS")
+    print("\n" + "=" * 70)
+    print("🚀 LESSON 3.5: DEVOPS FOR AI APPS".center(70))
+    print("=" * 70)
+    print("\nMove from 'it works on my machine' to 'it works in production.'\n")
+    print("  Choose a phase to learn:\n")
+    print("    [1] Pre-deployment Validation")
+    print("        → Check API keys, dependencies, network connectivity\n")
+    print("    [2] Environment Management")
+    print("        → Secrets, configuration, .env files\n")
+    print("    [3] Docker Containerization")
+    print("        → Dockerfile and docker-compose templates\n")
+    print("    [4] Platform Comparison")
+    print("        → Streamlit Cloud, Railway, DO Droplets, GCP Cloud Run\n")
+    print("    [5] Deployment Instructions")
+    print("        → Step-by-step deployment for your chosen platform\n")
+    print("    [6] Production Patterns")
+    print("        → Common mistakes and best practices\n")
+    print("    [R] Run Full Walkthrough (all phases)")
+    print("        → Complete lesson from start to finish\n")
+    print("    [Q] Quit\n")
+    print("=" * 70)
 
-    print("""
+
+def main():
+    """Main interactive menu loop."""
+    while True:
+        show_menu()
+        choice = input("Choose [1-6], [R]un all, or [Q]uit: ").strip().upper()
+
+        if choice == "Q":
+            clear_screen()
+            print("\n✅ Thanks for learning! Remember: Production is code + monitoring + logs.\n")
+            break
+
+        elif choice == "R":
+            # Run full walkthrough
+            clear_screen()
+            print_section("LESSON 3.5: DEVOPS FOR AI APPS - FULL WALKTHROUGH")
+            print("""
 This lesson teaches deployment strategies and operational concerns.
 Move from "it works on my machine" to "it works in production."
 
@@ -575,42 +611,41 @@ We'll cover:
 5. Deployment instructions (step-by-step)
 6. Production patterns (avoid common mistakes)
 """)
+            input("Press [ENTER] to start...")
 
-    input("Press [ENTER] to start...")
+            # PHASE 1: Pre-deployment checklist
+            if not run_pre_deployment_checklist():
+                input("\nFix issues above, then re-run this script.")
+                continue
 
-    # PHASE 1: Pre-deployment checklist
-    if not run_pre_deployment_checklist():
-        input("\nFix issues above, then re-run this script.")
-        return
+            input("\n[ENTER] to continue to environment setup...")
 
-    input("\n[ENTER] to continue to environment setup...")
+            # PHASE 2: Environment management
+            env_example = show_environment_setup()
+            input("\n[ENTER] to continue to Docker templates...")
 
-    # PHASE 2: Environment management
-    env_example = show_environment_setup()
-    input("\n[ENTER] to continue to Docker templates...")
+            # PHASE 2: Docker templates
+            dockerfile, docker_compose = show_docker_templates()
+            input("\n[ENTER] to compare deployment platforms...")
 
-    # PHASE 2: Docker templates
-    dockerfile, docker_compose = show_docker_templates()
-    input("\n[ENTER] to compare deployment platforms...")
+            # PHASE 3: Platform comparison
+            show_deployment_comparison()
+            input("\n[ENTER] to select your deployment platform...")
 
-    # PHASE 3: Platform comparison
-    show_deployment_comparison()
-    input("\n[ENTER] to select your deployment platform...")
+            # PHASE 3: Platform selection
+            platform = select_deployment_platform()
+            input(f"\n[ENTER] to see {platform.upper()} deployment instructions...")
 
-    # PHASE 3: Platform selection
-    platform = select_deployment_platform()
-    input(f"\n[ENTER] to see {platform.upper()} deployment instructions...")
+            # PHASE 3: Deployment instructions
+            generate_deployment_instructions(platform)
+            input("\n[ENTER] to see production patterns...")
 
-    # PHASE 3: Deployment instructions
-    generate_deployment_instructions(platform)
-    input("\n[ENTER] to see production patterns...")
+            # PHASE 3: Production patterns
+            show_production_patterns()
 
-    # PHASE 3: Production patterns
-    show_production_patterns()
-
-    # PHASE 3: Summary
-    print_section("NEXT STEPS")
-    print("""
+            # Summary
+            print_section("NEXT STEPS")
+            print("""
 ✅ Pre-deployment checklist passed
 ✅ Environment variables configured
 ✅ Docker templates generated
@@ -627,6 +662,48 @@ Now:
 Remember: Production is just code + monitoring + logs.
 Start simple, add complexity as needed.
 """)
+            input("\nPress [ENTER] to return to menu...")
+
+        elif choice == "1":
+            clear_screen()
+            print_section("PHASE 1: PRE-DEPLOYMENT VALIDATION")
+            run_pre_deployment_checklist()
+            input("\nPress [ENTER] to return to menu...")
+
+        elif choice == "2":
+            clear_screen()
+            print_section("PHASE 2: ENVIRONMENT MANAGEMENT")
+            show_environment_setup()
+            input("\nPress [ENTER] to return to menu...")
+
+        elif choice == "3":
+            clear_screen()
+            print_section("PHASE 2: DOCKER CONTAINERIZATION")
+            dockerfile, docker_compose = show_docker_templates()
+            input("\nPress [ENTER] to return to menu...")
+
+        elif choice == "4":
+            clear_screen()
+            print_section("PHASE 3: PLATFORM COMPARISON")
+            show_deployment_comparison()
+            input("\nPress [ENTER] to return to menu...")
+
+        elif choice == "5":
+            clear_screen()
+            print_section("PHASE 3: DEPLOYMENT INSTRUCTIONS")
+            platform = select_deployment_platform()
+            generate_deployment_instructions(platform)
+            input("\nPress [ENTER] to return to menu...")
+
+        elif choice == "6":
+            clear_screen()
+            print_section("PHASE 3: PRODUCTION PATTERNS")
+            show_production_patterns()
+            input("\nPress [ENTER] to return to menu...")
+
+        else:
+            print("❌ Invalid choice. Try again.")
+            input("Press [ENTER] to continue...")
 
 
 if __name__ == "__main__":
@@ -635,3 +712,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n\n⚠️  Interrupted. Bye!")
         sys.exit(0)
+    except Exception as e:
+        print(f"\n\n❌ Error: {e}")
+        sys.exit(1)

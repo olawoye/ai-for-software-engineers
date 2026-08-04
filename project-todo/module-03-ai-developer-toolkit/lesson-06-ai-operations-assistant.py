@@ -127,39 +127,48 @@ import json
 # - Use st.container(height=400, border=True)
 
 
-# TODO PHASE 3: Input area (2 columns)
-# - Column 1: st.text_input() for user message
-# - Column 2: st.button("Send") primary type
+# TODO PHASE 3: Input area
+# - Use st.chat_input() instead of st.text_input() (auto-submits on Enter, auto-clears)
+# - Placeholder text: "Ask me to look something up..."
+# - This handles both input and button in one component
 
 
 # ============================================================================
 # MESSAGE PROCESSING & TOOL CALLING (PHASE 3)
 # ============================================================================
 
-# TODO PHASE 3: When send button clicked:
+# TODO PHASE 3: When user sends message:
 # 1. Add user message to st.session_state.messages
 # 2. Initialize LLMClient
 # 3. Build prompt with tool context and conversation
 # 4. Call client.complete() to get LLM response
-# 5. Use extract_tool_call() to check if response contains tool call
-# 6. If tool call found:
+# 5. Check st.session_state.tool_calling_enabled flag
+# 6. If enabled, use extract_tool_call() to check if response contains tool call
+# 7. If tool call found AND tool calling enabled:
 #    - Execute tool with execute_tool()
 #    - Track in tool_calls history
 #    - Show st.info/st.success feedback
 #    - Call LLM again to generate final response using tool result
-# 7. If no tool call:
-#    - Just add response directly
-# 8. Call st.rerun()
+# 8. If no tool call OR tool calling disabled:
+#    - If disabled, show st.info() message
+#    - Add response directly to messages
+# 9. Call st.rerun()
 
 
 # ============================================================================
-# SIDEBAR: ANALYTICS (PHASE 3)
+# SIDEBAR: SETTINGS & AVAILABLE TOOLS (PHASE 3)
 # ============================================================================
 
-# TODO PHASE 3: Sidebar with analytics
-# - 3 metrics: Messages, Tools Used, Conversations
-# - Clear Conversation button (resets session state)
-# - Tool History (last 5 tool calls)
+# TODO PHASE 3: Build sidebar with:
+# 1. Settings section:
+#    - st.toggle("🔧 Enable Tool Calling") to turn tools on/off
+#    - Display whether tool calling is ON/OFF with st.success/st.warning
+# 2. Available Tools section:
+#    - Display each tool from TOOLS dict with st.expander
+#    - Show: name, description, parameter, example usage
+# 3. Statistics section:
+#    - st.metric("Tools Used", st.session_state.total_tools_used)
+#    - st.metric("Messages", len(st.session_state.messages))
 
 
 # ============================================================================

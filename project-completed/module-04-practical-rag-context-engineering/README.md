@@ -222,7 +222,7 @@ def build_rag_pipeline(
     top_k: int = 5,
     chunk_size: int = 512,
     chunk_overlap: int = 50,
-    embedding_provider: str = "openrouter",
+    embedding_provider: str = "cohere",
     openrouter_key: Optional[str] = None,
     llm_model: str = "meta-llama/llama-2-7b-chat",
 ) -> Dict
@@ -593,7 +593,7 @@ The lesson demonstrates **`deploy_knowledge_assistant()`**, the orchestration te
 def deploy_knowledge_assistant(
     documents: List[str],
     queries: Optional[List[str]] = None,
-    embedding_provider: str = "openrouter",
+    embedding_provider: str = "cohere",
     chunk_size: int = 512,
     top_k: int = 5,
     interactive_mode: bool = False,

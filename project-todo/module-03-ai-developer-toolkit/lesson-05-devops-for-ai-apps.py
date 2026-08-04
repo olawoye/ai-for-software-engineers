@@ -60,7 +60,7 @@ import sys
 # """Test connectivity to API endpoint."""
 # Logic:
 # - Import requests
-# - Try requests.get("https://api.openrouter.ai", timeout=5)
+# - Try requests.get("https://openrouter.ai", timeout=5)
 # - Return True if successful, False with error message if not
 
 # TODO PHASE 1: Implement run_pre_deployment_checklist()
@@ -167,34 +167,35 @@ import sys
 
 
 # ============================================================================
-# MAIN FLOW
+# MAIN FLOW - MENU DRIVEN (with Q to exit)
 # ============================================================================
+
+# TODO PHASE 1-3: Implement show_menu()
+# Display: Menu header with 6 selectable phases + [R]un all + [Q]uit
+# Reference: See completed version for menu layout
+# Return: Nothing (just prints)
 
 # TODO PHASE 1-3: Implement main()
 # Flow:
-# 1. clear_screen() and print title
-# 2. Print course overview (6 topics)
-# 3. input("Press [ENTER]...")
-# 4. run_pre_deployment_checklist()
-#    - If fails: input("Fix issues...") and return
-# 5. show_environment_setup()
-# 6. input("[ENTER]...")
-# 7. show_docker_templates()
-# 8. input("[ENTER]...")
-# 9. show_deployment_comparison()
-# 10. input("[ENTER]...")
-# 11. select_deployment_platform()
-# 12. input(f"[ENTER] to see {platform}...")
-# 13. generate_deployment_instructions(platform)
-# 14. input("[ENTER]...")
-# 15. show_production_patterns()
-# 16. Print_section("NEXT STEPS") with summary checklist
-# 17. Print final instructions (create .env, docker-compose up, deploy)
+# 1. Loop forever (until user selects Q)
+# 2. show_menu() displays all options
+# 3. Get user input: [1-6] for specific phase, [R] for full walkthrough, [Q] to quit
+# 4. If Q: print goodbye message and break loop
+# 5. If R: run all phases sequentially (old main() flow)
+# 6. If 1-6: run selected phase only
+# 7. After each choice: input("[ENTER] to return to menu...")
+# 8. Loop back to show_menu()
 
+# >>> REFERENCE: See completed version for full menu implementation
+# - Uses show_menu() function with loop
+# - Each phase can run independently
+# - [R]un all runs complete flow
+# - [Q]uit exits gracefully (no Ctrl+C needed)
 
-# TODO PHASE 1-3: Add try/except in main for KeyboardInterrupt
+# TODO PHASE 1-3: Add try/except for KeyboardInterrupt
 # Print: "\n\n⚠️  Interrupted. Bye!"
-# Exit with sys.exit(0)
+# Also catch general Exception: print error and exit with code 1
+# Exit with sys.exit(0) or sys.exit(1)
 
 
 if __name__ == "__main__":

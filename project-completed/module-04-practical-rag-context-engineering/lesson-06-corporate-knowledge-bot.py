@@ -52,7 +52,7 @@ except ImportError:
 def deploy_knowledge_assistant(
     documents: List[str],
     queries: Optional[List[str]] = None,
-    embedding_provider: str = "openrouter",
+    embedding_provider: str = "cohere",
     chunk_size: int = 512,
     top_k: int = 5,
     interactive_mode: bool = False,
