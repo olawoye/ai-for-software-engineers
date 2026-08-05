@@ -35,7 +35,7 @@ if "max_tokens" not in st.session_state:
 # HEADER & INTRODUCTION
 # ============================================================================
 
-st.title("🚀 Rapid Prototyping with Streamlit")
+st.title("🚀 Rapid AI App Prototyping with Streamlit")
 st.markdown("""
 This lesson shows how **Streamlit** lets you build AI applications in minutes.
 Pick a use case, configure settings, and see instant results.

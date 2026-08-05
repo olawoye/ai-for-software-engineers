@@ -29,12 +29,65 @@ from pathlib import Path
 from typing import List, Dict, Optional
 import numpy as np
 
-# Add project paths
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-sys.path.insert(0, str(Path(__file__).parent / "shared"))
-
-from shared.embeddings import EmbeddingEngine
+# Import from shared module
+sys.path.insert(0, str(Path(__file__).parent))
+from shared.embeddings import EmbeddingEngine, batch_similarity
 from shared.vector_store import VectorStore
+
+
+# ============================================================================
+# UTILITY FUNCTIONS
+# ============================================================================
+
+def load_sample_corpus() -> List[str]:
+    """Load sample documents from sample-corpus.json."""
+    corpus_path = Path(__file__).parent.parent.parent / "datasets" / "sample-corpus.json"
+    try:
+        with open(corpus_path, "r") as f:
+            data = json.load(f)
+            docs = list(data["sample_corpus"].values())
+            return docs
+    except Exception as e:
+        print(f"Warning: Could not load corpus ({e}), using fallback HR documents")
+        return [
+            "Remote work policy: All employees can work remotely up to 3 days per week. "
+            "Remote stipend of $500/month is provided. Home office setup must be approved by manager. "
+            "Equipment provided includes laptop and monitor.",
+            
+            "Health benefits: Comprehensive health insurance covers medical, dental, and vision. "
+            "Employee contribution is 15% of premium. Dependents can be added for additional cost. "
+            "Open enrollment period is in October each year.",
+            
+            "PTO policy: All employees receive 25 days paid time off per year plus 10 company holidays. "
+            "Unused PTO does not roll over. Minimum 2-week notice required for vacation planning. "
+            "Sick leave is separate and unlimited.",
+        ]
+
+
+def clear_screen():
+    """Clear terminal screen."""
+    os.system("clear" if os.name == "posix" else "cls")
+
+
+def show_menu():
+    """Display main menu."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("🚀 LESSON 4.4: BUILDING THE RAG PIPELINE".center(70))
+    print("=" * 70)
+    print()
+    print("  Choose a pattern to learn:\n")
+    print("    [1] PATTERN: Core RAG Pipeline")
+    print("        → Build end-to-end: embed → retrieve → augment → generate\n")
+    print("    [2] PATTERN: Retrieval Quality")
+    print("        → Test with multiple queries, evaluate similarity rankings\n")
+    print("    [3] PATTERN: Chunking Strategy")
+    print("        → Compare different chunk sizes and their impact\n")
+    print("    [4] PATTERN: Pipeline Stages")
+    print("        → Understand each stage and optimize independently\n")
+    print("    [Q] Quit\n")
+    print("=" * 70)
+
 
 # ============================================================================
 # CORE TEMPLATE METHOD: build_rag_pipeline()
@@ -51,7 +104,7 @@ def build_rag_pipeline(
     chunk_overlap: int = 50,
     embedding_provider: str = "cohere",
     openrouter_key: Optional[str] = None,
-    llm_model: str = "meta-llama/llama-2-7b-chat",
+    llm_model: str = "openai/gpt-3.5-turbo",
 ) -> Dict:
     """
     Build and execute a complete RAG pipeline end-to-end.
@@ -72,7 +125,7 @@ def build_rag_pipeline(
         chunk_overlap: Overlap between chunks (default: 50)
         embedding_provider: "openrouter", "cohere", or "tfidf" (default: "openrouter")
         openrouter_key: OpenRouter API key (if None, uses OPENROUTER_API_KEY env var)
-        llm_model: Model identifier for OpenRouter LLM calls (default: llama-2-7b-chat)
+        llm_model: Model identifier for OpenRouter LLM calls (default: openai/gpt-3.5-turbo)
 
     Returns:
         Dict containing:
@@ -114,11 +167,16 @@ def build_rag_pipeline(
             })
             chunk_id += 1
 
-    # Create vector store and add all chunks
+    # Create vector store and add all chunks at once (batch operation)
     embedding_dim = embedded_chunks[0]["embedding"].shape[0] if embedded_chunks else 1536
     vector_store = VectorStore(embedding_dim=embedding_dim)
-    for chunk in embedded_chunks:
-        vector_store.add(chunk["text"], chunk["embedding"], {"chunk_id": chunk["chunk_id"]})
+    
+    # Batch add: collect all data first, then add in one call
+    if embedded_chunks:
+        chunk_texts = [c["text"] for c in embedded_chunks]
+        chunk_embeddings = np.array([c["embedding"] for c in embedded_chunks])
+        chunk_metadata = [{"chunk_id": c["chunk_id"], "doc_idx": c["doc_idx"]} for c in embedded_chunks]
+        vector_store.add(chunk_texts, chunk_embeddings, chunk_metadata)
 
     # ---- STAGE 2: RETRIEVAL ----
     # Embed query and search for relevant documents
@@ -298,43 +356,24 @@ def _generate_answer_with_llm(
 def demo_core_method():
     """Demonstrate the core build_rag_pipeline() method in action."""
     print("\n" + "=" * 70)
-    print("DEMO 1: CORE RAG PIPELINE")
+    print("PATTERN 1: CORE RAG PIPELINE")
     print("=" * 70)
 
-    # HR knowledge base for the business scenario
-    hr_documents = [
-        "Remote work policy: All employees can work remotely up to 3 days per week. "
-        "Remote stipend of $500/month is provided. Home office setup must be approved by manager. "
-        "Equipment provided includes laptop and monitor.",
-        
-        "Health benefits: Comprehensive health insurance covers medical, dental, and vision. "
-        "Employee contribution is 15% of premium. Dependents can be added for additional cost. "
-        "Open enrollment period is in October each year.",
-        
-        "PTO policy: All employees receive 25 days paid time off per year plus 10 company holidays. "
-        "Unused PTO does not roll over. Minimum 2-week notice required for vacation planning. "
-        "Sick leave is separate and unlimited.",
-        
-        "Parental leave: 16 weeks paid leave for primary caregiver, 8 weeks for secondary. "
-        "Benefits continue during leave. Job guaranteed upon return. "
-        "Gradual return-to-work options available.",
-        
-        "Professional development: $2,000 annual budget per employee for courses and conferences. "
-        "Company pays for LinkedIn Learning subscriptions. Tuition reimbursement available for degrees. "
-        "Internal mentorship program available.",
-    ]
+    # Load real HR documents from sample-corpus.json
+    documents = load_sample_corpus()
 
-    query = "Can I work remotely and what office equipment do I get?"
+    query = "What is the remote work policy and what equipment does the company provide?"
     print(f"\nQuery: {query}")
-    print(f"Knowledge base size: {len(hr_documents)} documents\n")
+    print(f"Knowledge base size: {len(documents)} documents\n")
 
-    # Build RAG pipeline
+    # Build RAG pipeline with OpenRouter (uses GPT-3.5 by default)
     result = build_rag_pipeline(
-        documents=hr_documents,
+        documents=documents,
         query=query,
         top_k=3,
-        embedding_provider="openrouter",
+        embedding_provider="cohere",
         openrouter_key=os.getenv("OPENROUTER_API_KEY"),
+        llm_model="openai/gpt-3.5-turbo",
     )
 
     # Display results
@@ -360,20 +399,16 @@ def demo_core_method():
 def demo_retrieval_quality():
     """Show how retrieval quality affects final answers."""
     print("\n" + "=" * 70)
-    print("DEMO 2: RETRIEVAL QUALITY IMPACT")
+    print("PATTERN 2: RETRIEVAL QUALITY IMPACT")
     print("=" * 70)
 
-    documents = [
-        "Python is a high-level programming language with dynamic typing.",
-        "TypeScript adds static type checking to JavaScript.",
-        "Rust provides memory safety without garbage collection.",
-        "Go was designed for systems programming and concurrency.",
-    ]
+    # Load sample corpus
+    documents = load_sample_corpus()
 
     queries = [
-        "What language should I use for systems programming?",
-        "Which language has dynamic typing?",
-        "Tell me about type safety in programming languages.",
+        "What is the remote work policy?",
+        "What benefits are available?",
+        "How much vacation time do I get?",
     ]
 
     print(f"\nDocuments in KB: {len(documents)}")
@@ -384,8 +419,9 @@ def demo_retrieval_quality():
             documents=documents,
             query=query,
             top_k=2,
-            embedding_provider="openrouter",
+            embedding_provider="cohere",
             openrouter_key=os.getenv("OPENROUTER_API_KEY"),
+            llm_model="openai/gpt-3.5-turbo",
         )
 
         print(f"\n  Query {i}: {query}")
@@ -397,7 +433,7 @@ def demo_retrieval_quality():
 def demo_chunking_strategy():
     """Demonstrate impact of different chunking strategies."""
     print("\n" + "=" * 70)
-    print("DEMO 3: CHUNKING STRATEGY COMPARISON")
+    print("PATTERN 3: CHUNKING STRATEGY COMPARISON")
     print("=" * 70)
 
     # Long document
@@ -431,7 +467,7 @@ def demo_chunking_strategy():
 def demo_pipeline_stages():
     """Break down and explain each stage of the RAG pipeline."""
     print("\n" + "=" * 70)
-    print("DEMO 4: PIPELINE STAGES EXPLAINED")
+    print("PATTERN 4: PIPELINE STAGES EXPLAINED")
     print("=" * 70)
 
     print("""
@@ -477,30 +513,44 @@ STAGE 5: FORMATTING
 
 
 def main():
-    """Run all demonstrations."""
-    print("\n" + "🚀 LESSON 4.4: BUILDING THE RAG PIPELINE".center(70, "="))
-    print("Core Template Method: build_rag_pipeline()")
-    print("Business Scenario: HR Knowledge Assistant")
+    """Main interactive menu loop."""
+    patterns = {
+        "1": (demo_core_method, "Core RAG Pipeline"),
+        "2": (demo_retrieval_quality, "Retrieval Quality"),
+        "3": (demo_chunking_strategy, "Chunking Strategy"),
+        "4": (demo_pipeline_stages, "Pipeline Stages"),
+    }
 
-    try:
-        demo_core_method()
-        demo_retrieval_quality()
-        demo_chunking_strategy()
-        demo_pipeline_stages()
+    while True:
+        show_menu()
+        choice = input("Choose [1-4] or [Q] to quit: ").strip().lower()
 
-        print("\n" + "=" * 70)
-        print("✅ RAG pipeline demonstrations complete!")
-        print("=" * 70)
-        print("\nKey Takeaways:")
-        print("  • build_rag_pipeline() is your extraction point for projects")
-        print("  • Chain: embed_documents() → semantic_search() → build_rag_pipeline()")
-        print("  • Template is production-ready with error handling & fallbacks")
-        print("  • Modify chunk_size, top_k, and model for your use case")
+        if choice == "q":
+            clear_screen()
+            print("\n✅ Thanks for learning! Remember to:")
+            print("   • Extract build_rag_pipeline() into your projects")
+            print("   • Tune chunk_size and top_k for your domain")
+            print("   • Chain: embed_documents() → semantic_search() → build_rag_pipeline()")
+            print("   • Monitor retrieval & generation separately for optimization")
+            print("\n")
+            break
 
-    except Exception as e:
-        print(f"\n❌ Error: {e}")
-        import traceback
-        traceback.print_exc()
+        if choice in patterns:
+            try:
+                pattern_func, pattern_name = patterns[choice]
+                pattern_func()
+            except KeyboardInterrupt:
+                print("\n\n⚠️  Interrupted. Returning to menu.\n")
+            except Exception as e:
+                clear_screen()
+                print(f"\n❌ Error: {e}\n")
+                import traceback
+                traceback.print_exc()
+
+            input("\nPress [ENTER] to return to menu...")
+        else:
+            print("❌ Invalid choice. Try again.")
+            input("\nPress [ENTER] to continue...")
 
 
 if __name__ == "__main__":

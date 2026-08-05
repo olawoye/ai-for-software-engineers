@@ -21,12 +21,39 @@ from pathlib import Path
 from typing import List, Dict, Optional
 import numpy as np
 
-# Add project paths
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-sys.path.insert(0, str(Path(__file__).parent / "shared"))
-
-from shared.embeddings import EmbeddingEngine
+# Import from shared module
+sys.path.insert(0, str(Path(__file__).parent))
+from shared.embeddings import EmbeddingEngine, batch_similarity
 from shared.vector_store import VectorStore
+
+# ============================================================================
+# UTILITY FUNCTIONS
+# ============================================================================
+
+def clear_screen():
+    """Clear terminal screen."""
+    os.system("clear" if os.name == "posix" else "cls")
+
+
+def show_menu():
+    """Display main menu."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("🚀 LESSON 4.5: RAG OPTIMIZATION".center(70))
+    print("=" * 70)
+    print()
+    print("  Choose a pattern to learn:\n")
+    print("    [1] PATTERN: Reranking Impact")
+    print("        → Multi-signal reranking improves result quality\n")
+    print("    [2] PATTERN: Query Expansion")
+    print("        → Expand queries to catch more relevant documents\n")
+    print("    [3] PATTERN: Metadata Filtering")
+    print("        → Filter results by document attributes\n")
+    print("    [4] PATTERN: Evaluation Metrics")
+    print("        → Measure ranking quality with precision, recall, NDCG\n")
+    print("    [Q] Quit\n")
+    print("=" * 70)
+
 
 # ============================================================================
 # CORE TEMPLATE METHOD: improve_retrieval()
@@ -105,6 +132,7 @@ def improve_retrieval(
                 "original_similarity": similarity_score,
                 "improved_score": improved_score,
                 "improvement_method": "rerank",
+                "metadata": result.get("metadata"),
                 "factors": {
                     "similarity": similarity_score,
                     "length_penalty": length_penalty,
@@ -123,6 +151,7 @@ def improve_retrieval(
                 "original_similarity": result["similarity"],
                 "improved_score": combined,
                 "improvement_method": "query_expansion",
+                "metadata": result.get("metadata"),
                 "factors": {
                     "semantic_sim": result["similarity"],
                     "keyword_overlap": keyword_scores[result["chunk_id"]],
@@ -142,6 +171,7 @@ def improve_retrieval(
                 "original_similarity": result["similarity"],
                 "improved_score": improved_score,
                 "improvement_method": "metadata_filtering",
+                "metadata": result.get("metadata"),
                 "factors": {
                     "similarity": result["similarity"],
                     "metadata_boost": metadata_score,
@@ -238,7 +268,7 @@ def _evaluate_ranking(
 def demo_reranking_impact():
     """Show how reranking improves result quality."""
     print("\n" + "=" * 70)
-    print("DEMO 1: RERANKING IMPACT")
+    print("PATTERN 1: RERANKING IMPACT")
     print("=" * 70)
 
     # Simulated raw retrieval results (from Lesson 4.4)
@@ -292,7 +322,7 @@ def demo_reranking_impact():
 def demo_query_expansion():
     """Show improved retrieval through query expansion."""
     print("\n" + "=" * 70)
-    print("DEMO 2: QUERY EXPANSION & KEYWORD OVERLAP")
+    print("PATTERN 2: QUERY EXPANSION & KEYWORD OVERLAP")
     print("=" * 70)
 
     raw_results = [
@@ -337,7 +367,7 @@ def demo_query_expansion():
 def demo_metadata_filtering():
     """Show metadata filtering and scoring."""
     print("\n" + "=" * 70)
-    print("DEMO 3: METADATA FILTERING")
+    print("PATTERN 3: METADATA FILTERING")
     print("=" * 70)
 
     raw_results = [
@@ -388,7 +418,7 @@ def demo_metadata_filtering():
 def demo_evaluation_metrics():
     """Show evaluation metrics for ranking quality."""
     print("\n" + "=" * 70)
-    print("DEMO 4: EVALUATION METRICS")
+    print("PATTERN 4: EVALUATION METRICS")
     print("=" * 70)
 
     improved_results = [
@@ -424,33 +454,44 @@ def demo_evaluation_metrics():
 
 
 def main():
-    """Run all demonstrations."""
-    print("\n" + "🚀 LESSON 4.5: RAG OPTIMIZATION".center(70, "="))
-    print("Core Template Method: improve_retrieval()")
-    print("Business Scenario: Improve Search Result Quality")
+    """Main interactive menu loop."""
+    patterns = {
+        "1": (demo_reranking_impact, "Reranking Impact"),
+        "2": (demo_query_expansion, "Query Expansion"),
+        "3": (demo_metadata_filtering, "Metadata Filtering"),
+        "4": (demo_evaluation_metrics, "Evaluation Metrics"),
+    }
 
-    try:
-        demo_reranking_impact()
-        demo_query_expansion()
-        demo_metadata_filtering()
-        demo_evaluation_metrics()
+    while True:
+        show_menu()
+        choice = input("Choose [1-4] or [Q] to quit: ").strip().lower()
 
-        print("\n" + "=" * 70)
-        print("✅ RAG optimization demonstrations complete!")
-        print("=" * 70)
-        print("\nKey Takeaways:")
-        print("  • improve_retrieval() post-processes without re-retrieving")
-        print("  • Reranking improves quality without API calls")
-        print("  • Metadata filtering targets specific document types")
-        print("  • Evaluation metrics quantify ranking improvements")
-        print("  • Combine techniques for best results")
+        if choice == "q":
+            clear_screen()
+            print("\n✅ Thanks for learning! Remember to:")
+            print("   • Use improve_retrieval() to post-process results")
+            print("   • Reranking is cost-effective (no re-retrieving)")
+            print("   • Combine metadata filtering with semantic search")
+            print("   • Always evaluate with precision, recall, NDCG metrics")
+            print("\n")
+            break
 
-    except NotImplementedError as e:
-        print(f"\n⚠️  {e}")
-    except Exception as e:
-        print(f"\n❌ Error: {e}")
-        import traceback
-        traceback.print_exc()
+        if choice in patterns:
+            try:
+                pattern_func, pattern_name = patterns[choice]
+                pattern_func()
+            except KeyboardInterrupt:
+                print("\n\n⚠️  Interrupted. Returning to menu.\n")
+            except Exception as e:
+                clear_screen()
+                print(f"\n❌ Error: {e}\n")
+                import traceback
+                traceback.print_exc()
+
+            input("\nPress [ENTER] to return to menu...")
+        else:
+            print("❌ Invalid choice. Try again.")
+            input("\nPress [ENTER] to continue...")
 
 
 if __name__ == "__main__":

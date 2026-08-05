@@ -14,6 +14,7 @@ Run: python lesson-03-vector-store-lab.py
 import numpy as np
 import os
 import sys
+import json
 import time
 from pathlib import Path
 from typing import List, Dict, Tuple
@@ -21,12 +22,59 @@ from typing import List, Dict, Tuple
 # Import from shared module
 sys.path.insert(0, str(Path(__file__).parent))
 from shared.embeddings import EmbeddingEngine, batch_similarity
-from shared.vector_store import VectorStore
 
-# Import lesson 4.2 for embedding generation
-import importlib.util
-spec = importlib.util.spec_from_file_location("lesson02", str(Path(__file__).parent / "lesson-02-embedding-your-data.py"))
-lesson02 = importlib.util.module_from_spec(spec)
+# Note: VectorStore is optional; graceful fallback for demos
+try:
+    from shared.vector_store import VectorStore
+    HAS_VECTOR_STORE = True
+except ImportError:
+    HAS_VECTOR_STORE = False
+
+
+# ============================================================================
+# UTILITY FUNCTIONS
+# ============================================================================
+
+def load_sample_corpus() -> List[str]:
+    """Load sample documents from sample-corpus.json."""
+    corpus_path = Path(__file__).parent.parent.parent / "datasets" / "sample-corpus.json"
+    try:
+        with open(corpus_path, "r") as f:
+            data = json.load(f)
+            docs = list(data["sample_corpus"].values())
+            return docs
+    except Exception as e:
+        print(f"Warning: Could not load corpus ({e}), using minimal sample")
+        return [
+            "Sample document 1: Basic content",
+            "Sample document 2: More content",
+            "Sample document 3: Additional content"
+        ]
+
+
+def clear_screen():
+    """Clear terminal screen."""
+    os.system("clear" if os.name == "posix" else "cls")
+
+
+def show_menu():
+    """Display main menu."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("🚀 LESSON 4.3: THE VECTOR STORE LAB".center(70))
+    print("=" * 70)
+    print()
+    print("  Choose a pattern to learn:\n")
+    print("    [1] PATTERN: Core semantic_search() Template")
+    print("        → Store embeddings, execute semantic search, return ranked results\n")
+    print("    [2] PATTERN: Vector Store Backends Comparison")
+    print("        → NumPy (in-memory) vs FAISS (optimized) performance\n")
+    print("    [3] PATTERN: Metadata Filtering")
+    print("        → Filter results by document metadata/categories\n")
+    print("    [4] PATTERN: Vector Store Options Overview")
+    print("        → Survey of production vector store implementations\n")
+    print("    [Q] Quit\n")
+    print("=" * 70)
 
 
 # ============================================================================
@@ -89,6 +137,25 @@ def semantic_search(
     if not embedded_chunks:
         print("⚠️  No embedded chunks provided")
         return []
+    
+    if not HAS_VECTOR_STORE:
+        print("⚠️  VectorStore module not available. Using fallback similarity computation.")
+        # Fallback: compute similarities directly
+        embedding_dim = embedded_chunks[0]['embedding'].shape[0]
+        chunk_embeddings = np.array([c['embedding'] for c in embedded_chunks])
+        similarities = batch_similarity(chunk_embeddings, query_embedding)
+        
+        sorted_indices = np.argsort(-similarities)[:top_k]
+        final_results = []
+        for rank, idx in enumerate(sorted_indices, 1):
+            final_results.append({
+                'rank': rank,
+                'chunk_id': embedded_chunks[idx]['chunk_id'],
+                'text': embedded_chunks[idx]['text'],
+                'similarity': float(similarities[idx]),
+                'metadata': embedded_chunks[idx]['metadata'],
+            })
+        return final_results
     
     embedding_dim = embedded_chunks[0]['embedding'].shape[0]
     vector_store = VectorStore(embedding_dim=embedding_dim, use_faiss=use_faiss)
@@ -185,17 +252,12 @@ def compare_search_backends(
 def demo_core_method():
     """Demonstrate the semantic_search() template method."""
     print("\n" + "=" * 70)
-    print("DEMO 1: Core Method - semantic_search()")
+    print("PATTERN 1: Core Method - semantic_search()")
     print("=" * 70)
     
-    # Generate sample embedded chunks (from Lesson 4.2 pattern)
-    sample_docs = [
-        "Our company was founded in 2010. We serve 10,000+ customers worldwide.",
-        "We offer competitive salaries and comprehensive benefits packages.",
-        "Remote work is encouraged. Employees get $500/month home office stipend.",
-        "We maintain offices in San Francisco, London, and Singapore.",
-        "Our flagship product, AI Studio, helps teams build AI applications.",
-    ]
+    # Load sample corpus (Employment Agreement + Remote Work Policy)
+    all_docs = load_sample_corpus()
+    sample_docs = all_docs[:2]  # Use first 2 documents from corpus
     
     # For demo, use TF-IDF embeddings (always available)
     engine = EmbeddingEngine(method="tfidf")
@@ -238,20 +300,13 @@ def demo_core_method():
 def demo_vector_store_backends():
     """Compare in-memory vs FAISS backends."""
     print("\n" + "=" * 70)
-    print("DEMO 2: Vector Store Backends Comparison")
+    print("PATTERN 2: Vector Store Backends Comparison")
     print("=" * 70)
     
-    # Create larger document set
-    sample_docs = [
-        "Python is a popular programming language for data science.",
-        "JavaScript enables interactive web applications.",
-        "Rust provides memory safety without garbage collection.",
-        "Go excels at concurrent and distributed systems.",
-        "Java powers enterprise backend applications.",
-        "C++ offers high performance for systems programming.",
-        "TypeScript adds static typing to JavaScript.",
-        "Swift is Apple's modern programming language.",
-    ]
+    # Load sample corpus
+    all_docs = load_sample_corpus()
+    # Use first 5 documents for backend comparison
+    sample_docs = all_docs[:5]
     
     engine = EmbeddingEngine(method="tfidf")
     embeddings = engine.embed_documents(sample_docs)
@@ -278,25 +333,22 @@ def demo_vector_store_backends():
     print("Performance Comparison:")
     print(f"  NumPy search: {perf['numpy']['time']*1000:.2f}ms ({perf['numpy']['results']} results)")
     if 'faiss' in perf:
-        print(f"  FAISS search: {perf['faiss']['time']*1000:.2f}ms ({perf['faiss']['results']} results)")
+        print(f"  FAISS search: {perf['faiss']['time']*1000:.2f}ms ({perf['faiss']['results']} results) [ACTUAL IMPLEMENTATION]")
         print(f"  Speedup: {perf.get('speedup', 1.0):.1f}x")
+    else:
+        print("  FAISS: Not installed (requires: pip install faiss-cpu)")
 
 
 def demo_metadata_filtering():
     """Demonstrate filtering results by metadata."""
     print("\n" + "=" * 70)
-    print("DEMO 3: Metadata Filtering")
+    print("PATTERN 3: Metadata Filtering")
     print("=" * 70)
     
-    # Documents with rich metadata
-    sample_docs = [
-        "Our health insurance covers medical, dental, and vision.",
-        "We offer unlimited PTO for all full-time employees.",
-        "Annual salary ranges from $100k to $200k based on experience.",
-        "We provide $5000 annual professional development budget.",
-        "401(k) matching program: 4% employer contribution.",
-        "Stock options available for senior positions.",
-    ]
+    # Load sample corpus
+    all_docs = load_sample_corpus()
+    # Use first 3 documents for metadata filtering demo
+    sample_docs = all_docs[:3]
     
     engine = EmbeddingEngine(method="tfidf")
     embeddings = engine.embed_documents(sample_docs)
@@ -343,7 +395,7 @@ def demo_metadata_filtering():
 def demo_vector_store_options():
     """Overview of vector store options for production."""
     print("\n" + "=" * 70)
-    print("DEMO 4: Vector Store Options for Production")
+    print("PATTERN 4: Vector Store Options for Production")
     print("=" * 70)
     
     print("""
@@ -398,24 +450,50 @@ Vector Store Implementations:
    Use: Modern vector search applications
 
 **For this lesson:** We demonstrate NumPy (always available) with FAISS as an optional optimization.
+**About FAISS:** Pattern 2 attempts to use FAISS if installed (pip install faiss-cpu).
+              If FAISS is not available, it gracefully falls back to NumPy similarity search.
 """)
 
 
-if __name__ == "__main__":
-    # Run all demonstrations
-    embedded_chunks, results = demo_core_method()
-    demo_vector_store_backends()
-    demo_metadata_filtering()
-    demo_vector_store_options()
+def main():
+    """Main interactive menu loop."""
+    patterns = {
+        "1": (demo_core_method, "Core semantic_search() Template"),
+        "2": (demo_vector_store_backends, "Vector Store Backends Comparison"),
+        "3": (demo_metadata_filtering, "Metadata Filtering"),
+        "4": (demo_vector_store_options, "Vector Store Options Overview"),
+    }
     
-    print("\n" + "=" * 70)
-    print("✓ Lesson 4.3 Complete: Vector store indexing and semantic search!")
-    print("=" * 70)
-
-    except Exception as e:
-        print(f"\n❌ Error: {e}")
-        import traceback
-        traceback.print_exc()
+    while True:
+        show_menu()
+        choice = input("Choose [1-4] or [Q] to quit: ").strip().lower()
+        
+        if choice == "q":
+            clear_screen()
+            print("\n✅ Thanks for learning! Remember to:")
+            print("   • Extract semantic_search() into your projects")
+            print("   • Choose the right vector store for your scale")
+            print("   • Use metadata filtering for faceted search")
+            print("   • Profile performance (NumPy vs FAISS) for your use case")
+            print("\n")
+            break
+        
+        if choice in patterns:
+            try:
+                pattern_func, pattern_name = patterns[choice]
+                pattern_func()
+            except KeyboardInterrupt:
+                print("\n\n⚠️  Interrupted. Returning to menu.\n")
+            except Exception as e:
+                clear_screen()
+                print(f"\n❌ Error: {e}\n")
+                import traceback
+                traceback.print_exc()
+            
+            input("\nPress [ENTER] to return to menu...")
+        else:
+            print("❌ Invalid choice. Try again.")
+            input("\nPress [ENTER] to continue...")
 
 
 if __name__ == "__main__":

@@ -35,7 +35,7 @@ CHAT_MODEL = DEFAULT_MODEL
 # This shapes how the AI behaves across all messages
 SYSTEM_PROMPT = """You are a helpful, concise AI assistant.
 Answer questions clearly and directly.
-If you don't know something, say so honestly."""
+If you don't know something, say so honestly"""
 
 # >>> REFERENCE: Context window management
 # Different models have different limits. GPT-3.5: 4k, GPT-4: 8k/128k, Claude: 100k+
@@ -195,9 +195,13 @@ if user_input:
             # >>> REFERENCE: Format conversation as prompt
             # This is what gets sent to the API
             prompt = ""
-            for msg in api_messages[1:]:  # Skip system (handled separately by API)
-                role_label = "User" if msg["role"] == "user" else "Assistant"
-                prompt += f"{role_label}: {msg['content']}\n"
+            # >>> IMPORTANT: Include system prompt at the beginning
+            for msg in api_messages:  # Include ALL messages, including system
+                if msg["role"] == "system":
+                    prompt += f"SYSTEM INSTRUCTIONS:\n{msg['content']}\n\n"
+                else:
+                    role_label = "User" if msg["role"] == "user" else "Assistant"
+                    prompt += f"{role_label}: {msg['content']}\n"
             prompt += "Assistant:"
 
             start_time = time.time()
@@ -262,10 +266,12 @@ with st.expander("👨‍💻 How This Works (Developer View)"):
     - Temperature: `{TEMPERATURE}` (0.7 = balanced)
     - In production: expose these in admin/settings, not user UI
 
-    **System Prompt:**
-    - Controls assistant behavior across all messages
-    - Current: "Helpful, concise assistant"
-    - To customize: edit SYSTEM_PROMPT variable (line 30)
+    **System Prompt (Controls Assistant Behavior):**
+    
+    Current system prompt:
+    > {SYSTEM_PROMPT}
+    
+    This prompt is prepended to every API call, shaping how the assistant responds.
 
     **Error Handling:**
     - If API fails, user message is removed from history
@@ -298,21 +304,25 @@ with st.expander("🔧 Try This"):
     st.markdown("""
     **Modify the code to experiment:**
 
-    1. **Change system prompt** (line 30):
+    1. **Change system prompt:**
+       - Find the `SYSTEM_PROMPT` variable (starts with triple quotes)
        - Try: "You are a Shakespeare expert" or "You are extremely sarcastic"
-       - Notice how responses change immediately
+       - Notice how responses change immediately (LLM now follows new instructions)
 
-    2. **Adjust temperature** (line 41):
+    2. **Adjust temperature:**
+       - Find `TEMPERATURE = TEMP_BALANCED`
        - Change to 0.3 (very precise) or 0.9 (very creative)
        - Try: "Write a poem about AI"
 
-    3. **Switch models** (line 21):
-       - Use `"gpt-4"` instead of `"gpt-3.5-turbo"`
+    3. **Switch models:**
+       - Find `CHAT_MODEL = DEFAULT_MODEL`
+       - Change to `"gpt-4"` or other available models
        - Compare quality vs speed tradeoffs
 
-    4. **Reduce context** (line 35):
-       - Change `MAX_CONTEXT_TOKENS = 3000` to `= 1000`
-       - See how old messages get dropped
+    4. **Reduce context window:**
+       - Find `MAX_CONTEXT_TOKENS = 3000`
+       - Change to `= 1000`
+       - See how old messages get dropped when conversation gets long
     """)
 
 st.caption("Module 3.4 • Building Chat Interfaces • Multi-turn conversation with context management")

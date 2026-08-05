@@ -383,7 +383,7 @@ def pattern_3_chunking_strategies():
         chunks = _smart_chunk(sample_text, chunk_size=chunk_size, overlap=20)
         print(f"Chunk size={chunk_size}: {len(chunks)} chunks")
         for i, c in enumerate(chunks):
-            print(f"  [{i+1}] ({len(c)} chars) {c[:60]}...")
+            print(f"  [{i+1}] ({len(c)} chars) {c[:300] + '...' if len(c) > 300 else c}")
 
     print("\n" + "-" * 70)
     print("✅ Pattern complete. Return to menu.")

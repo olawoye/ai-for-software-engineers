@@ -33,9 +33,8 @@ from typing import List, Dict, Optional, Tuple
 from datetime import datetime
 import json
 
-# Add project paths
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-sys.path.insert(0, str(Path(__file__).parent / "shared"))
+# Import from shared module
+sys.path.insert(0, str(Path(__file__).parent))
 
 try:
     from shared.embeddings import EmbeddingEngine
@@ -43,6 +42,46 @@ try:
 except ImportError:
     EmbeddingEngine = None
     VectorStore = None
+
+# Optional Streamlit import (for UI mode)
+try:
+    import streamlit as st
+    HAS_STREAMLIT = True
+except ImportError:
+    HAS_STREAMLIT = False
+
+
+# ============================================================================
+# COMPANY CONFIGURATION
+# ============================================================================
+COMPANY_NAME = "TechCorp Inc"
+COMPANY_TAGLINE = "Innovating the Future Together"
+EMPLOYEE_NAME = "John"  # Can be customized per user/session
+
+
+# ============================================================================
+# UTILITY: Load Sample Corpus
+# ============================================================================
+
+def load_sample_corpus() -> List[str]:
+    """Load sample documents from sample-corpus.json."""
+    corpus_path = Path(__file__).parent.parent.parent / "datasets" / "sample-corpus.json"
+    try:
+        with open(corpus_path, "r") as f:
+            data = json.load(f)
+            docs = list(data["sample_corpus"].values())
+            print(f"✓ Loaded {len(docs)} documents from sample-corpus.json")
+            return docs
+    except Exception as e:
+        print(f"Warning: Could not load corpus ({e}), using default sample")
+        return [
+            "Our company values innovation, collaboration, and continuous learning.",
+            "We support remote work with flexible hours and $500/month home office stipend.",
+            "Our tech stack includes Python, Go, TypeScript, and PostgreSQL.",
+            "We have offices in San Francisco, London, and Singapore.",
+            "All employees receive comprehensive health insurance and unlimited PTO.",
+        ]
+
 
 # ============================================================================
 # CORE TEMPLATE METHOD: deploy_knowledge_assistant()
@@ -462,133 +501,470 @@ def main():
 
 if __name__ == "__main__":
     main()
-with st.sidebar:
-    st.header("⚙️ Knowledge Bot Configuration")
 
-    search_method = st.radio(
-        "Search Method",
-        ["Semantic (Embeddings)", "Keyword Match"],
-        help="Semantic uses AI embeddings; Keyword uses exact word matching",
+
+# ============================================================================
+# STREAMLIT UI (only runs when: streamlit run lesson-06-corporate-knowledge-bot.py)
+# ============================================================================
+
+if HAS_STREAMLIT:
+    def _generate_answer_with_llm(
+        prompt: str,
+        api_key: Optional[str] = None,
+        model: str = "openai/gpt-3.5-turbo",
+    ) -> str:
+        """
+        Generate an answer using OpenRouter LLM API.
+        
+        Adapted from Lesson 4.4 pattern.
+        Falls back gracefully if API key is missing.
+        """
+        if not api_key:
+            # Fallback: return simple extraction-based answer
+            return "[To enable full LLM answers, set OPENROUTER_API_KEY environment variable]"
+
+        try:
+            import requests
+        except ImportError:
+            return "[requests library required for LLM calls]"
+
+        # Call OpenRouter API
+        try:
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "HTTP-Referer": "https://github.com/AIForSoftwareEngineers",
+                    "X-Title": "Corporate Knowledge Bot",
+                },
+                json={
+                    "model": model,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.3,
+                    "max_tokens": 300,
+                },
+                timeout=15,
+            )
+
+            if response.status_code == 200:
+                result = response.json()
+                return result.get("choices", [{}])[0].get("message", {}).get("content", "No response from LLM")
+            else:
+                return f"[LLM Error: {response.status_code}]"
+        except Exception as e:
+            return f"[LLM Error: {str(e)}]"
+
+    def generate_answer_from_context(query: str, retrieved_docs: List[Dict], company_name: str) -> tuple:
+        """
+        Generate a natural language answer grounded in retrieved documents.
+        
+        Uses OpenRouter LLM if available, falls back to document extraction.
+        Returns: (answer_text, source_titles)
+        """
+        if not retrieved_docs:
+            return "No relevant documents found. Try using different search terms or adding more documents.", []
+        
+        # Extract source titles (keep them short for citations)
+        source_titles = []
+        context_parts = []
+        
+        for doc_info in retrieved_docs:
+            doc_text = doc_info['document']
+            # Extract title (first 50 chars as doc name)
+            title = doc_text[:50].replace('\n', ' ').strip()
+            if len(doc_text) > 50:
+                title += "..."
+            source_titles.append(title)
+            
+            # Use first 400 chars for context
+            context_parts.append(doc_text[:400])
+        
+        context = "\n\n".join(context_parts)
+        
+        # Build augmented prompt (Lesson 4.4 pattern) with system role context
+        augmented_prompt = f"""You are an internal company AI assistant for employees at {company_name}.
+Your role is to help {EMPLOYEE_NAME} find information and answers from company policies and documents.
+
+Answer the user's question based ONLY on the provided context.
+If the context doesn't contain enough information, say so briefly.
+Provide a natural, friendly answer (1-2 sentences). Do not quote directly from documents.
+
+CONTEXT:
+{context}
+
+USER QUESTION:
+{query}
+
+ANSWER:"""
+        
+        # Try OpenRouter first
+        openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        if openrouter_key:
+            answer = _generate_answer_with_llm(
+                prompt=augmented_prompt,
+                api_key=openrouter_key,
+                model="openai/gpt-3.5-turbo",
+            )
+            if not answer.startswith("["):  # If not an error
+                return answer, source_titles
+        
+        # Fallback: Extract key sentences from best document
+        best_doc = retrieved_docs[0]['document']
+        sentences = best_doc.replace('\n', ' ').split('. ')
+        query_words = set(query.lower().split())
+        
+        scored_sentences = []
+        for sent in sentences:
+            if not sent.strip():
+                continue
+            sent_words = set(sent.lower().split())
+            score = len(query_words & sent_words) / (len(query_words) + 1)
+            scored_sentences.append((score, sent))
+        
+        scored_sentences.sort(reverse=True)
+        selected = [s[1] for s in scored_sentences[:2] if s[0] > 0]
+        answer = ". ".join(selected).strip()
+        if not answer:
+            answer = best_doc[:200].replace('\n', ' ')
+        
+        return answer, source_titles
+    
+    # Simple wrapper class for bot results with real search capability
+    class StreamlitBotWrapper:
+        """Wraps deploy_knowledge_assistant output for Streamlit UI with semantic search."""
+        def __init__(self, results_dict: Dict, documents: List[str] = None, embedding_engine=None):
+            self._results = results_dict
+            self.query_history = results_dict.get("query_history", [])
+            self.answers = results_dict.get("answers", [])
+            self.bot_stats = results_dict.get("bot_stats", {})
+            self.documents = documents or []
+            self.embedding_engine = embedding_engine
+            self.doc_embeddings = []
+            
+            # Pre-compute embeddings for documents if available
+            if self.embedding_engine and self.documents:
+                try:
+                    self.doc_embeddings = [
+                        self.embedding_engine.embed_query(doc) for doc in self.documents
+                    ]
+                    print(f"✓ Pre-computed {len(self.doc_embeddings)} embeddings")
+                except Exception as e:
+                    print(f"⚠ Warning: Could not pre-compute embeddings ({e}). Will use keyword fallback.")
+                    self.doc_embeddings = []
+            
+        def get_stats(self) -> Dict:
+            """Get bot statistics."""
+            return self.bot_stats
+        
+        def _keyword_search(self, query: str, top_k: int = 5) -> List[tuple]:
+            """Fallback keyword-based search when embeddings unavailable."""
+            query_words = set(query.lower().split())
+            scores = []
+            
+            for i, doc in enumerate(self.documents):
+                doc_words = set(doc.lower().split())
+                # Simple Jaccard similarity: intersection / union
+                if not doc_words:
+                    score = 0.0
+                else:
+                    intersection = len(query_words & doc_words)
+                    union = len(query_words | doc_words)
+                    score = intersection / union if union > 0 else 0.0
+                scores.append((i, score, doc))
+            
+            # Sort by score and return top-k
+            scores.sort(key=lambda x: x[1], reverse=True)
+            return scores[:top_k]
+            
+        def search(self, query: str, top_k: int = 5) -> Dict:
+            """Search knowledge base with semantic similarity or keyword fallback."""
+            retrieved_documents = []
+            
+            if not self.documents:
+                return {"query": query, "retrieved_documents": []}
+            
+            try:
+                # If embeddings are available, use semantic search
+                if self.embedding_engine and self.doc_embeddings:
+                    try:
+                        # Embed query
+                        query_embedding = self.embedding_engine.embed_query(query)
+                        
+                        # Compute similarities
+                        import numpy as np
+                        similarities = []
+                        for i, doc_embedding in enumerate(self.doc_embeddings):
+                            dot = np.dot(query_embedding, doc_embedding)
+                            norm = np.linalg.norm(query_embedding) * np.linalg.norm(doc_embedding)
+                            similarity = dot / (norm + 1e-8)
+                            similarities.append((i, similarity, self.documents[i]))
+                        
+                        # Sort by similarity and get top-k
+                        similarities.sort(key=lambda x: x[1], reverse=True)
+                        top_results = similarities[:top_k]
+                    except Exception as e:
+                        print(f"⚠ Semantic search failed ({e}), falling back to keyword search")
+                        top_results = self._keyword_search(query, top_k)
+                else:
+                    # No embeddings available, use keyword search
+                    top_results = self._keyword_search(query, top_k)
+                
+                # Format results
+                for rank, (doc_idx, score, doc_text) in enumerate(top_results, 1):
+                    retrieved_documents.append({
+                        "document": doc_text,
+                        "similarity": float(score),
+                        "metadata": {"doc_idx": doc_idx, "rank": rank}
+                    })
+            except Exception as e:
+                print(f"✗ Search error ({e})")
+            
+            return {"query": query, "retrieved_documents": retrieved_documents}
+
+    # ========================================================================
+    # Initialize Streamlit App
+    # ========================================================================
+    st.set_page_config(
+        page_title="Corporate Knowledge Bot",
+        page_icon="🤖",
+        layout="wide",
     )
 
-    top_k = st.slider("Number of Results", 1, 10, 5)
+    st.title(f"🤖 {COMPANY_NAME} Knowledge Assistant")
+    st.markdown(f"*{COMPANY_TAGLINE}*")
 
+    # ========================================================================
+    # Initialize Session State
+    # ========================================================================
+    if "bot" not in st.session_state:
+        # Load sample documents from corporate knowledge base
+        sample_documents = load_sample_corpus()
+        
+        # Initialize the bot using deploy_knowledge_assistant
+        bot_results = deploy_knowledge_assistant(
+            documents=sample_documents,
+            embedding_provider="cohere",
+            chunk_size=512,
+            top_k=5,
+            interactive_mode=False,
+        )
+        
+        # Initialize embedding engine for search functionality
+        # Cohere is optional (requires API key) - keyword search works without setup
+        embedding_engine = None
+        embedding_method = "keyword"
+        
+        try:
+            cohere_key = os.getenv("COHERE_API_KEY")
+            if cohere_key:
+                try:
+                    embedding_engine = EmbeddingEngine(
+                        method="cohere",
+                        cohere_api_key=cohere_key,
+                    )
+                    embedding_method = "cohere"
+                    print("✓ Cohere embedding engine initialized (semantic search enabled)")
+                except Exception as e:
+                    print(f"⚠ Cohere initialization failed ({e}), using keyword search")
+            else:
+                print("ℹ COHERE_API_KEY not set - using keyword search (set env var for semantic search)")
+        except Exception as e:
+            print(f"⚠ Error checking embeddings ({e})")
+        
+        # Wrap results in bot wrapper for Streamlit interface with real search capability
+        st.session_state.bot = StreamlitBotWrapper(
+            bot_results,
+            documents=sample_documents,
+            embedding_engine=embedding_engine,
+        )
+        st.session_state.chat_history = []
+        st.session_state.all_documents = sample_documents
+        st.session_state.search_method = embedding_method
+
+    # ========================================================================
+    # Main Chat Interface (Top Section)
+    # ========================================================================
+    
+    # Header with search method, doc count, and Manage Docs anchor link
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        st.markdown(f"**Search Method:** {st.session_state.get('search_method', 'keyword').capitalize()} | **Docs:** {len(st.session_state.all_documents)}")
+    with col2:
+        st.markdown("[📁 Manage Docs](#manage-docs-section)")
+    
     st.divider()
 
-    # Statistics
-    stats = st.session_state.bot.get_stats()
-    st.metric("Documents in KB", stats["total_documents"])
-    st.metric("Queries Made", stats["queries_made"])
-    st.metric("Search Method", search_method.split("(")[0].strip())
+    # Chat Display
+    st.subheader("💬 Chat")
+    
+    chat_container = st.container()
+    with chat_container:
+        for message in st.session_state.chat_history:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
 
+    # Chat Input
     st.divider()
-
-    # Add documents
-    if st.button("➕ Add Documents"):
-        st.session_state.adding_docs = True
-
-    if st.checkbox("📁 Load Sample Company Handbook"):
-        st.info("Sample documents already loaded in the knowledge base.")
-
-
-# Main search interface
-col1, col2 = st.columns([3, 1])
-
-with col1:
-    query = st.text_input(
-        "🔍 Ask a question about company policies, benefits, or operations",
-        placeholder="e.g., What is our remote work policy?",
-    )
-
-with col2:
-    search_button = st.button("Search", type="primary", use_container_width=True)
-
-
-# Display results
-if search_button and query:
-    with st.spinner("Searching knowledge base..."):
-        result = st.session_state.bot.search(query)
-
-        if not result["retrieved_documents"]:
-            st.warning("No matching documents found.")
+    query = st.chat_input("Ask a question about the documents...", key="chat_input")
+    
+    if query:
+        # Add user message to history
+        st.session_state.chat_history.append({"role": "user", "content": query})
+        
+        # Search knowledge base
+        result = st.session_state.bot.search(query, top_k=3)
+        
+        # Generate LLM-based answer from retrieved documents
+        if result["retrieved_documents"]:
+            answer_text, source_titles = generate_answer_from_context(
+                query,
+                result["retrieved_documents"],
+                COMPANY_NAME
+            )
+            
+            # Format response with sources as addendum in small text
+            if source_titles:
+                sources_str = ", ".join(source_titles)
+                response = f"{answer_text}\n\n_(Source: {sources_str})_"
+            else:
+                response = answer_text
         else:
-            # Results summary
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("Results Found", len(result["retrieved_documents"]))
-            with col2:
-                avg_sim = sum(r["similarity"] for r in result["retrieved_documents"]) / len(result["retrieved_documents"])
-                st.metric("Avg Similarity", f"{avg_sim:.2f}")
-            with col3:
-                st.metric("Top Result Score", f"{result['retrieved_documents'][0]['similarity']:.2f}")
+            response = "No relevant documents found. Try:\n- Adding more documents with the 📁 button\n- Using different search terms\n- Checking your document formatting"
+        
+        # Add assistant message to history
+        st.session_state.chat_history.append({"role": "assistant", "content": response})
+        st.rerun()
 
-            st.divider()
-
-            # Display results
-            st.subheader("📄 Retrieved Documents")
-            for i, doc_result in enumerate(result["retrieved_documents"], 1):
-                with st.expander(f"Result {i} (Relevance: {doc_result['similarity']:.1%})"):
-                    st.write(doc_result["document"])
-                    st.caption(f"Metadata: {doc_result['metadata']}")
-
-
-# Suggested queries
-st.divider()
-
-st.subheader("💡 Suggested Queries")
-
-suggested_queries = [
-    "What is our remote work policy?",
-    "Where are our office locations?",
-    "What benefits do employees receive?",
-    "What technologies do we use?",
-    "How do we handle employee growth?",
-]
-
-cols = st.columns(2)
-for idx, query in enumerate(suggested_queries):
-    if idx % 2 == 0:
-        col = cols[0]
-    else:
-        col = cols[1]
-
-    with col:
-        if st.button(query, key=f"suggest_{idx}", use_container_width=True):
-            st.session_state.last_query = query
-            st.rerun()
-
-
-# Query history
-if st.session_state.bot.query_history:
+    # ========================================================================
+    # Learning Resources (Middle Section)
+    # ========================================================================
     st.divider()
-    with st.expander("📊 Query History"):
-        import pandas as pd
+    
+    with st.expander("📚 How This Works"):
+        st.markdown("""
+### Lesson 4.6: Corporate Knowledge Bot
 
-        history_data = []
-        for h in st.session_state.bot.query_history[-10:]:
-            history_data.append({
-                "Time": h["timestamp"][:19],
-                "Query": h["query"][:50],
-                "Results": h["results_count"],
-            })
+**Architecture:**
+1. **Document Ingestion** - Load sample-corpus.json + user uploads
+2. **Embedding** - Generate semantic vectors (Cohere or keyword fallback)
+3. **Vector Store** - In-memory index for fast retrieval
+4. **Search** - Find most relevant documents by similarity
+5. **Generation** - LLM creates natural answers based on context
 
-        df = pd.DataFrame(history_data)
-        st.dataframe(df, use_container_width=True)
+**Answer Generation:**
+- **With OPENROUTER_API_KEY**: Uses GPT-3.5 to synthesize natural answers
+- **Without API key**: Falls back to intelligent document extraction
 
+**Search Methods:**
+- **Keyword Search** (default): Fast, works offline, word matching
+- **Semantic Search** (with COHERE_API_KEY): Meaning-based, better quality
 
-# Footer
-st.divider()
+**Key Learnings from Lessons 4.2-4.6:**
+- 4.2: Chunk and embed documents → `embed_documents()`
+- 4.3: Store vectors and retrieve → `VectorStore`
+- 4.4: Build RAG pipeline → `build_rag_pipeline()`
+- 4.5: Optimize retrieval → reranking, filtering, metrics
+- 4.6: Deploy at scale → document management, user interface
 
-st.info("""
-### About This Knowledge Bot
-- **Embeddings**: Cohere (free tier) with TF-IDF fallback
-- **Vector Store**: In-memory with metadata support
-- **Retrieval**: Semantic similarity search
-- **Purpose**: Employee self-service knowledge access
+**To Enable Full LLM Answers:**
+```bash
+export OPENROUTER_API_KEY='your-key-here'
+# Get key: https://openrouter.ai (free credits available)
+```
 
-### Deployment Ready
-Deploy to Streamlit Cloud, Railway, or any Kubernetes cluster.
-See Lesson 4.6 documentation for deployment steps.
+**Production Deployment:**
+- Replace Streamlit with FastAPI for scalability
+- Use Pinecone/Weaviate for >100k documents
+- Add chat history persistence (database)
+- Implement usage monitoring and cost tracking
 """)
 
-st.caption("Module 4.6 • Capstone Project • Corporate Knowledge Bot • RAG Fundamentals Complete")
+    st.divider()
+
+    # ========================================================================
+    # Document Management Section (Bottom - Closed by Default)
+    # ========================================================================
+    
+    # Anchor for scroll link
+    st.markdown("<a id='manage-docs-section'></a>", unsafe_allow_html=True)
+    
+    # Header with Manage Docs toggle button
+    if st.button("📁 Manage Docs", key="manage_docs_btn"):
+        st.session_state.show_doc_manager = not st.session_state.get("show_doc_manager", False)
+    
+    if st.session_state.get("show_doc_manager", False):
+        with st.container(border=True):
+            col_title, col_close = st.columns([1, 0.3])
+            with col_title:
+                st.subheader("📁 Document Management")
+            with col_close:
+                if st.button("✕ Close", key="close_doc_manager"):
+                    st.session_state.show_doc_manager = False
+                    st.rerun()
+            
+            tab1, tab2 = st.tabs(["Upload", "Paste Text"])
+            
+            with tab1:
+                uploaded_file = st.file_uploader("Upload a text file or document", type=["txt", "md", "pdf"])
+                if uploaded_file is not None:
+                    try:
+                        content = uploaded_file.read().decode("utf-8")
+                        if content and content not in st.session_state.all_documents:
+                            st.session_state.all_documents.append(content)
+                            # Re-initialize bot with new documents
+                            bot_results = deploy_knowledge_assistant(
+                                documents=st.session_state.all_documents,
+                                embedding_provider="cohere",
+                            )
+                            st.session_state.bot = StreamlitBotWrapper(
+                                bot_results,
+                                documents=st.session_state.all_documents,
+                                embedding_engine=st.session_state.bot.embedding_engine,
+                            )
+                            st.success(f"✓ Added '{uploaded_file.name}' ({len(content)} chars)")
+                            st.rerun()
+                    except Exception as e:
+                        st.error(f"Error processing file: {e}")
+            
+            with tab2:
+                pasted_text = st.text_area("Paste document text here", height=150, key="paste_area")
+                if st.button("Add Document", key="add_doc_btn"):
+                    if pasted_text.strip() and pasted_text not in st.session_state.all_documents:
+                        st.session_state.all_documents.append(pasted_text)
+                        # Re-initialize bot with new documents
+                        bot_results = deploy_knowledge_assistant(
+                            documents=st.session_state.all_documents,
+                            embedding_provider="cohere",
+                        )
+                        st.session_state.bot = StreamlitBotWrapper(
+                            bot_results,
+                            documents=st.session_state.all_documents,
+                            embedding_engine=st.session_state.bot.embedding_engine,
+                        )
+                        st.success(f"✓ Added document ({len(pasted_text)} chars)")
+                        st.rerun()
+                    elif not pasted_text.strip():
+                        st.warning("Please paste some text")
+            
+            st.info(f"Total documents in knowledge base: **{len(st.session_state.all_documents)}**")
+            
+            # Display list of documents with snippets and stats
+            st.markdown("**📄 Available Documents:**")
+            for i, doc in enumerate(st.session_state.all_documents, 1):
+                # Calculate stats
+                word_count = len(doc.split())
+                char_count = len(doc)
+                
+                # Extract title: first few words
+                words = doc.replace('\n', ' ').split()
+                title_words = []
+                for word in words[:10]:
+                    title_words.append(word)
+                    if word.endswith('.') or word.endswith(':'):
+                        break
+                doc_title = ' '.join(title_words[:8]).strip()
+                if not doc_title:
+                    doc_title = ' '.join(words[:5])
+                
+                st.markdown(f"**Doc {i}** ({word_count} words, {char_count} chars)  \n_{doc_title}_")
+
