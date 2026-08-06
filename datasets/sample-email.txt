@@ -1,0 +1,22 @@
+From: customer@external.com
+Subject: URGENT: Critical Issue with RAG Implementation
+Date: 2024-01-15 14:30:00
+
+Hi,
+
+We're experiencing a critical issue with the RAG system that's affecting production.
+
+Action items:
+- Investigate embedding quality degradation
+- Check vector database performance
+- Review retrieval scoring logic
+- Contact the support team about database limits
+
+The system was working fine last week. Something changed in the latest deployment.
+
+We need this resolved ASAP as it's impacting our customer-facing features.
+
+Please let me know what you can do.
+
+Thanks,
+Customer Support Team

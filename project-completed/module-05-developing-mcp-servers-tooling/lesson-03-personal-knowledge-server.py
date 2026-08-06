@@ -10,8 +10,8 @@ that learners can reuse in their own projects with minimal configuration changes
 Run:
     python lesson-03-personal-knowledge-server.py
     
-    To also see interactive JSON-RPC requests, set environment variable:
-    export DEMO_JSONRPC=1 before running.
+    To see actual JSON-RPC requests/responses in debug output:
+    export DEBUG_JSONRPC=1 && python lesson-03-personal-knowledge-server.py
 """
 
 import os
@@ -20,11 +20,92 @@ import json
 from pathlib import Path
 from typing import List, Dict, Optional
 import tempfile
+import uuid
 
 # Import from shared module (reference path)
 sys.path.insert(0, str(Path(__file__).parent))
 from shared.mcp_server import MCPServer, Resource, Tool
 from shared.resources import FileResource
+
+
+# ============================================================================
+# CONFIGURATION: Customize knowledge directory and options
+# ============================================================================
+
+# Primary knowledge directory (project folder by default)
+KNOWLEDGE_DIR = str(Path(__file__).parent.parent.parent / "datasets")
+
+# Optional: Use a temporary directory for user uploads/testing
+# Uncomment below to enable, or set ENABLE_TEMP_DIR to True
+# KNOWLEDGE_DIR = "/tmp/mcp_knowledge"  # or tempfile.mkdtemp(prefix="mcp_knowledge_")
+
+# Flag to auto-create temporary directory (disabled by default)
+# If True, creates KNOWLEDGE_DIR if it doesn't exist
+ENABLE_TEMP_DIR = False
+
+# File extensions to index
+FILE_EXTENSIONS = ['.md', '.txt', '.py', '.json']
+
+# Test queries for demo tool invocation (relevant to sample documents)
+# Customize these to match your domain knowledge (e.g., "policy", "employee", "process")
+TEST_QUERIES = [
+    "policy",        # Will match policy-related content
+    "employee",      # Will match employee documentation
+    "procedure",     # Will match procedure guides
+]
+
+
+# ============================================================================
+# UTILITY FUNCTIONS
+# ============================================================================
+
+def clear_screen():
+    """Clear terminal screen."""
+    os.system("clear" if os.name == "posix" else "cls")
+
+
+def initialize_knowledge_dir():
+    """Initialize knowledge directory, with optional temp directory creation."""
+    knowledge_path = Path(KNOWLEDGE_DIR)
+    
+    # If using temp directory and flag is enabled, create it
+    if ENABLE_TEMP_DIR and not knowledge_path.exists():
+        try:
+            knowledge_path.mkdir(parents=True, exist_ok=True)
+            print(f"✓ Created knowledge directory: {KNOWLEDGE_DIR}")
+            return True
+        except Exception as e:
+            print(f"⚠ Could not create directory {KNOWLEDGE_DIR}: {e}")
+            print(f"  Using existing directory if available")
+            return knowledge_path.exists()
+    
+    # Check if directory exists
+    if not knowledge_path.exists():
+        print(f"⚠ Knowledge directory does not exist: {KNOWLEDGE_DIR}")
+        print(f"  Demos will use default sample documents.")
+        return False
+    
+    return True
+
+
+def show_menu():
+    """Display main menu."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("🚀 LESSON 5.3: YOUR FIRST MCP SERVER - PERSONAL KNOWLEDGE SERVER".center(70))
+    print("=" * 70)
+    print()
+    print("  Choose a pattern to learn:\n")
+    print("    [1] PATTERN: Core MCP Server Initialization")
+    print("        → Create server, register resources and tools\n")
+    print("    [2] PATTERN: Resource Discovery & Access")
+    print("        → List and read documents from knowledge base\n")
+    print("    [3] PATTERN: Tool Invocation & Search")
+    print("        → Execute tools, search knowledge, retrieve stats\n")
+    print("    [4] PATTERN: JSON-RPC in Action (DEBUG MODE)")
+    print("        → See actual JSON-RPC protocol messages\n")
+    print("    [Q] Quit\n")
+    print("=" * 70)
 
 
 # ============================================================================
@@ -254,68 +335,97 @@ def create_knowledge_server(
 # DEMONSTRATIONS: Show how the template works
 # ============================================================================
 
-def demo_core_method():
-    """Demonstration 1: Core server initialization and setup."""
-    print("\n" + "=" * 70)
-    print("DEMO 1: CORE TEMPLATE METHOD - create_knowledge_server()")
-    print("=" * 70)
+def demo_core_method(full_print_output=True):
+    """Demonstration 1: Core server initialization and setup.
     
-    # Create temporary knowledge directory for demo
-    temp_dir = tempfile.mkdtemp(prefix="knowledge_")
+    Args:
+        full_print_output: If True, show full initialization details.
+                          If False, show minimal output (used by other demos).
+    """
+    if full_print_output:
+        print("\n" + "=" * 70)
+        print("DEMO 1: CORE TEMPLATE METHOD - create_knowledge_server()")
+        print("=" * 70)
     
-    # Create sample documents
-    sample_docs = [
-        ("README.md", """# My Project
+    # Use KNOWLEDGE_DIR if it exists, otherwise create temporary directory for demo
+    knowledge_path = Path(KNOWLEDGE_DIR)
+    
+    if knowledge_path.exists() and list(knowledge_path.glob("*")):
+        # Use existing knowledge directory
+        demo_dir = str(knowledge_path)
+        if full_print_output:
+            print(f"\nUsing knowledge directory: {demo_dir}")
+    else:
+        # Create temporary knowledge directory for demo
+        demo_dir = tempfile.mkdtemp(prefix="knowledge_")
+        if full_print_output:
+            print(f"\nUsing temporary demo directory: {demo_dir}")
         
-## Overview
-This is my personal project documentation.
+        # Only create sample documents if ENABLE_TEMP_DIR is True
+        if ENABLE_TEMP_DIR:
+            # Create sample documents
+            sample_docs = [
+                ("employee-handbook.md", """# Employee Handbook
 
-## RAG Resources
-- Understanding RAG systems
-- Vector databases
-- Embedding models
+## Company Policy
+Welcome to our organization!
+
+## Work Policy
+- Flexible work hours
+- Remote work allowed 3 days/week
+- Professional development budget
+
+## Employee Benefits
+- Health insurance
+- 401k matching
+- Paid time off
 """),
-        ("notes.md", """# My Notes
+            ("procedures.md", """# Standard Operating Procedures
 
-### TODO Items
-- Research RAG systems
-- Implement vector search
-- Test embedding quality
+## Onboarding Procedure
+1. First day orientation
+2. Equipment setup
+3. Team introduction
+4. Project assignment
 
-### Completed
-- Module 3 review
-- Started Module 4
+## Employee Review Process
+- Quarterly check-ins
+- Annual performance review
+- Development planning
 """),
-        ("guide.py", """# Code reference
-# This is a sample Python guide
+            ("faq.txt", """FAQ - Frequently Asked Questions
 
-def create_embedding(text):
-    '''Create semantic embedding'''
-    pass
+Q: What is the policy for remote work?
+A: Employees can work remotely up to 3 days per week.
 
-class RAGSystem:
-    '''Retrieval augmented generation'''
-    pass
+Q: How do I request time off?
+A: Submit requests via the HR portal at least 2 weeks in advance.
+
+Q: What employee development opportunities exist?
+A: We offer training budgets and tuition reimbursement.
 """),
-    ]
-    
-    for filename, content in sample_docs:
-        filepath = os.path.join(temp_dir, filename)
-        with open(filepath, 'w') as f:
-            f.write(content)
+        ]
+            
+            for filename, content in sample_docs:
+                filepath = os.path.join(demo_dir, filename)
+                with open(filepath, 'w') as f:
+                    f.write(content)
     
     # Initialize server using the template method
     server = create_knowledge_server(
-        knowledge_dir=temp_dir,
+        knowledge_dir=demo_dir,
         server_name="DemoKnowledge",
-        file_extensions=['.md', '.py']
+        file_extensions=FILE_EXTENSIONS
     )
     
-    print(f"\n✅ Server initialized successfully")
-    print(f"   Server: {server.name} v{server.version}")
-    print(f"   Knowledge Dir: {temp_dir}")
+    if full_print_output:
+        print(f"\n✅ Server initialized successfully")
+        print(f"   Server: {server.name} v{server.version}")
+        print(f"   Knowledge Dir: {demo_dir}")
+    else:
+        print(f"✅ Server initialized")
     
-    return server, temp_dir
+    return server, demo_dir
 
 
 def demo_resource_discovery():
@@ -324,7 +434,7 @@ def demo_resource_discovery():
     print("DEMO 2: RESOURCE DISCOVERY")
     print("=" * 70)
     
-    server, temp_dir = demo_core_method()
+    server, temp_dir = demo_core_method(full_print_output=False)
     
     print("\nRegistered Resources:")
     print("-" * 70)
@@ -343,13 +453,22 @@ def demo_resource_discovery():
     print("  Each resource has a URI that clients use to retrieve content.")
 
 
-def demo_tool_invocation():
-    """Demonstration 3: Execute tools via the server."""
-    print("\n" + "=" * 70)
-    print("DEMO 3: TOOL INVOCATION")
-    print("=" * 70)
+def demo_tool_invocation(full_print_output=True):
+    """Demonstration 3: Execute tools via the server.
     
-    server, temp_dir = demo_core_method()
+    Args:
+        full_print_output: If True, show full headers and details.
+                          If False, show minimal output (used by other demos).
+    """
+    if full_print_output:
+        print("\n" + "=" * 70)
+        print("DEMO 3: TOOL INVOCATION")
+        print("=" * 70)
+    
+    server, temp_dir = demo_core_method(full_print_output=False)
+    
+    # Check if DEBUG_JSONRPC is enabled
+    debug_jsonrpc = os.environ.get('DEBUG_JSONRPC', '').lower() == '1'
     
     print("\nAvailable Tools:")
     print("-" * 70)
@@ -357,23 +476,55 @@ def demo_tool_invocation():
     tools = server.list_tools()
     for i, tool in enumerate(tools, 1):
         print(f"{i}. {tool['name']}")
-        print(f"   Description: {tool['description']}")
-        print(f"   Input Schema: {json.dumps(tool['inputSchema'], indent=6)}")
-        print()
     
-    print("\nExecuting Tool: search_knowledge")
-    print("-" * 70)
+    if full_print_output:
+        print("\nExecuting Tool: search_knowledge")
+        print("-" * 70)
+        print(f"\nTest Queries (configured at top of file):")
+        print(f"  TEST_QUERIES = {TEST_QUERIES}\n")
+    else:
+        print("\nExecuting searches with DEBUG_JSONRPC enabled:")
+        print("-" * 70 + "\n")
     
-    test_queries = [
-        "RAG",
-        "TODO",
-        "embedding",
-    ]
+    if debug_jsonrpc:
+        print("[DEBUG_JSONRPC ENABLED - Showing actual JSON-RPC protocol]")
+        print("-" * 70)
     
-    for query in test_queries:
+    for query in TEST_QUERIES:
         try:
+            # Construct JSON-RPC request
+            jsonrpc_request = {
+                "jsonrpc": "2.0",
+                "id": str(uuid.uuid4())[:8],
+                "method": "tools/call",
+                "params": {
+                    "name": "search_knowledge",
+                    "arguments": {"query": query}
+                }
+            }
+            
+            # Show JSON-RPC request if debug enabled
+            if debug_jsonrpc:
+                print(f"\n→ CLIENT REQUEST (JSON-RPC):")
+                print(json.dumps(jsonrpc_request, indent=2))
+            
+            # Execute tool
             result = server.tool_handlers['search_knowledge'](query=query)
             result_data = json.loads(result)
+            
+            # Construct JSON-RPC response
+            jsonrpc_response = {
+                "jsonrpc": "2.0",
+                "id": jsonrpc_request["id"],
+                "result": result_data
+            }
+            
+            # Show JSON-RPC response if debug enabled
+            if debug_jsonrpc:
+                print(f"\n← SERVER RESPONSE (JSON-RPC):")
+                print(json.dumps(jsonrpc_response, indent=2))
+            
+            # Show human-readable results
             print(f"\nQuery: '{query}'")
             print(f"  Matches found: {result_data['count']}")
             for match in result_data['matches']:
@@ -385,75 +536,100 @@ def demo_tool_invocation():
     print("\nLearning Point:")
     print("  Tools are callable handlers that process structured inputs.")
     print("  Each tool has a schema that defines expected parameters.")
+    if debug_jsonrpc:
+        print("  JSON-RPC protocol shows request/response structure for tool calls.")
+        print("  Real MCP clients use this protocol to communicate with servers.")
 
 
-def demo_jsonrpc_protocol():
-    """Demonstration 4: Show JSON-RPC protocol details."""
+
+
+
+def pattern_1_core_method():
+    """PATTERN 1: Core MCP Server Initialization."""
     print("\n" + "=" * 70)
-    print("DEMO 4: JSON-RPC PROTOCOL")
+    print("PATTERN 1: CORE MCP SERVER INITIALIZATION")
     print("=" * 70)
+    demo_core_method()
+    input("\nPress Enter to continue...")
+
+
+def pattern_2_resource_discovery():
+    """PATTERN 2: Resource Discovery & Access."""
+    print("\n" + "=" * 70)
+    print("PATTERN 2: RESOURCE DISCOVERY & ACCESS")
+    print("=" * 70)
+    demo_resource_discovery()
+    input("\nPress Enter to continue...")
+
+
+def pattern_3_tool_invocation():
+    """PATTERN 3: Tool Invocation & Search."""
+    print("\n" + "=" * 70)
+    print("PATTERN 3: TOOL INVOCATION & SEARCH")
+    print("=" * 70)
+    demo_tool_invocation(full_print_output=True)
+    input("\nPress Enter to continue...")
+
+
+def pattern_4_jsonrpc_debug():
+    """PATTERN 4: JSON-RPC in Action (DEBUG MODE)."""
+    print("\n" + "=" * 70)
+    print("PATTERN 4: JSON-RPC IN ACTION (DEBUG MODE)")
+    print("=" * 70)
+    print("\n⚙️  Enabling DEBUG_JSONRPC mode...")
+    print("This will show actual JSON-RPC request/response messages\n")
     
-    server, temp_dir = demo_core_method()
+    # Enable debug mode
+    os.environ['DEBUG_JSONRPC'] = '1'
     
-    print("\nJSON-RPC Protocol Overview:")
-    print("-" * 70)
-    print("MCP uses JSON-RPC 2.0 for client-server communication.")
-    print("Clients send structured JSON requests; servers respond with results.\n")
+    # Run tool invocation demo with debug output
+    demo_tool_invocation(full_print_output=True)
     
-    # Example JSON-RPC requests
-    example_requests = [
-        {
-            "name": "List Available Resources",
-            "request": {
-                "jsonrpc": "2.0",
-                "id": 1,
-                "method": "resources/list",
-                "params": {}
-            }
-        },
-        {
-            "name": "Search Knowledge Base",
-            "request": {
-                "jsonrpc": "2.0",
-                "id": 2,
-                "method": "tools/call",
-                "params": {
-                    "name": "search_knowledge",
-                    "arguments": {
-                        "query": "RAG"
-                    }
-                }
-            }
-        },
-        {
-            "name": "Retrieve Document",
-            "request": {
-                "jsonrpc": "2.0",
-                "id": 3,
-                "method": "resources/read",
-                "params": {
-                    "uri": "file://README.md"
-                }
-            }
-        },
-    ]
+    input("\nPress Enter to continue...")
+
+
+def main():
+    """Main interactive menu loop."""
+    # Initialize knowledge directory
+    initialize_knowledge_dir()
     
-    for example in example_requests:
-        print(f"\n{example['name']}:")
-        print("Request:")
-        print(json.dumps(example['request'], indent=2))
-        print("\nResponse Format:")
-        print(json.dumps({
-            "jsonrpc": "2.0",
-            "id": example['request']['id'],
-            "result": "[response data]"
-        }, indent=2))
-    
-    print("\n✅ JSON-RPC examples shown")
-    print("\nLearning Point:")
-    print("  MCP clients communicate via standard JSON-RPC protocol.")
-    print("  Servers expose methods like resources/list, tools/call, resources/read.")
-    print("  All communication is request/response with structured JSON.")
+    patterns = {
+        "1": pattern_1_core_method,
+        "2": pattern_2_resource_discovery,
+        "3": pattern_3_tool_invocation,
+        "4": pattern_4_jsonrpc_debug,
+    }
+
+    while True:
+        show_menu()
+        choice = input("Choose [1-4] or [Q] to quit: ").strip().lower()
+
+        if choice == "q":
+            clear_screen()
+            print("\n✅ Thanks for learning! Remember to:")
+            print("   • Use create_knowledge_server() as your MCP template")
+            print("   • Register resources (documents) and tools (functions)")
+            print("   • Connect via MCP client: Claude Desktop, or other AI clients")
+            print("   • All communication uses standard JSON-RPC 2.0 protocol")
+            print("\nMCP Clients that can use this server:")
+            print("   • Claude Desktop (with MCP integration)")
+            print("   • Any LLM client implementing MCP protocol")
+            print("   • Not directly used by chat interfaces - it's a backend server")
+            print("\n")
+            break
+
+        if choice in patterns:
+            try:
+                patterns[choice]()
+            except KeyboardInterrupt:
+                print("\n\n⚠️  Interrupted. Returning to menu.\n")
+            except Exception as e:
+                clear_screen()
+                print(f"\n❌ Error: {e}\n")
+                import traceback
+                traceback.print_exc()
+            finally:
+                input("\nPress Enter to return to menu...")
 
 
 # ============================================================================
@@ -461,29 +637,4 @@ def demo_jsonrpc_protocol():
 # ============================================================================
 
 if __name__ == "__main__":
-    print("\n" + "=" * 70)
-    print("LESSON 5.3: YOUR FIRST MCP SERVER - PERSONAL KNOWLEDGE SERVER")
-    print("=" * 70)
-    print("\nThis lesson demonstrates how to build a reusable MCP server template")
-    print("that exposes local files and documents for AI client access.\n")
-    
-    # Run all demonstrations
-    demo_resource_discovery()
-    print("\n" + "-" * 70 + "\n")
-    
-    demo_tool_invocation()
-    print("\n" + "-" * 70 + "\n")
-    
-    demo_jsonrpc_protocol()
-    
-    print("\n" + "=" * 70)
-    print("LESSON COMPLETE")
-    print("=" * 70)
-    print("\nKey Takeaways:")
-    print("  1. MCPServer manages resources (documents) and tools (functions)")
-    print("  2. Resources are discovered and read by clients via URIs")
-    print("  3. Tools are callable handlers with structured input schemas")
-    print("  4. Communication uses JSON-RPC 2.0 protocol")
-    print("  5. create_knowledge_server() is a reusable template you can adapt\n")
-    print("Next Lesson:")
-    print("  Lesson 5.4 connects real-world tools (like email) to MCP servers\n")
+    main()

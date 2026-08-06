@@ -22,6 +22,7 @@ Learning Goals:
 """
 
 import sys
+import os
 import json
 from pathlib import Path
 from typing import List, Dict, Optional, Any
@@ -82,6 +83,7 @@ def create_mcp_toolkit(
     email_data_dir: str = "./emails",
     permission_strategy: str = "power_user",
     enable_audit_logging: bool = True,
+    verbose: bool = True,
 ) -> MCPServer:
     """Core template method: Build a complete MCP toolkit combining all module concepts.
     
@@ -96,6 +98,7 @@ def create_mcp_toolkit(
         email_data_dir: Directory containing email data
         permission_strategy: "read_only", "power_user" (default), or "admin"
         enable_audit_logging: Whether to log all tool invocations
+        verbose: Whether to print initialization output (default True)
     
     Returns:
         MCPServer: Complete toolkit with all tools, resources, and security controls.
@@ -117,29 +120,16 @@ def create_mcp_toolkit(
         >>> agent.run("Analyze recent urgent emails and link to relevant docs")
     """
     
-    print("=" * 70)
-    print("MCP TOOLKIT INITIALIZATION")
-    print("=" * 70)
+    if verbose:
+        print("=" * 70)
+        print("MCP TOOLKIT INITIALIZATION")
+        print("=" * 70)
     
     # Step 1: Create base toolkit server
     toolkit = MCPServer(name="MCP Toolkit", version="1.0.0")
     registry = ToolkitRegistry()
     
-    print(f"\n✓ Created base MCP Toolkit Server")
-    
-    # Step 2: Add Personal Knowledge Server (Lesson 5.3)
-    print(f"\n[Component 1/3] Personal Knowledge Server")
-    print("-" * 70)
-    
-    knowledge_path = Path(knowledge_dir)
-    if not knowledge_path.exists():
-        knowledge_path.mkdir(parents=True, exist_ok=True)
-        # Create sample knowledge files
-        (knowledge_path / "rag-guide.md").write_text("# RAG Pattern\nRetrieval-Augmented Generation...")
-        (knowledge_path / "mcp-basics.txt").write_text("MCP Basics\nModel Context Protocol enables...")
-        (knowledge_path / "architecture.md").write_text("# System Architecture\nMicroservices design patterns...")
-    
-    # Register knowledge tools (simulated)
+    # Step 2: Add Knowledge Server Tools (Lesson 5.3)
     knowledge_tools = [
         Tool(
             name="search_knowledge",
@@ -169,14 +159,7 @@ def create_mcp_toolkit(
         toolkit.tools[tool.name] = tool
         registry.register_tool(tool, "knowledge")
     
-    print(f"  ✓ Registered {len(knowledge_tools)} knowledge tools")
-    print(f"    - search_knowledge: Full-text search across files")
-    print(f"    - get_document: Retrieve specific documents")
-    
-    # Step 3: Add Email Analyst Server (Lesson 5.4)
-    print(f"\n[Component 2/3] Email Analyst Server")
-    print("-" * 70)
-    
+    # Step 3: Add Email Analyst Server Tools (Lesson 5.4)
     email_tools = [
         Tool(
             name="parse_email",
@@ -243,17 +226,7 @@ def create_mcp_toolkit(
         toolkit.tools[tool.name] = tool
         registry.register_tool(tool, "email")
     
-    print(f"  ✓ Registered {len(email_tools)} email analysis tools")
-    print(f"    - parse_email: Structure email data")
-    print(f"    - categorize_email: Classify by type")
-    print(f"    - analyze_sentiment: Detect urgency")
-    print(f"    - extract_action_items: Find TODOs")
-    print(f"    - extract_keywords: Extract topics")
-    
     # Step 4: Add System Tools (Toolkit Operations)
-    print(f"\n[Component 3/3] System Tools (Toolkit Operations)")
-    print("-" * 70)
-    
     system_tools = [
         Tool(
             name="get_toolkit_info",
@@ -282,35 +255,20 @@ def create_mcp_toolkit(
         toolkit.tools[tool.name] = tool
         registry.register_tool(tool, "system")
     
-    print(f"  ✓ Registered {len(system_tools)} system tools")
-    print(f"    - get_toolkit_info: Toolkit metadata")
-    print(f"    - list_tools: Tool discovery")
-    print(f"    - get_audit_trail: Audit logging")
-    
-    # Step 5: Add Security Layer (Lesson 5.5)
-    print(f"\n[Security Integration] Permission Sandbox")
-    print("-" * 70)
-    
-    # Store registry on server for later retrieval
-    toolkit.registry = registry
-    toolkit.permission_strategy = permission_strategy
-    toolkit.audit_trail = []
-    
-    print(f"  ✓ Applied security layer")
-    print(f"    - Permission strategy: {permission_strategy}")
-    print(f"    - Audit logging: {'enabled' if enable_audit_logging else 'disabled'}")
-    print(f"    - Tools protected: All {len(toolkit.tools)} tools")
-    
-    # Step 6: Print toolkit summary
-    print(f"\n[Toolkit Summary]")
-    print("-" * 70)
-    summary = registry.get_summary()
-    print(f"  Total Tools: {summary['total_tools']}")
-    for category, count in summary['categories'].items():
-        print(f"    - {category.title()}: {count} tools")
-    print(f"  Total Resources: {summary['total_resources']}")
-    
-    print(f"\n✅ MCP Toolkit initialized and ready for agent deployment\n")
+    # Step 5: Print compact toolkit summary
+    if verbose:
+        print("\n✅ Toolkit Initialized - All Tools & Resources:")
+        print("-" * 70)
+        for tool_name, tool in sorted(toolkit.tools.items()):
+            category = None
+            for cat, names in registry.tool_categories.items():
+                if tool_name in names:
+                    category = cat
+                    break
+            print(f"  • {tool_name:<25} {tool.description:<40} ({category})")
+        
+        print(f"\n  Security: {permission_strategy} | Audit Logging: {'enabled' if enable_audit_logging else 'disabled'}")
+        print(f"  Total: {len(toolkit.tools)} tools, {len(registry.tool_categories)} categories\n")
     
     return toolkit
 
@@ -319,266 +277,314 @@ def create_mcp_toolkit(
 # DEMONSTRATIONS: Show how the toolkit works
 # ============================================================================
 
-def demo_tool_discovery():
-    """Demonstration 1: Tool discovery and registry."""
+def demo_tool_discovery(toolkit):
+    """Demonstration 1a: Tool discovery and registry."""
     print("\n" + "=" * 70)
-    print("DEMO 1: TOOL DISCOVERY")
+    print("PART 1a: TOOL DISCOVERY & REGISTRY")
     print("=" * 70)
-    
-    toolkit = create_mcp_toolkit(permission_strategy="power_user")
-    registry = toolkit.registry
-    
-    print("\nAvailable Tools by Category:")
-    print("-" * 70)
-    
-    for category, tool_names in registry.tool_categories.items():
-        print(f"\n{category.upper()} ({len(tool_names)} tools):")
-        for tool_name in tool_names:
-            tool = registry.tools[tool_name]
-            print(f"  • {tool_name}")
-            print(f"    {tool.description}")
-    
-    print("\n✅ Tool discovery complete")
-    print("\nLearning Point:")
-    print("  Agents discover available tools through the registry.")
-    print("  Each tool's schema defines inputs, outputs, and requirements.")
 
 
-def demo_resource_access():
-    """Demonstration 2: Access knowledge resources."""
+def demo_resource_access(toolkit):
+    """Demonstration 1b: Access knowledge resources."""
     print("\n" + "=" * 70)
-    print("DEMO 2: RESOURCE ACCESS")
+    print("PART 1b: KNOWLEDGE RESOURCES & DISCOVERY")
     print("=" * 70)
     
+    print("\n✅ Toolkit ready:")
+    print("  • Knowledge base can be searched for documents")
+    print("  • Tools can retrieve and analyze content")
+    print("  • All tools available for discovery and invocation")
+
+
+def demo_toolkit_base_lesson():
+    """DEMO 1: Toolkit Base Lesson (Discovery & Resources)."""
+    print("\n" + "=" * 70)
+    print("DEMO 1: MCP TOOLKIT BASE LESSON")
+    print("=" * 70)
+    
+    # Create toolkit once
     toolkit = create_mcp_toolkit(permission_strategy="power_user")
     
-    print("\nKnowledge Search Queries:")
-    print("-" * 70)
+    # Part 1a
+    demo_tool_discovery(toolkit)
     
-    queries = [
-        "RAG pattern implementation",
-        "MCP architecture",
-        "system design",
-    ]
+    # Part 1b
+    demo_resource_access(toolkit)
     
-    for query in queries:
-        print(f"\n📚 Query: '{query}'")
-        print(f"  Tool: search_knowledge")
-        print(f"  Input: {{'query': '{query}'}}")
-        print(f"  Result: Found 1-2 matching documents")
-        print(f"  Status: ✅ Success")
-    
-    print("\n✅ Resource access demonstration complete")
-    print("\nLearning Point:")
-    print("  Agents can search knowledge base and retrieve specific documents.")
-    print("  Results are used to provide context for AI reasoning.")
+    print("\n✅ Foundation Complete - Toolkit ready for agent deployment")
 
 
 def demo_tool_execution():
-    """Demonstration 3: Execute email analysis tools."""
+    """Demonstration 2: Execute email analysis and cross-tool workflows."""
     print("\n" + "=" * 70)
-    print("DEMO 3: EMAIL ANALYSIS TOOL EXECUTION")
+    print("DEMO 2: WORKFLOWS & SECURITY")
     print("=" * 70)
     
     toolkit = create_mcp_toolkit(permission_strategy="power_user")
     
-    # Sample email
-    sample_email = {
-        "sender": "customer@example.com",
-        "subject": "URGENT: Database connection issue - immediate assistance needed",
-        "body": """Hi Team,
-
-We're experiencing critical database connection errors in production. 
-This is blocking all user transactions.
-
-Action items:
-1. Restart database connection pool
-2. Review recent deployments
-3. Notify on-call engineer
-4. Provide status update in 1 hour
-
-Please respond ASAP.
-
-Thanks,
-Customer Support
-"""
-    }
-    
-    print("\nAnalyzing Sample Email:")
-    print("-" * 70)
-    print(f"From: {sample_email['sender']}")
-    print(f"Subject: {sample_email['subject']}")
-    print(f"Body: {sample_email['body'][:100]}...")
-    
-    print("\nExecuting Email Analysis Pipeline:")
+    print("\n[NEW CONCEPTS BEYOND LESSONS 5.3-5.5]")
     print("-" * 70)
     
-    tools_used = [
-        ("parse_email", "Structure email data"),
-        ("categorize_email", "Classify as SUPPORT"),
-        ("analyze_sentiment", "Detect URGENT + HIGH_PRIORITY"),
-        ("extract_action_items", "Found 4 action items"),
-        ("extract_keywords", "Topics: database, connection, production, transactions"),
-    ]
+    print("\n1️⃣ CROSS-TOOL WORKFLOW IN ACTION")
+    print("   (Lesson 5.6 integration - what's new)")
+    print("-" * 70)
+    print("""
+Scenario: Urgent email arrives about database issue
+Workflow: analyze_sentiment() → extract_keywords() → search_knowledge()
+         → get_document() → compose_response()
+
+Step-by-step execution:""")
     
-    for tool_name, result in tools_used:
-        print(f"\n  {tool_name}()")
-        print(f"    ↓ {result}")
+    print("\n  [1/5] analyze_sentiment('URGENT: Database connection issue in production')")
+    print("        → Result: URGENT, HIGH_PRIORITY")
+    print("        ✅ Confirmed urgent - route to priority queue\n")
     
-    print("\n✅ Email analysis complete")
-    print("\nLearning Point:")
-    print("  Agents execute tools in sequence to build complete understanding.")
-    print("  Each tool adds insights for routing and action decisions.")
+    print("  [2/5] extract_keywords('database', 'connection', 'production')")
+    print("        → Result: ['database', 'connection', 'pool', 'troubleshooting']")
+    print("        ✅ Topics identified for knowledge search\n")
+    
+    print("  [3/5] search_knowledge('database connection troubleshooting')")
+    print("        → Result: Found ['troubleshooting.md', 'architecture.md']")
+    print("        ✅ Documentation retrieved\n")
+    
+    print("  [4/5] get_document('troubleshooting.md')")
+    print("        → Result: Full troubleshooting guide with 7 sections")
+    print("        ✅ Context loaded\n")
+    
+    print("  [5/5] Compose response with email analysis + knowledge context")
+    print("        → Result: Actionable response with step-by-step guide")
+    print("        ✅ Workflow complete\n")
+    
+    print("💡 Key Insight: Tools work together to provide intelligent responses")
+    print("   No single tool does the job - it's the combination that matters\n")
+    
+    print("\n2️⃣ UNIFIED SECURITY ACROSS TOOLKIT")
+    print("   (What's new: security applied to ALL tools)")
+    print("-" * 70)
+    print("""
+Permission Strategy: POWER_USER (default)
+Applied to: ALL tools (knowledge, email, system)
+
+Execution Protections:
+  ✅ Input Sanitization: All file paths checked for traversal
+  ✅ Secret Scrubbing: API keys, passwords removed from logs
+  ✅ Audit Trail: All operations recorded with timestamps
+  ✅ Role-Based Access: Tools respect user permissions
+
+Example: Attempting to delete file with traversal path
+  Input: delete_file(path='../../../etc/passwd')
+  Sanitized: delete_file(path='passwd')
+  Permission Check: ✅ User is POWER_USER → DELETE allowed
+  Result: Safe execution\n""")
+    
+    print("3️⃣ TOOLKIT READINESS FOR AGENTS")
+    print("   (Why this matters for Module 6)")
+    print("-" * 70)
+    print("""
+This integrated toolkit enables autonomous agents to:
+  • Discover and select appropriate tools dynamically
+  • Chain multiple tools into complex workflows
+  • Handle errors and recover gracefully
+  • Operate within defined security boundaries
+  • Provide explainable, audited results
+
+Real-world use: An AI agent can now receive a task like
+  'Analyze urgent emails and provide troubleshooting guides'
+  and independently decompose it into the above workflow.\n""")
+    
+    print("✅ Workflows & Security demonstration complete")
 
 
 def demo_cross_tool_workflow():
-    """Demonstration 4: Link email analysis to knowledge."""
+    """[INTEGRATED INTO DEMO 2 - No longer separate]"""
+    pass
+
+
+def demo_security_across_toolkit():
+    """[INTEGRATED INTO DEMO 2 - No longer separate]"""
+    pass
+
+
+def demo_test_client_integration():
+    """Demonstration 6: Simulate how a real MCP client would use this toolkit."""
     print("\n" + "=" * 70)
-    print("DEMO 4: CROSS-TOOL WORKFLOW")
+    print("DEMO 6: TEST CLIENT INTEGRATION")
     print("=" * 70)
     
     toolkit = create_mcp_toolkit(permission_strategy="power_user")
     
-    print("""
-Cross-Tool Workflow: Email → Knowledge Linking
-==============================================
-
-Scenario:
-  Email arrives: "Database connection issue in production"
-  System analyzes and finds 4 action items
-  System needs relevant documentation
-
-Workflow Steps:
-──────────────
-
-1. Email Analysis
-   Tool: analyze_sentiment()
-   Result: URGENT, HIGH_PRIORITY
-   
-2. Extract Topics
-   Tool: extract_keywords()
-   Input: Email body
-   Output: ["database", "connection", "production", "pool", "deployment"]
-
-3. Search Knowledge Base
-   Tool: search_knowledge()
-   Input: "database connection troubleshooting"
-   Output: Found 2 matching documents
-           - "rag-guide.md"
-           - "architecture.md"
-
-4. Retrieve Relevant Docs
-   Tool: get_document()
-   Input: "architecture.md"
-   Output: Full system architecture documentation
-
-5. Compose Response
-   Combine:
-   - Email analysis (urgent, 4 actions)
-   - Extracted keywords (database topics)
-   - Knowledge context (architecture, patterns)
-   Result: AI generates informed response with references
-
-Flow Diagram:
-─────────────
-Incoming Email
-    ↓
-analyze_sentiment() → [URGENT]
-    ↓
-extract_keywords() → [database, connection, ...]
-    ↓
-search_knowledge() → [matching docs]
-    ↓
-get_document() → [full context]
-    ↓
-compose_response() → [informed reply]
-    ↓
-Send Response + Create Ticket
-""")
-    
-    print("✅ Cross-tool workflow demonstration complete")
-    print("\nLearning Point:")
-    print("  Agents compose multiple tools into complex workflows.")
-    print("  Combined toolkit enables AI to provide context-aware responses.")
-
-
-def demo_security_across_toolkit():
-    """Demonstration 5: Security applies to all tools."""
-    print("\n" + "=" * 70)
-    print("DEMO 5: SECURITY ACROSS TOOLKIT")
+    print("\nHow an MCP Client Consumes This Toolkit")
     print("=" * 70)
     
+    print("\nStep 1: Client Connects to Server")
+    print("-" * 70)
     print("""
-Unified Security Layer
-======================
+Client → [JSON-RPC Connection]
+  {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "initialize",
+    "params": {"name": "claude-3.5"}
+  }
 
-Permission Strategies:
-──────────────────────
+Server ← Responds with server info
+  {
+    "result": {
+      "server": "MCP Toolkit",
+      "version": "1.0.0",
+      "capabilities": ["resources", "tools"]
+    }
+  }
 
-1. READ_ONLY Strategy
-   • search_knowledge: ✅ ALLOWED
-   • get_document: ✅ ALLOWED
-   • parse_email: ✅ ALLOWED
-   • analyze_sentiment: ✅ ALLOWED
-   • extract_action_items: ✅ ALLOWED
-   • extract_keywords: ✅ ALLOWED
-   • list_tools: ✅ ALLOWED
-   • delete_email: ❌ BLOCKED
-   • modify_permissions: ❌ BLOCKED
-
-2. POWER_USER Strategy (Default)
-   • All READ operations: ✅ ALLOWED
-   • All WRITE operations: ✅ ALLOWED
-   • Tool execution: ✅ ALLOWED
-   • Permission modification: ❌ BLOCKED
-   • System configuration: ❌ BLOCKED
-
-3. ADMIN Strategy
-   • All operations: ✅ ALLOWED
-   • System management: ✅ ALLOWED
-   • Permission changes: ✅ ALLOWED
-
-Security Protections on All Tools:
-──────────────────────────────────
-
-✅ Input Sanitization
-   Email bodies checked for injection attacks
-   File paths validated for traversal attempts
-
-✅ Secret Scrubbing
-   API keys removed before logging
-   Passwords masked in audit trail
-   Tokens redacted from outputs
-
-✅ Audit Logging
-   All tool calls recorded with:
-   • Timestamp
-   • Tool name
-   • User identity
-   • Sanitized inputs (hash)
-   • Result (hash)
-   • Success/failure status
-
-✅ Approval Workflow
-   Dangerous operations flag for review:
-   • delete_email
-   • modify_rules
-   • bulk_operations
-   • system_changes
-
-Example Audit Trail:
-────────────────────
-Timestamp                  | Tool                 | User     | Status
-2026-07-02T14:30:15.123456 | search_knowledge     | alice    | ✅ success
-2026-07-02T14:31:22.456789 | extract_keywords     | alice    | ✅ success
-2026-07-02T14:32:45.789012 | get_toolkit_info     | bob      | ✅ success
-2026-07-02T14:33:10.012345 | delete_email         | charlie  | ❌ denied (ADMIN only)
+✅ Connection established
 """)
     
-    print("✅ Security demonstration complete")
+    print("\nStep 2: Client Discovers Available Tools")
+    print("-" * 70)
+    
+    all_tools = toolkit.tools
+    categories = toolkit.registry.tool_categories
+    
+    print(f"\nClient Query: 'What can I do?'")
+    print(f"Server Response: {len(all_tools)} tools available\n")
+    
+    for category, tool_names in categories.items():
+        print(f"  📦 {category.upper()} ({len(tool_names)} tools)")
+        for tool_name in tool_names[:2]:
+            tool = all_tools[tool_name]
+            print(f"     • {tool_name}")
+    
+    print(f"\n✅ Tool discovery complete - Client now knows what's available")
+    
+    print("\n\nStep 3: Client Executes Tools")
+    print("-" * 70)
+    print("""
+Sample Tool Call:
+  search_knowledge(query="company policy")
+
+Server returns matching documents and metadata.
+
+✅ Tool execution successful
+""")
+    
+    print("\nStep 4: Client Chains Tools for Complex Tasks")
+    print("-" * 70)
+    print("""
+Scenario: User asks Claude, "What's our remote work policy?"
+
+Claude's Action Plan:
+  1. search_knowledge(query="remote work policy")
+     → Returns: [employee-handbook.md]
+  
+  2. get_document(filename="employee-handbook.md")
+     → Returns: Full handbook content
+  
+  3. Parse and respond: "Based on our employee handbook,
+     flexible work arrangements allow remote work 3 days per week..."
+
+✅ Client successfully used toolkit to answer question
+""")
+    
+    print("\nStep 5: Multiple Client Support")
+    print("-" * 70)
+    print("""
+The MCP Toolkit simultaneously supports multiple clients:
+
+┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
+│  Claude Desktop │  │  VS Code Copilot│  │  Custom Agent   │
+└────────┬────────┘  └────────┬────────┘  └────────┬────────┘
+         │                    │                    │
+         └────────────┬────────┴────────┬──────────┘
+                      │                 │
+                  [MCP Toolkit Server]
+                      │
+        ┌─────────────┼─────────────┐
+        │             │             │
+   Knowledge Tools  Email Tools  System Tools
+        │             │             │
+   [Knowledge Base] [Email API]  [Audit Log]
+
+✅ Single toolkit serves all connected clients
+""")
+    
+    print("✅ Client integration demonstration complete")
     print("\nLearning Point:")
-    print("  Security layer protects entire toolkit with consistent policies.")
-    print("  Agents operate within defined permission boundaries.")
+    print("  Real MCP clients use JSON-RPC to discover and invoke tools.")
+    print("  Toolkit enables multiple AI systems to access same resources.")
+    print("  Clients chain tools together for complex multi-step tasks.")
+
+
+
+# ============================================================================
+# INTERACTIVE MENU SYSTEM
+# ============================================================================
+
+def show_menu():
+    """Display interactive menu options."""
+    print("\n" + "=" * 70)
+    print("LESSON 5.6: MCP TOOLKIT SERVER (CAPSTONE)")
+    print("=" * 70)
+    print("\nChoose your learning path:")
+    print()
+    print("  CLI DEMONSTRATIONS (Terminal-based):")
+    print("  ──────────────────────────────────")
+    print("  [1] Toolkit Base Lesson")
+    print("      Understand registry, tools, and resource discovery")
+    print()
+    print("  [2] Workflows & Security")
+    print("      See how tools chain together with unified security")
+    print()
+    print("  INTERACTIVE UI (Browser-based):")
+    print("  ───────────────────────────────")
+    print("  [3] Streamlit Chat Interface")
+    print("      Chat with the toolkit - see JSON-RPC protocol in real-time")
+    print()
+    print("  [Q] Quit")
+    print("-" * 70)
+
+
+def show_demo_analysis():
+    """Show analysis of demos: which are functional vs lessons."""
+    print("\n" + "=" * 70)
+    print("LESSON 5.6 STRUCTURE: CLI + STREAMLIT UI")
+    print("=" * 70)
+    
+    analysis = [
+        (
+            "[1] Toolkit Base Lesson",
+            "Merged CLI Lessons",
+            "Merged demos 1+2: Tool discovery + resource access",
+            "Pure teaching - shows architecture and structure"
+        ),
+        (
+            "[2] Workflows & Security",
+            "Merged CLI Lesson",
+            "Merged demos 3+4+5: Execution + cross-tool + security",
+            "Pure teaching - highlights new concepts beyond 5.3-5.5"
+        ),
+        (
+            "[3] Streamlit Chat UI",
+            "Functional Interactive Demo",
+            "Browser-based chat with JSON-RPC protocol logging",
+            "REAL VALUE: Execute actual searches, show protocol messages"
+        ),
+    ]
+    
+    print()
+    for demo, demo_type, content, value in analysis:
+        print(f"{demo}")
+        print(f"  Type: {demo_type}")
+        print(f"  Content: {content}")
+        print(f"  Value: {value}")
+        print()
+    
+    print("=" * 70)
+    print("\nLearning Path Recommendation:")
+    print("  1. Start with [1] Toolkit Base Lesson (understand structure)")
+    print("  2. Learn [2] Workflows & Security (see integration)")
+    print("  3. Try [3] Streamlit Chat UI (experience real interactions)")
+    print("\nThe Streamlit UI brings everything together by letting you chat")
+    print("and see actual JSON-RPC protocol messages as tools execute.\n")
 
 
 # ============================================================================
@@ -586,36 +592,52 @@ Timestamp                  | Tool                 | User     | Status
 # ============================================================================
 
 if __name__ == "__main__":
-    print("\n" + "=" * 70)
-    print("LESSON 5.6: MCP TOOLKIT SERVER (CAPSTONE)")
-    print("=" * 70)
-    print("\nThis capstone lesson demonstrates how to combine all module concepts")
-    print("into a complete, production-ready MCP toolkit for autonomous agents.\n")
+    demos = {
+        "1": ("Toolkit Base Lesson", demo_toolkit_base_lesson),
+        "2": ("Workflows & Security", demo_tool_execution),
+    }
     
-    # Run all demonstrations
-    demo_tool_discovery()
-    print("\n" + "-" * 70 + "\n")
-    
-    demo_resource_access()
-    print("\n" + "-" * 70 + "\n")
-    
-    demo_tool_execution()
-    print("\n" + "-" * 70 + "\n")
-    
-    demo_cross_tool_workflow()
-    print("\n" + "-" * 70 + "\n")
-    
-    demo_security_across_toolkit()
-    
-    print("\n" + "=" * 70)
-    print("LESSON COMPLETE - MCP TOOLKIT READY FOR AGENTS")
-    print("=" * 70)
-    print("\nKey Takeaways:")
-    print("  1. Combine multiple tool sources into unified registry")
-    print("  2. Implement cross-tool workflows for complex tasks")
-    print("  3. Apply consistent security across all tools")
-    print("  4. Enable tool discovery for agent integration")
-    print("  5. Maintain complete audit trail for compliance\n")
-    print("Module 5 Complete!")
-    print("  Next: Module 6 - Autonomous Agents & Tool Usage")
-    print("  (Agents will use this MCP Toolkit to accomplish business goals)\n")
+    while True:
+        os.system('clear')
+        show_menu()
+        choice = input("Enter your choice [1-3, Q]: ").strip().upper()
+        
+        if choice in demos:
+            os.system('clear')
+            title, demo_func = demos[choice]
+            demo_func()
+            input("\nPress Enter to continue...")
+        
+        elif choice == "3":
+            os.system('clear')
+            print("\n" + "=" * 70)
+            print("STREAMLIT CHAT UI LAUNCHER")
+            print("=" * 70)
+            print("\n📊 The interactive Streamlit chat UI is available in:")
+            print("   lesson-06-mcp-toolkit-chat.py\n")
+            print("To launch it, run in terminal:")
+            print("   streamlit run lesson-06-mcp-toolkit-chat.py\n")
+            print("Features:")
+            print("  • Chat interface for querying toolkit")
+            print("  • Real JSON-RPC protocol logging")
+            print("  • Knowledge base search")
+            print("  • Cross-tool workflow demonstration")
+            print("  • Debug panel showing all tool calls\n")
+            print("This is the most interactive way to learn how MCP clients")
+            print("use the toolkit (combining concepts from Demos 1-2).\n")
+            input("Press Enter to continue...")
+        
+        elif choice == "Q":
+            os.system('clear')
+            print("\n" + "=" * 70)
+            print("Thank you for learning about MCP Toolkit architecture!")
+            print("=" * 70)
+            print("\nNext Steps:")
+            print("  • Module 6: Autonomous Agents & Tool Usage")
+            print("  • Build agents that use this toolkit to accomplish goals")
+            print("  • Learn about reasoning, planning, and error recovery\n")
+            break
+        
+        else:
+            print("\n❌ Invalid choice. Please enter 1-3 or Q.")
+            input("Press Enter to continue...")

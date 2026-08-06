@@ -17,11 +17,156 @@ import json
 from pathlib import Path
 from typing import List, Dict, Optional
 from datetime import datetime
+import os
 
-# Import from shared module (reference path)
+# Import from module-local shared (mcp_server, tools)
 sys.path.insert(0, str(Path(__file__).parent))
 from shared.mcp_server import MCPServer, Tool
 from shared.tools import EmailTools, TextTools
+
+# Import settings from root shared utils
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+try:
+    from shared.utils.settings import load_settings
+except ImportError:
+    # Fallback if settings not found
+    def load_settings():
+        class Settings:
+            openrouter_url = os.getenv("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")
+            openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+        return Settings()
+
+# LLM imports for real analysis
+try:
+    import requests
+    HAS_REQUESTS = True
+except ImportError:
+    HAS_REQUESTS = False
+
+
+# ============================================================================
+# UI UTILITIES
+# ============================================================================
+
+def clear_screen():
+    """Clear terminal screen."""
+    import os
+    os.system('clear' if os.name == 'posix' else 'cls')
+
+
+def show_menu():
+    """Display main menu."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("🚀 LESSON 5.4: CONNECTING REAL-WORLD TOOLS - EMAIL ANALYST SERVER".center(70))
+    print("=" * 70)
+    print()
+    print("  Choose a pattern to learn:\n")
+    print("    [1] PATTERN: Tool Registration & Schemas")
+    print("        → Discover email analysis tools and input schemas\n")
+    print("    [2] PATTERN: Email Analysis Pipeline")
+    print("        → Parse, categorize, and analyze sample emails\n")
+    print("    [3] PATTERN: Business Workflow Routing")
+    print("        → Understand email triage and escalation patterns\n")
+    print("    [4] PATTERN: Real Email System Integration")
+    print("        → Step-by-step guide to connect POP/IMAP/Gmail/Webhook\n")
+    print("    [Q] Quit\n")
+    print("=" * 70)
+
+
+# ============================================================================
+# HELPER FUNCTIONS: Email loading and LLM analysis
+# ============================================================================
+
+def load_sample_email() -> Dict[str, str]:
+    """Load sample email from datasets/sample-email.txt."""
+    sample_path = Path(__file__).parent.parent.parent / "datasets" / "sample-email.txt"
+    
+    if not sample_path.exists():
+        # Fallback if file doesn't exist
+        return {
+            "sender": "customer@external.com",
+            "subject": "URGENT: Critical Issue with RAG Implementation",
+            "body": """Hi,
+
+We're experiencing a critical issue with the RAG system that's affecting production.
+
+Action items:
+- Investigate embedding quality degradation
+- Check vector database performance
+- Review retrieval scoring logic
+- Contact the support team about database limits
+
+The system was working fine last week. Something changed in the latest deployment.
+
+We need this resolved ASAP as it's impacting our customer-facing features.
+
+Please let me know what you can do.
+
+Thanks,
+Customer Support Team""",
+        }
+    
+    with open(sample_path, "r") as f:
+        content = f.read()
+    
+    # Parse email format
+    lines = content.split("\n")
+    sender = ""
+    subject = ""
+    body_start = 0
+    
+    for i, line in enumerate(lines):
+        if line.startswith("From:"):
+            sender = line.replace("From:", "").strip()
+        elif line.startswith("Subject:"):
+            subject = line.replace("Subject:", "").strip()
+        elif line.strip() == "":
+            body_start = i + 1
+            break
+    
+    body = "\n".join(lines[body_start:]).strip()
+    
+    return {
+        "sender": sender,
+        "subject": subject,
+        "body": body,
+    }
+
+
+def analyze_with_llm(prompt: str) -> str:
+    """Call OpenRouter API with GPT-3.5 for analysis. Falls back to keyword-based if API unavailable."""
+    if not HAS_REQUESTS:
+        return None
+    
+    settings = load_settings()
+    if not settings.openrouter_api_key:
+        return None
+    
+    try:
+        headers = {
+            "Authorization": f"Bearer {settings.openrouter_api_key}",
+            "Content-Type": "application/json",
+        }
+        
+        data = {
+            "model": "openai/gpt-3.5-turbo",
+            "messages": [
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens": 200,
+        }
+        
+        response = requests.post(settings.openrouter_url, headers=headers, json=data, timeout=10)
+        response.raise_for_status()
+        result = response.json()
+        
+        if "choices" in result and len(result["choices"]) > 0:
+            return result["choices"][0]["message"]["content"]
+        return None
+    except Exception as e:
+        print(f"⚠️  OpenRouter API error: {e}. Falling back to keyword-based analysis.")
+        return None
 
 
 # ============================================================================
@@ -44,6 +189,7 @@ from shared.tools import EmailTools, TextTools
 
 def create_email_analyst_server(
     server_name: str = "EmailAnalyst",
+    sample_email: Optional[Dict] = None,
 ) -> MCPServer:
     """Core template method: Initialize and configure an Email Analysis MCP Server.
     
@@ -52,6 +198,7 @@ def create_email_analyst_server(
     
     Args:
         server_name: Name of the MCP server (for identification)
+        sample_email: Optional sample email to use. If None, loads from file.
     
     Returns:
         MCPServer: Configured server with email analysis tools registered.
@@ -59,10 +206,10 @@ def create_email_analyst_server(
     
     Features:
         - Parse and structure raw email messages
-        - Categorize email types (meeting, support, report, etc.)
+        - Categorize email types using GPT-3.5 via OpenRouter
         - Extract action items and TODOs
-        - Analyze sentiment (positive, negative, neutral)
-        - Identify unanswered messages for follow-up
+        - Analyze sentiment using GPT-3.5 (or keyword fallback)
+        - Identify important keywords
     
     Example:
         >>> server = create_email_analyst_server('MyEmailAnalyzer')
@@ -79,18 +226,30 @@ def create_email_analyst_server(
     
     print(f"✓ Initialized {server_name} MCP server")
     
+    # Load sample email if not provided
+    if sample_email is None:
+        sample_email = load_sample_email()
+    
     # Step 2: Define and register parse_email tool
-    def parse_email(sender: str, subject: str, body: str) -> str:
+    def parse_email(sender: Optional[str] = None, subject: Optional[str] = None, body: Optional[str] = None) -> str:
         """Parse and structure raw email message.
         
         Args:
-            sender: Email sender address
-            subject: Email subject line
-            body: Email body text
+            sender: Email sender address (optional, uses sample if not provided)
+            subject: Email subject line (optional)
+            body: Email body text (optional)
         
         Returns:
-            JSON string with parsed email including sentiment
+            JSON string with parsed email
         """
+        # Use provided email or fall back to sample
+        if sender is None:
+            sender = sample_email["sender"]
+        if subject is None:
+            subject = sample_email["subject"]
+        if body is None:
+            body = sample_email["body"]
+        
         parsed = EmailTools.parse_email(sender, subject, body)
         return json.dumps(parsed)
     
@@ -102,71 +261,109 @@ def create_email_analyst_server(
             "properties": {
                 "sender": {
                     "type": "string",
-                    "description": "Email sender address"
+                    "description": "Email sender address (optional, uses sample if omitted)"
                 },
                 "subject": {
                     "type": "string",
-                    "description": "Email subject line"
+                    "description": "Email subject line (optional)"
                 },
                 "body": {
                     "type": "string",
-                    "description": "Email body text"
+                    "description": "Email body text (optional)"
                 },
             },
-            "required": ["sender", "subject", "body"],
         },
     )
     
     server.register_tool(parse_tool, parse_email)
     
-    # Step 3: Define and register categorize_email tool
-    def categorize_email(subject: str, body: str) -> str:
-        """Categorize email type for routing.
+    # Step 3: Define and register categorize_email tool with LLM
+    def categorize_email(subject: Optional[str] = None, body: Optional[str] = None) -> str:
+        """Categorize email type using GPT-3.5 via OpenRouter (with fallback to keyword analysis).
         
         Args:
-            subject: Email subject line
-            body: Email body text
+            subject: Email subject line (optional, uses sample if not provided)
+            body: Email body text (optional)
         
         Returns:
-            Email category: meeting_request, support_request, status_report, or general
+            JSON with email category and confidence
         """
+        if subject is None:
+            subject = sample_email["subject"]
+        if body is None:
+            body = sample_email["body"]
+        
+        # Try LLM first
+        if HAS_REQUESTS:
+            prompt = f"""Categorize this email into one of these categories:
+- meeting_request: Email requesting or scheduling a meeting
+- support_request: Email asking for help or reporting an issue
+- status_report: Email providing updates or reports
+- general: General email with no specific category
+
+Subject: {subject}
+Body: {body}
+
+Respond with ONLY the category name (e.g., "support_request") and a confidence score 0-100.
+Format: category|confidence"""
+            
+            result = analyze_with_llm(prompt)
+            if result:
+                try:
+                    parts = result.strip().split("|")
+                    category = parts[0].strip()
+                    confidence = int(parts[1].strip()) if len(parts) > 1 else 80
+                    return json.dumps({
+                        "category": category,
+                        "confidence": confidence,
+                        "description": _category_descriptions.get(category, "Other email type"),
+                        "method": "GPT-3.5 via OpenRouter"
+                    })
+                except:
+                    pass
+        
+        # Fallback to keyword-based
         category = EmailTools.categorize_email(subject, body)
         return json.dumps({
             "category": category,
-            "description": _category_descriptions.get(category, "Other email type")
+            "confidence": 70,
+            "description": _category_descriptions.get(category, "Other email type"),
+            "method": "Keyword-based fallback"
         })
     
     categorize_tool = Tool(
         name="categorize_email",
-        description="Classify email type for workflow routing",
+        description="Classify email type for workflow routing using AI analysis",
         inputSchema={
             "type": "object",
             "properties": {
                 "subject": {
                     "type": "string",
-                    "description": "Email subject line"
+                    "description": "Email subject line (optional, uses sample if omitted)"
                 },
                 "body": {
                     "type": "string",
-                    "description": "Email body text"
+                    "description": "Email body text (optional)"
                 },
             },
-            "required": ["subject", "body"],
         },
     )
     
     server.register_tool(categorize_tool, categorize_email)
     
     # Step 4: Define and register extract_action_items tool
-    def extract_action_items(body: str) -> str:
+    def extract_action_items(body: Optional[str] = None) -> str:
         """Extract action items and TODOs from email.
         
         Args:
-            body: Email body text
+            body: Email body text (optional, uses sample if not provided)
         
         Returns:
             JSON with list of action items
         """
+        if body is None:
+            body = sample_email["body"]
+        
         items = EmailTools.identify_action_items(body)
         return json.dumps({
             "action_items": items,
@@ -182,63 +379,97 @@ def create_email_analyst_server(
             "properties": {
                 "body": {
                     "type": "string",
-                    "description": "Email body text"
+                    "description": "Email body text (optional, uses sample if omitted)"
                 },
             },
-            "required": ["body"],
         },
     )
     
     server.register_tool(action_tool, extract_action_items)
     
-    # Step 5: Define and register analyze_sentiment tool
-    def analyze_sentiment(text: str) -> str:
-        """Analyze sentiment and urgency of email text.
+    # Step 5: Define and register analyze_sentiment tool with LLM
+    def analyze_sentiment(text: Optional[str] = None) -> str:
+        """Analyze sentiment and urgency of email using GPT-3.5 via OpenRouter.
         
         Args:
-            text: Email text to analyze
+            text: Email text to analyze (optional, uses sample body if not provided)
         
         Returns:
             JSON with sentiment and urgency indicators
         """
+        if text is None:
+            text = sample_email["body"]
+        
+        # Try LLM first
+        if HAS_REQUESTS:
+            prompt = f"""Analyze the sentiment and urgency of this email text.
+Respond with ONLY:
+sentiment (positive/negative/neutral)
+urgency (low/medium/high)
+priority (normal/high/critical)
+
+Email: {text}
+
+Format: sentiment|urgency|priority"""
+            
+            result = analyze_with_llm(prompt)
+            if result:
+                try:
+                    parts = result.strip().split("|")
+                    sentiment = parts[0].strip()
+                    urgency = parts[1].strip() if len(parts) > 1 else "medium"
+                    priority = parts[2].strip() if len(parts) > 2 else "normal"
+                    return json.dumps({
+                        "sentiment": sentiment,
+                        "urgency": urgency,
+                        "priority": priority,
+                        "method": "GPT-3.5 via OpenRouter"
+                    })
+                except:
+                    pass
+        
+        # Fallback to keyword-based
         sentiment = EmailTools._analyze_sentiment(text)
         urgency_keywords = ["urgent", "asap", "critical", "immediately", "deadline"]
         is_urgent = any(keyword in text.lower() for keyword in urgency_keywords)
         
         return json.dumps({
             "sentiment": sentiment,
-            "is_urgent": is_urgent,
-            "priority": "high" if is_urgent else "normal"
+            "urgency": "high" if is_urgent else "low",
+            "priority": "high" if is_urgent else "normal",
+            "method": "Keyword-based fallback"
         })
     
     sentiment_tool = Tool(
         name="analyze_sentiment",
-        description="Analyze sentiment and urgency of email text",
+        description="Analyze sentiment and urgency of email text using AI",
         inputSchema={
             "type": "object",
             "properties": {
                 "text": {
                     "type": "string",
-                    "description": "Email text to analyze"
+                    "description": "Email text to analyze (optional, uses sample if omitted)"
                 },
             },
-            "required": ["text"],
         },
     )
     
     server.register_tool(sentiment_tool, analyze_sentiment)
     
     # Step 6: Define and register extract_keywords tool
-    def extract_keywords(text: str, top_k: int = 5) -> str:
+    def extract_keywords(text: Optional[str] = None, top_k: int = 5) -> str:
         """Extract important keywords from email.
         
         Args:
-            text: Email text to analyze
+            text: Email text to analyze (optional, uses sample body if not provided)
             top_k: Number of top keywords to return (default: 5)
         
         Returns:
             JSON with keyword list
         """
+        if text is None:
+            text = sample_email["body"]
+        
         keywords = TextTools.extract_keywords(text, top_k)
         return json.dumps({
             "keywords": keywords,
@@ -253,7 +484,7 @@ def create_email_analyst_server(
             "properties": {
                 "text": {
                     "type": "string",
-                    "description": "Email text to analyze"
+                    "description": "Email text to analyze (optional, uses sample if omitted)"
                 },
                 "top_k": {
                     "type": "integer",
@@ -261,7 +492,6 @@ def create_email_analyst_server(
                     "default": 5
                 }
             },
-            "required": ["text"],
         },
     )
     
@@ -288,7 +518,7 @@ _category_descriptions = {
 def demo_tool_registration():
     """Demonstration 1: Tool registration and schemas."""
     print("\n" + "=" * 70)
-    print("DEMO 1: TOOL REGISTRATION")
+    print("DEMO 1: TOOL REGISTRATION & SCHEMAS")
     print("=" * 70)
     
     server = create_email_analyst_server("DemoEmailAnalyst")
@@ -298,50 +528,33 @@ def demo_tool_registration():
     
     tools = server.list_tools()
     for i, tool in enumerate(tools, 1):
-        print(f"{i}. {tool['name']}")
+        print(f"\n{i}. {tool['name'].upper()}")
         print(f"   Description: {tool['description']}")
-        print(f"   Input Schema: {json.dumps(tool['inputSchema']['properties'], indent=6)}")
-        print()
+        print(f"   Input Parameters:")
+        for param, details in tool['inputSchema']['properties'].items():
+            print(f"     - {param}: {details.get('description', 'N/A')}")
     
-    print(f"✅ Total tools: {len(tools)}")
-    print("\nLearning Point:")
-    print("  Each tool has a strict input schema that defines expected parameters.")
-    print("  AI clients use schemas to understand how to call tools correctly.")
+    print(f"\n✅ Total tools: {len(tools)}")
+    print("\nKey Features:")
+    print("  • All input parameters are OPTIONAL")
+    print("  • Tools use sample email from datasets/sample-email.txt if not provided")
+    print("  • Sentiment & categorization use GPT-3.5 via OpenRouter (fallback to keyword analysis)")
+    print("  • Perfect for agent integration: agents can call tools with or without params")
 
 
 def demo_email_analysis():
     """Demonstration 2: Analyze a complex email through the pipeline."""
     print("\n" + "=" * 70)
-    print("DEMO 2: EMAIL ANALYSIS PIPELINE")
+    print("DEMO 2: EMAIL ANALYSIS PIPELINE (GPT-3.5 via OpenRouter)")
     print("=" * 70)
     
-    server = create_email_analyst_server("DemoEmailAnalyst")
+    # Load sample email from file
+    sample_email = load_sample_email()
+    server = create_email_analyst_server("DemoEmailAnalyst", sample_email=sample_email)
     
-    # Complex sample email
-    email = {
-        "sender": "customer@external.com",
-        "subject": "URGENT: Critical Issue with RAG Implementation",
-        "body": """Hi,
-
-We're experiencing a critical issue with the RAG system that's affecting production.
-
-Action items:
-- Investigate embedding quality degradation
-- Check vector database performance
-- Review retrieval scoring logic
-- Contact the support team about database limits
-
-The system was working fine last week. Something changed in the latest deployment.
-
-We need this resolved ASAP as it's impacting our customer-facing features.
-
-Please let me know what you can do.
-
-Thanks,
-Customer Support Team""",
-    }
+    email = sample_email
     
-    print(f"\nAnalyzing email from: {email['sender']}")
+    print(f"\n📧 Analyzing email from: {email['sender']}")
     print(f"Subject: {email['subject']}\n")
     
     # Parse email
@@ -355,8 +568,8 @@ Customer Support Team""",
     parsed = json.loads(parsed_result)
     print(f"Parsed: {json.dumps(parsed, indent=2)}")
     
-    # Categorize
-    print("\nStep 2: Categorize")
+    # Categorize with LLM
+    print("\nStep 2: Categorize (GPT-3.5 via OpenRouter)")
     print("-" * 70)
     category_result = server.tool_handlers['categorize_email'](
         subject=email['subject'],
@@ -364,18 +577,21 @@ Customer Support Team""",
     )
     category = json.loads(category_result)
     print(f"Category: {category['category']}")
+    print(f"Confidence: {category['confidence']}%")
     print(f"Description: {category['description']}")
+    print(f"Method: {category['method']}")
     
-    # Analyze sentiment
-    print("\nStep 3: Analyze Sentiment")
+    # Analyze sentiment with LLM
+    print("\nStep 3: Analyze Sentiment (GPT-3.5 via OpenRouter)")
     print("-" * 70)
     sentiment_result = server.tool_handlers['analyze_sentiment'](
         text=email['body']
     )
     sentiment = json.loads(sentiment_result)
-    print(f"Sentiment: {sentiment['sentiment']}")
-    print(f"Urgent: {sentiment['is_urgent']}")
-    print(f"Priority: {sentiment['priority']}")
+    print(f"Sentiment: {sentiment['sentiment'].upper()}")
+    print(f"Urgency: {sentiment['urgency'].upper()}")
+    print(f"Priority: {sentiment['priority'].upper()}")
+    print(f"Method: {sentiment['method']}")
     
     # Extract action items
     print("\nStep 4: Extract Action Items")
@@ -400,8 +616,10 @@ Customer Support Team""",
     
     print("\n✅ Email analysis complete")
     print("\nLearning Point:")
-    print("  Tools work together in a pipeline to extract business intelligence.")
-    print("  AI clients can orchestrate tools to build complex workflows.")
+    print("  • Tools use GPT-3.5 via OpenRouter for sentiment and categorization")
+    print("  • Fallback to keyword-based analysis if API unavailable")
+    print("  • All tool parameters are optional (use sample email if omitted)")
+    print("  • AI clients can provide custom emails or rely on samples")
 
 
 def demo_business_workflow():
@@ -459,34 +677,131 @@ external systems.
     print("  Combined with security guardrails (Lesson 5.5), this scales workflows.")
 
 
+def demo_real_email_integration():
+    """Demonstration 4: Steps to integrate with real email systems."""
+    print("\n" + "=" * 70)
+    print("DEMO 4: REAL EMAIL SYSTEM INTEGRATION")
+    print("=" * 70)
+    
+    print("""
+Adapting This Template to Real Email Sources
+============================================
+
+The create_email_analyst_server() template works with any email data source.
+Follow these 6 steps to connect your server to production email systems:
+
+Step 1: Add Configuration
+  Add EMAIL_SOURCE, credentials, and server settings at the top of your file.
+  Learners typically choose IMAP (Gmail/Outlook), Gmail API, or webhook-based.
+
+Step 2: Create an Email Fetcher Function
+  Write a function to connect to your email source and retrieve messages.
+  Return emails in {sender, subject, body, timestamp} format for consistency.
+
+Step 3: Modify Server to Accept Email Source
+  Extend create_email_analyst_server() to accept your email fetcher function.
+  Pass it as a parameter so the server can retrieve real emails on demand.
+
+Step 4: Add a Tool to List Emails
+  Register a "list_emails" tool that calls your fetcher and returns unread messages.
+  This gives AI clients access to discover and select emails for analysis.
+
+Step 5: Add Security Guardrails (Critical!)
+  Review Lesson 5.5 for credential management, rate limiting, approval gates,
+  and audit logging before deploying to production.
+
+Step 6: Test with Real Emails
+  Call your server tools with actual emails from your configured source.
+  Verify parsing, categorization, and analysis work as expected.
+""")
+    
+    print("\n✅ Integration guide complete")
+    print("\nNext Steps:")
+    print("  1. Choose your email source (IMAP, Gmail API, or webhook)")
+    print("  2. Follow Steps 1-6 above to integrate")
+    print("  3. Review Lesson 5.5 for security guardrails")
+    print("  4. Test with real emails")
+    print("  5. Deploy as part of MCP Toolkit (Lesson 5.6 Capstone)")
+
+
+# ============================================================================
+# PATTERN WRAPPER FUNCTIONS: Interactive menu patterns
+# ============================================================================
+
+def pattern_1_tool_registration():
+    """PATTERN 1: Tool Registration & Schemas."""
+    print("\n" + "=" * 70)
+    print("PATTERN 1: TOOL REGISTRATION & SCHEMAS")
+    print("=" * 70)
+    demo_tool_registration()
+    input("\nPress Enter to continue...")
+
+
+def pattern_2_email_analysis():
+    """PATTERN 2: Email Analysis Pipeline."""
+    print("\n" + "=" * 70)
+    print("PATTERN 2: EMAIL ANALYSIS PIPELINE")
+    print("=" * 70)
+    demo_email_analysis()
+    input("\nPress Enter to continue...")
+
+
+def pattern_3_business_workflow():
+    """PATTERN 3: Business Workflow Routing."""
+    print("\n" + "=" * 70)
+    print("PATTERN 3: BUSINESS WORKFLOW ROUTING")
+    print("=" * 70)
+    demo_business_workflow()
+    input("\nPress Enter to continue...")
+
+
+def pattern_4_real_integration():
+    """PATTERN 4: Real Email System Integration."""
+    print("\n" + "=" * 70)
+    print("PATTERN 4: REAL EMAIL SYSTEM INTEGRATION")
+    print("=" * 70)
+    demo_real_email_integration()
+    input("\nPress Enter to continue...")
+
+
+def main():
+    """Main interactive menu loop."""
+    patterns = {
+        "1": pattern_1_tool_registration,
+        "2": pattern_2_email_analysis,
+        "3": pattern_3_business_workflow,
+        "4": pattern_4_real_integration,
+    }
+
+    while True:
+        show_menu()
+        choice = input("Choose [1-4] or [Q] to quit: ").strip().lower()
+
+        if choice == "q":
+            clear_screen()
+            print("\n✅ Thanks for learning! Remember to:")
+            print("   • Use create_email_analyst_server() as your MCP template")
+            print("   • Register tools for parsing, categorizing, and analyzing emails")
+            print("   • Add security guardrails before production use (Lesson 5.5)")
+            print("   • Follow Steps 1-6 to connect to real email sources")
+            print("   • Integrate into MCP Toolkit for autonomous agents (Lesson 5.6)\n")
+            break
+        
+        if choice in patterns:
+            try:
+                patterns[choice]()
+            except Exception as e:
+                print(f"\n❌ Error: {e}")
+                import traceback
+                traceback.print_exc()
+        else:
+            print("\n❌ Invalid choice. Please enter [1-4] or [Q]")
+            input("Press Enter to try again...")
+
+
 # ============================================================================
 # MAIN EXECUTION
 # ============================================================================
 
 if __name__ == "__main__":
-    print("\n" + "=" * 70)
-    print("LESSON 5.4: CONNECTING REAL-WORLD TOOLS - EMAIL ANALYST SERVER")
-    print("=" * 70)
-    print("\nThis lesson demonstrates how to build email analysis capabilities")
-    print("into MCP servers for business workflow integration.\n")
-    
-    # Run all demonstrations
-    demo_tool_registration()
-    print("\n" + "-" * 70 + "\n")
-    
-    demo_email_analysis()
-    print("\n" + "-" * 70 + "\n")
-    
-    demo_business_workflow()
-    
-    print("\n" + "=" * 70)
-    print("LESSON COMPLETE")
-    print("=" * 70)
-    print("\nKey Takeaways:")
-    print("  1. Email analysis tools extract business intelligence from messages")
-    print("  2. Tool schemas define strict interfaces for AI clients")
-    print("  3. Tools work together in pipelines for complex workflows")
-    print("  4. Sentiment and urgency inform routing and priority")
-    print("  5. create_email_analyst_server() is a reusable template\n")
-    print("Next Lesson:")
-    print("  Lesson 5.5 adds security guardrails to prevent unsafe actions\n")
+    main()

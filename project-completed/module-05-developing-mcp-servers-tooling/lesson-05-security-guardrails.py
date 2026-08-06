@@ -13,8 +13,10 @@ Run:
 """
 
 import sys
+import os
 import json
 import hashlib
+import importlib.util
 from pathlib import Path
 from typing import List, Dict, Optional, Callable, Any
 from datetime import datetime
@@ -74,6 +76,7 @@ def add_security_guardrails(
     enable_audit_logging: bool = True,
     enable_approval_workflow: bool = False,
     user_id: str = "default_user",
+    enabled: bool = True,
 ) -> MCPServer:
     """Core template method: Wrap an MCP Server with security validation and guardrails.
     
@@ -86,6 +89,7 @@ def add_security_guardrails(
         enable_audit_logging: Whether to log all tool executions
         enable_approval_workflow: Require manual approval for dangerous operations
         user_id: User identifier for permission checking
+        enabled: If False, returns server without security wrapping (for testing comparison)
     
     Returns:
         MCPServer: Same interface, but with security validation intercepting
@@ -98,6 +102,7 @@ def add_security_guardrails(
         - Sensitive data scrubbing from logs and outputs
         - Complete audit trail with timestamps and hashes
         - Optional approval workflow for high-risk operations
+        - Optional toggle to disable for testing comparison
     
     Example:
         >>> server = create_knowledge_server('/data/knowledge')
@@ -109,6 +114,11 @@ def add_security_guardrails(
         >>> # Now all tool calls go through security validation
         >>> result = secure_server.call_tool('search_knowledge', {'query': 'RAG'})
     """
+    
+    # If disabled, return unwrapped server (for testing comparison)
+    if not enabled:
+        print(f"⚠ Security guardrails DISABLED (for testing comparison)")
+        return server
     
     # Step 1: Initialize security infrastructure
     permission_manager = PermissionManager()
@@ -123,7 +133,7 @@ def add_security_guardrails(
     }
     user_role = strategy_to_role.get(permission_strategy, Role.USER)
     
-    print(f"✓ Initialized security guardrails")
+    print(f"✅ Initialized security guardrails")
     print(f"  Permission strategy: {permission_strategy} (role: {user_role.value})")
     print(f"  Audit logging: {'enabled' if enable_audit_logging else 'disabled'}")
     print(f"  Approval workflow: {'enabled' if enable_approval_workflow else 'disabled'}")
@@ -238,7 +248,7 @@ def add_security_guardrails(
     # Step 4: Replace handlers with wrapped versions
     server.tool_handlers = wrapped_handlers
     
-    print(f"✓ Wrapped {len(wrapped_handlers)} tool handlers with security validation")
+    print(f"✅ Wrapped {len(wrapped_handlers)} tool handlers with security validation")
     
     # Step 5: Store audit trail for retrieval
     server.audit_trail = audit_trail
@@ -515,15 +525,226 @@ Security Benefits:
 
 
 # ============================================================================
-# MAIN EXECUTION
+# INTERACTIVE MENU SYSTEM
 # ============================================================================
 
-if __name__ == "__main__":
+def show_menu():
+    """Display interactive menu options."""
     print("\n" + "=" * 70)
     print("LESSON 5.5: DEBUGGING & SECURITY - PERMISSION SANDBOXES")
     print("=" * 70)
-    print("\nThis lesson demonstrates how to protect MCP servers with security")
-    print("guardrails that validate, log, and approve tool execution.\n")
+    print("\nChoose a demonstration pattern:")
+    print("  1) Permission System: Show role-based access control matrix")
+    print("  2) Knowledge Server: Secure a knowledge server with guardrails")
+    print("  3) Email Server: Secure an email server with guardrails")
+    print("  4) Visible Toggle: Compare behavior WITH vs WITHOUT guardrails")
+    print("  5) All Demonstrations: Run all security features (lectures)")
+    print("  Q) Quit")
+    print("-" * 70)
+
+
+def pattern_1_permission_system():
+    """Pattern 1: Permission system demonstration."""
+    print("\n" + "=" * 70)
+    print("PATTERN 1: PERMISSION SYSTEM")
+    print("=" * 70)
+    demo_permission_system()
+
+
+def pattern_2_knowledge_server():
+    """Pattern 2: Security on knowledge server."""
+    print("\n" + "=" * 70)
+    print("PATTERN 2: SECURE KNOWLEDGE SERVER")
+    print("=" * 70)
+    
+    # Import knowledge server builder using importlib (handles hyphens in filename)
+    try:
+        lesson_03_path = Path(__file__).parent / "lesson-03-personal-knowledge-server.py"
+        spec = importlib.util.spec_from_file_location("lesson_03_knowledge", lesson_03_path)
+        lesson_03 = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(lesson_03)
+        create_knowledge_server = lesson_03.create_knowledge_server
+    except (ImportError, AttributeError) as e:
+        print("ℹ️ Could not import knowledge server (lesson-03)")
+        print("Creating mock server for demonstration...")
+        # Create mock knowledge server for demo
+        server = MCPServer("mock_knowledge_server")
+        server.tools["search"] = Tool("search", {}, "Search knowledge base")
+        server.tool_handlers["search"] = lambda query="": json.dumps({"results": ["doc1", "doc2"]})
+        return
+    
+    # Create knowledge server
+    knowledge_dir = Path(__file__).parent.parent.parent / "datasets"
+    server = create_knowledge_server(str(knowledge_dir), "knowledge_srv", ['.md', '.txt'])
+    
+    print("\n📚 Knowledge Server Created")
+    print(f"Available tools: {list(server.tool_handlers.keys())}")
+    
+    # Apply security guardrails
+    print("\n🔒 Applying security guardrails (read_only)...")
+    secure_server = add_security_guardrails(
+        server,
+        permission_strategy="read_only",
+        enable_audit_logging=True,
+        user_id="learner"
+    )
+    
+    # Test tool access
+    print("\n✅ Testing secure tool access...")
+    test_result = secure_server.call_tool("search_knowledge", {"query": "AI"})
+    if test_result:
+        try:
+            result_dict = json.loads(test_result)
+            print(f"Search result: {result_dict.get('results', result_dict.get('error', test_result))[:100]}")
+        except:
+            print(f"Result: {test_result[:100]}")
+    
+    print("\n✅ Pattern 2 complete - Knowledge server is now secured")
+
+
+def pattern_3_email_server():
+    """Pattern 3: Security on email server."""
+    print("\n" + "=" * 70)
+    print("PATTERN 3: SECURE EMAIL SERVER")
+    print("=" * 70)
+    
+    # Import email server builder using importlib (handles hyphens in filename)
+    try:
+        lesson_04_path = Path(__file__).parent / "lesson-04-email-analyst-server.py"
+        spec = importlib.util.spec_from_file_location("lesson_04_email", lesson_04_path)
+        lesson_04 = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(lesson_04)
+        create_email_analyst_server = lesson_04.create_email_analyst_server
+    except (ImportError, AttributeError) as e:
+        print("ℹ️ Could not import email server (lesson-04)")
+        print("Creating mock server for demonstration...")
+        # Create mock email server for demo
+        server = MCPServer("mock_email_server")
+        server.tools["analyze"] = Tool("analyze", {}, "Analyze email")
+        server.tool_handlers["analyze"] = lambda: json.dumps({"sentiment": "positive"})
+        return
+    
+    # Create email server
+    server = create_email_analyst_server("email_srv")
+    
+    print("\n📧 Email Server Created")
+    print(f"Available tools: {list(server.tool_handlers.keys())}")
+    
+    # Apply security guardrails
+    print("\n🔒 Applying security guardrails (power_user)...")
+    secure_server = add_security_guardrails(
+        server,
+        permission_strategy="power_user",
+        enable_audit_logging=True,
+        user_id="analyst"
+    )
+    
+    # Test tool access
+    print("\n✅ Testing secure tool access...")
+    test_result = secure_server.call_tool("parse_email", {})
+    if test_result:
+        try:
+            result_dict = json.loads(test_result)
+            print(f"Parse result: {list(result_dict.keys())[:5]}")
+        except:
+            print(f"Result: {test_result[:100]}")
+    
+    print("\n✅ Pattern 3 complete - Email server is now secured")
+
+
+def pattern_4_visible_toggle():
+    """Pattern 4: Compare WITH vs WITHOUT guardrails."""
+    print("\n" + "=" * 70)
+    print("PATTERN 4: VISIBLE TOGGLE TEST (WITH vs WITHOUT GUARDRAILS)")
+    print("=" * 70)
+    
+    print("\n📊 This pattern demonstrates security by running the same")
+    print("operation twice: once with guardrails, once without.\n")
+    
+    # Create mock server for demonstration
+    server = MCPServer("test_server")
+    server.tools["read_file"] = Tool("read_file", {"path": {}}, "Read a file")
+    server.tools["delete_file"] = Tool("delete_file", {"path": {}}, "Delete a file")
+    
+    def read_handler(**kwargs):
+        path = kwargs.get("path", "document.txt")
+        return json.dumps({"content": f"File contents from {path}"})
+    
+    def delete_handler(**kwargs):
+        path = kwargs.get("path", "document.txt")
+        return json.dumps({"deleted": path})
+    
+    server.tool_handlers["read_file"] = read_handler
+    server.tool_handlers["delete_file"] = delete_handler
+    
+    # Test 1: Without guardrails (enabled=False)
+    print("─" * 70)
+    print("TEST 1: WITHOUT GUARDRAILS (enabled=False)")
+    print("─" * 70)
+    
+    insecure_server = add_security_guardrails(
+        server,
+        permission_strategy="read_only",
+        enable_audit_logging=False,
+        enabled=False
+    )
+    
+    print("\n✓ Attempting to delete file...")
+    result = insecure_server.call_tool("delete_file", {"path": "../../../etc/passwd"})
+    try:
+        result_dict = json.loads(result)
+        print(f"Result: ❌ ALLOWED - {result_dict.get('deleted', result_dict)}")
+    except:
+        print(f"Result: {result}")
+    
+    # Test 2: With guardrails (enabled=True)
+    print("\n" + "─" * 70)
+    print("TEST 2: WITH GUARDRAILS (enabled=True)")
+    print("─" * 70)
+    
+    # Reset server for fresh guardrails
+    server2 = MCPServer("test_server_2")
+    server2.tools["read_file"] = Tool("read_file", {"path": {}}, "Read a file")
+    server2.tools["delete_file"] = Tool("delete_file", {"path": {}}, "Delete a file")
+    server2.tool_handlers["read_file"] = read_handler
+    server2.tool_handlers["delete_file"] = delete_handler
+    
+    secure_server = add_security_guardrails(
+        server2,
+        permission_strategy="read_only",
+        enable_audit_logging=True,
+        enabled=True
+    )
+    
+    print("\n✓ Attempting to delete file...")
+    result = secure_server.call_tool("delete_file", {"path": "../../../etc/passwd"})
+    try:
+        result_dict = json.loads(result)
+        if "error" in result_dict:
+            print(f"Result: ✅ BLOCKED - {result_dict['error']}")
+        else:
+            print(f"Result: {result_dict}")
+    except:
+        print(f"Result: {result}")
+    
+    # Show comparison
+    print("\n" + "─" * 70)
+    print("COMPARISON SUMMARY")
+    print("─" * 70)
+    print("Without guardrails: ❌ Dangerous operation ALLOWED")
+    print("With guardrails:    ✅ Dangerous operation BLOCKED by permissions\n")
+    print("The permission system prevents operations beyond user's role level.")
+    print("  • read_only users: Can READ, cannot DELETE")
+    print("  • power_user: Can READ and WRITE, but cannot DELETE critical resources")
+    print("  • admin: Can perform all operations\n")
+
+
+def pattern_5_all_demos():
+    """Pattern 5: Run all lecture-style demonstrations."""
+    print("\n" + "=" * 70)
+    print("PATTERN 5: ALL SECURITY FEATURES (LECTURE MODE)")
+    print("=" * 70)
+    print("\nRunning comprehensive security demonstrations...\n")
     
     # Run all demonstrations
     demo_permission_system()
@@ -540,14 +761,52 @@ if __name__ == "__main__":
     
     demo_approval_workflow()
     
-    print("\n" + "=" * 70)
-    print("LESSON COMPLETE")
-    print("=" * 70)
-    print("\nKey Takeaways:")
-    print("  1. Permissions control which operations users can execute")
-    print("  2. Input sanitization prevents path traversal and injection attacks")
-    print("  3. Secret scrubbing protects credentials in logs")
-    print("  4. Audit trails enable compliance and incident response")
-    print("  5. Approval workflows add human oversight for dangerous operations\n")
-    print("Next Lesson:")
-    print("  Lesson 5.6 combines all concepts into a complete MCP Toolkit\n")
+    print("\n✅ All demonstrations complete")
+
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+if __name__ == "__main__":
+    # Interactive menu loop
+    while True:
+        os.system('clear')
+        show_menu()
+        choice = input("Enter your choice [1-5, Q]: ").strip().upper()
+        
+        if choice == "1":
+            pattern_1_permission_system()
+            input("\nPress Enter to continue...")
+        elif choice == "2":
+            pattern_2_knowledge_server()
+            input("\nPress Enter to continue...")
+        elif choice == "3":
+            pattern_3_email_server()
+            input("\nPress Enter to continue...")
+        elif choice == "4":
+            pattern_4_visible_toggle()
+            input("\nPress Enter to continue...")
+        elif choice == "5":
+            pattern_5_all_demos()
+            input("\nPress Enter to continue...")
+        elif choice == "Q":
+            os.system('clear')
+            print("\n" + "=" * 70)
+            print("LESSON COMPLETE - Thank you for learning about security guardrails!")
+            print("=" * 70)
+            print("\nKey Takeaways:")
+            print("  1. Permissions control which operations users can execute")
+            print("  2. Input sanitization prevents path traversal and injection attacks")
+            print("  3. Secret scrubbing protects credentials in logs")
+            print("  4. Audit trails enable compliance and incident response")
+            print("  5. Approval workflows add human oversight for dangerous operations")
+            print("  6. Security guardrails can wrap ANY MCP server")
+            print("  7. Toggle testing helps validate security effectiveness\n")
+            print("Next Lesson:")
+            print("  Lesson 5.6 combines all concepts into a complete MCP Toolkit\n")
+            break
+        else:
+            print("❌ Invalid choice. Please enter 1-5 or Q.")
+            input("\nPress Enter to continue...")
+

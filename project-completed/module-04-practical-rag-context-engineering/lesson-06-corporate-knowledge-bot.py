@@ -11,18 +11,12 @@ Business Scenario:
   with citations.
 
 This lesson demonstrates DEPLOYMENT PATTERNS for RAG systems with:
-  • Document ingestion and embedding
+  • Simplified User Interface and Experience
   • Multi-turn conversation with chat history
-  • Search quality metrics and analytics
-  • Scalability considerations
-  • Production monitoring and logging
+  • Document ingestion, embedding and management
 
-Can run as:
-  1. CLI: python lesson-06-corporate-knowledge-bot.py
-  2. Interactive: python lesson-06-corporate-knowledge-bot.py --interactive
-  3. Streamlit UI: streamlit run lesson-06-corporate-knowledge-bot.py
 
-Run: python lesson-06-corporate-knowledge-bot.py
+Run: streamlit run lesson-06-corporate-knowledge-bot.py
 """
 
 import os
@@ -57,6 +51,9 @@ except ImportError:
 COMPANY_NAME = "TechCorp Inc"
 COMPANY_TAGLINE = "Innovating the Future Together"
 EMPLOYEE_NAME = "John"  # Can be customized per user/session
+
+# Feature flag: Set to True to disable CLI/non-Streamlit code
+STREAMLIT_ONLY_MODE = True
 
 
 # ============================================================================
@@ -499,7 +496,7 @@ def main():
         traceback.print_exc()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and not STREAMLIT_ONLY_MODE:
     main()
 
 
