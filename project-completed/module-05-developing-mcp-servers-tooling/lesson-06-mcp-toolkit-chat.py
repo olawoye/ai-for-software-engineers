@@ -44,6 +44,20 @@ except (ImportError, AttributeError) as e:
 # CONFIGURATION & DATA SETUP
 # ============================================================================
 
+# Tool Manifest - simulates MCP server's available tools
+# When new tools are added to your MCP server, add them here to enable chat routing
+TOOL_MANIFEST = {
+    "email_search": {
+        "description": "Analyze and search customer emails to find urgent issues, support tickets, or specific customer communications. Use this when user asks about emails, urgent customer problems, incoming messages, or support tickets."
+    },
+    "knowledge_search": {
+        "description": "Search internal knowledge base for documentation, guides, solutions, troubleshooting steps, and how-to materials. Use this when user asks for documentation, guides, solutions, or how to resolve issues."
+    },
+    "general_chat": {
+        "description": "General conversation and answering questions on any topic not related to email or knowledge search. Use this for general knowledge questions, trivia, explanations, or any non-tool-specific queries."
+    }
+}
+
 st.set_page_config(
     page_title="MCP Toolkit AI Assistant",
     page_icon="🔧",
@@ -233,38 +247,53 @@ def log_jsonrpc_call(tool_name: str, arguments: Dict[str, Any], result: Any):
 
 def classify_message_intent(query: str) -> str:
     """
-    Classify user's message intent to determine which tools to use.
+    Classify user's message intent by matching against available tools.
     
-    Returns:
-        "email_search": User asking about emails, customer issues, support tickets
-        "knowledge_search": User asking for documentation, solutions, guides
-        "general_chat": Normal conversation, not tool-specific
+    Uses LLM to intelligently match user query to tool descriptions from TOOL_MANIFEST.
+    This simulates how real MCP clients determine which tool to invoke based on 
+    available tool registry.
+    
+    Returns: Tool name from TOOL_MANIFEST, or "general_chat" if no tool matches
     """
+    # Build tool options for LLM classification
+    tools_description = "\n".join([
+        f"- {tool_name}: {tool_info['description']}"
+        for tool_name, tool_info in TOOL_MANIFEST.items()
+    ])
+    
+    classification_prompt = f"""Given the user's query below, determine which tool they are trying to use.
+
+Available tools:
+{tools_description}
+
+User query: "{query}"
+
+Which tool should handle this query? Respond with ONLY the tool name (email_search, knowledge_search, or general_chat), nothing else."""
+    
+    # Try LLM-based classification
+    llm_available = os.getenv("OPENROUTER_API_KEY") is not None
+    
+    if llm_available:
+        response = call_llm_api(classification_prompt, temperature=0.3)
+        if response:
+            response_clean = response.strip().lower()
+            # Check if response contains a valid tool name
+            for tool_name in TOOL_MANIFEST.keys():
+                if tool_name in response_clean:
+                    return tool_name
+    
+    # Fallback: use simple keyword matching for critical paths
     query_lower = query.lower()
     
-    # Keywords for email search
-    email_keywords = [
-        "email", "urgent", "critical", "customer", "ticket",
-        "incoming", "support", "issue", "problem", "what's the",
-        "most urgent email", "any emails"
-    ]
-    
-    # Keywords for knowledge search
-    knowledge_keywords = [
-        "document", "solution", "how", "guide", "tutorial", 
-        "help", "rag", "knowledge", "database", "troubleshoot",
-        "fix", "resolve", "documentation", "search for", "do we have"
-    ]
-    
-    # Check for email search intent
-    if any(keyword in query_lower for keyword in email_keywords):
+    # Strong email indicators
+    if any(keyword in query_lower for keyword in ["email", "urgent", "critical", "customer", "ticket", "support"]):
         return "email_search"
     
-    # Check for knowledge search intent
-    if any(keyword in query_lower for keyword in knowledge_keywords):
+    # Strong knowledge indicators
+    if any(keyword in query_lower for keyword in ["document", "documentation", "guide", "rag", "solution", "troubleshoot"]):
         return "knowledge_search"
     
-    # Default: general chat
+    # Default to general chat
     return "general_chat"
 
 
