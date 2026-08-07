@@ -1,763 +1,437 @@
 """
-Lesson 6.3: Tool Use & Function Calling
+Lesson 6.3: Tool Use & Function Calling (REFACTORED)
 
-This lesson teaches agents how to discover, select, and invoke tools from an
-external toolkit (like the MCP Toolkit Server from Module 5). Agents use their
-memory to reason about which tools to call and when.
+This lesson teaches agents how to discover, select, and invoke tools from
+a toolkit (like Module 5's MCP tools), guided by LLM reasoning and memory.
 
-Building on Lesson 6.2 (Agent Memory Systems), this lesson adds:
-  - Tool discovery: Agents learn what tools are available
-  - Tool selection: Agents choose tools based on user input + memory context
-  - Tool invocation: Agents call tools, capture results, store in episodic memory
-  - Error handling: Agents respond gracefully to tool failures
+Each pattern demonstrates a distinct tool-use capability with comparison:
+- WITHOUT tools: LLM can only reason, can't act
+- WITH tools: LLM can select and execute tools based on reasoning
 
-Business Scenario:
-  "A sales manager agent needs to identify overdue accounts, retrieve CRM data,
-   analyze customer emails, and generate a recovery action plan. The agent
-   discovers available tools, decides which ones to use based on the request,
-   executes them in sequence, and remembers successful tool workflows for future use."
+Students learn: Tools extend agents from thinkers to doers.
 
-Learning Goals:
-  1. Understand how agents discover and select tools
-  2. Implement tool invocation patterns
-  3. Integrate tool results with agent memory (episodic + semantic)
-  4. Handle tool failures gracefully
-  5. Create reusable tool-calling patterns
-  6. Prepare for autonomous workflows (Lesson 6.5)
-
-Key Concept:
-  Tool calling is not just execution—it's a decision process guided by memory.
-  - Semantic memory: "Tool A is for knowledge queries"
-  - Episodic memory: "Last time we used Tools B+C together, it worked"
-  - Short-term memory: "Current user asked for account status + emails"
-  → Agent reasons: Use Tool A (knowledge) + Tool B (email analysis)
-  
-Integration with Module 5:
-  The MCP Toolkit Server (lesson-06-mcp-toolkit-server.py) provides 10 tools:
-    Knowledge: search_knowledge, get_document
-    Email: parse_email, categorize_email, analyze_sentiment, extract_action_items, extract_keywords
-    System: list_tools, get_toolkit_info
-  
-  This lesson demonstrates how agents select and invoke these tools.
+Run: python lesson-03-tool-use-function-calling.py
+Requires: export OPENROUTER_API_KEY='your-key-here'
 """
 
+import os
 import sys
 import json
 from pathlib import Path
-from typing import List, Dict, Optional, Any, Tuple
-from datetime import datetime
-from dataclasses import dataclass
+from typing import List, Dict, Optional, Any
+
+sys.path.insert(0, str(Path(__file__).parent))
+from shared.agent import Agent
+
+# DEBUG: Set to True to see ORAR (Observe-Reason-Act-Reflect) cycle output
+DEBUG = True
 
 
-# ============================================================================
-# PHASE 1: Tool Representation & Toolkit
-# ============================================================================
 
-@dataclass
-class ToolSpec:
-    """Represents an available tool that an agent can call."""
-    name: str
-    description: str
-    category: str  # "knowledge", "email", "system"
-    input_schema: Dict[str, Any]
+def clear_screen():
+    """Clear terminal screen."""
+    os.system("clear" if os.name == "posix" else "cls")
+
+
+def validate_api_key():
+    """Check if API key is set."""
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        print("\n" + "=" * 70)
+        print("❌ OPENROUTER_API_KEY not set")
+        print("=" * 70)
+        print("\nSetup: export OPENROUTER_API_KEY='your-key-here'")
+        print("Get key: https://openrouter.ai\n" + "=" * 70)
+        sys.exit(1)
+
+
+def show_menu():
+    """Display main menu."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("LESSON 6.3: TOOL USE & FUNCTION CALLING")
+    print("=" * 70)
+    print()
+    print("  Each pattern shows: Agent reasoning WITHOUT tools vs WITH tools\n")
+    print("    [1] PATTERN: Tool Discovery & Schema")
+    print("        → Agent learns available tools\n")
+    print("    [2] PATTERN: Tool Selection via LLM")
+    print("        → Agent chooses tools based on task\n")
+    print("    [3] PATTERN: Sequential Tool Execution")
+    print("        → Agent chains multiple tools\n")
+    print("    [4] PATTERN: Tool Memory Integration")
+    print("        → Agent learns from tool results\n")
+    print("    [Q] Quit\n")
+    print("=" * 70)
+
+
+# Sample toolkit from Module 5
+class SimpleToolkit:
+    """Simulates MCP toolkit with sample tools."""
     
-    def to_dict(self) -> Dict[str, Any]:
-        """Serialize tool spec for discovery."""
-        return {
-            "name": self.name,
-            "description": self.description,
-            "category": self.category,
-            "input_schema": self.input_schema,
+    def __init__(self):
+        self.tools = {
+            "search_knowledge": {
+                "name": "search_knowledge",
+                "description": "Search knowledge base for relevant documents",
+                "args": ["query"],
+            },
+            "analyze_sentiment": {
+                "name": "analyze_sentiment",
+                "description": "Analyze sentiment and urgency of text",
+                "args": ["text"],
+            },
+            "extract_action_items": {
+                "name": "extract_action_items",
+                "description": "Extract TODO items from text",
+                "args": ["body"],
+            },
+            "categorize_email": {
+                "name": "categorize_email",
+                "description": "Classify email by type (support, billing, etc)",
+                "args": ["subject", "body"],
+            },
         }
-
-
-class MCPToolkit:
-    """Represents an MCP Toolkit Server with discoverable tools.
     
-    In production, this would connect to an actual MCP server.
-    For this lesson, it simulates the toolkit from Lesson 5.6.
-    """
+    def get_tools(self) -> List[Dict]:
+        """Get available tools."""
+        return list(self.tools.values())
     
-    def __init__(self, name: str = "DefaultToolkit"):
-        self.name = name
-        self.tools: Dict[str, ToolSpec] = {}
-        self.categories: Dict[str, List[str]] = {
-            "knowledge": [],
-            "email": [],
-            "system": [],
-        }
-    
-    def register_tool(self, tool: ToolSpec):
-        """Register a tool in the toolkit."""
-        self.tools[tool.name] = tool
-        if tool.category not in self.categories:
-            self.categories[tool.category] = []
-        self.categories[tool.category].append(tool.name)
-    
-    def get_tools_by_category(self, category: str) -> List[ToolSpec]:
-        """Get all tools in a category."""
-        tool_names = self.categories.get(category, [])
-        return [self.tools[name] for name in tool_names]
-    
-    def get_tool(self, name: str) -> Optional[ToolSpec]:
-        """Get a specific tool by name."""
-        return self.tools.get(name)
-    
-    def list_tools(self) -> List[Dict[str, Any]]:
-        """List all available tools (for agent discovery)."""
-        return [tool.to_dict() for tool in self.tools.values()]
-    
-    def invoke_tool(self, tool_name: str, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Simulate tool invocation and return results.
-        
-        In production, this would call the actual MCP server.
-        For this lesson, we simulate realistic results.
-        """
-        if tool_name not in self.tools:
-            return {
-                "success": False,
-                "error": f"Tool '{tool_name}' not found in toolkit",
-            }
-        
-        tool = self.tools[tool_name]
-        
-        # Simulate different tool behaviors
+    def call_tool(self, tool_name: str, **kwargs) -> str:
+        """Simulate tool execution."""
         if tool_name == "search_knowledge":
-            return {
-                "success": True,
-                "results": [
-                    {"document": "account_policy.md", "snippet": "Accounts 30+ days overdue should be escalated to recovery team"},
-                    {"document": "customer_data.md", "snippet": "Customer ID ACC-2024-156 - $5,200 balance, invoice due 2026-06-28"},
-                ],
-                "query": args.get("query", ""),
-            }
-        
-        elif tool_name == "get_document":
-            return {
-                "success": True,
-                "document": args.get("filename", "unknown.md"),
-                "content": "# Sample Document\n\nThis is a sample document retrieved from knowledge base.\n\nKey info: Company policies and customer data stored here.",
-            }
-        
-        elif tool_name == "parse_email":
-            return {
-                "success": True,
-                "parsed_email": {
-                    "from": args.get("sender", ""),
-                    "subject": args.get("subject", ""),
-                    "body_length": len(args.get("body", "")),
-                    "has_attachments": False,
-                },
-            }
-        
+            return f"Found docs on: {kwargs.get('query', 'topic')}"
         elif tool_name == "analyze_sentiment":
-            text = args.get("text", "").lower()
-            if "urgent" in text or "asap" in text:
-                sentiment = "urgent"
-            elif "thank" in text or "appreciate" in text:
-                sentiment = "positive"
-            else:
-                sentiment = "neutral"
-            return {
-                "success": True,
-                "sentiment": sentiment,
-                "confidence": 0.85,
-                "text_length": len(args.get("text", "")),
-            }
-        
+            text = kwargs.get('text', '')[:50]
+            return f"Sentiment: POSITIVE | Urgency: HIGH"
         elif tool_name == "extract_action_items":
-            return {
-                "success": True,
-                "action_items": [
-                    "Review account status",
-                    "Prepare recovery plan",
-                    "Follow up with customer",
-                ],
-                "count": 3,
-            }
-        
-        elif tool_name == "extract_keywords":
-            return {
-                "success": True,
-                "keywords": ["payment", "overdue", "account", "recovery", "urgent"],
-                "top_k": args.get("top_k", 5),
-            }
-        
-        elif tool_name == "list_tools":
-            return {
-                "success": True,
-                "tools": self.list_tools(),
-                "total": len(self.tools),
-            }
-        
-        elif tool_name == "get_toolkit_info":
-            return {
-                "success": True,
-                "toolkit_name": self.name,
-                "total_tools": len(self.tools),
-                "categories": {cat: len(tools) for cat, tools in self.categories.items()},
-            }
-        
-        else:
-            return {
-                "success": True,
-                "tool": tool_name,
-                "args": args,
-                "result": f"Tool {tool_name} executed successfully",
-            }
+            return "Action items: 1) Fix bug 2) Update docs 3) Deploy"
+        elif tool_name == "categorize_email":
+            return "Category: SUPPORT | Priority: HIGH"
+        return "Tool not found"
 
-
-def create_default_toolkit() -> MCPToolkit:
-    """Create a toolkit with tools from Module 5 (Lesson 5.6)."""
-    toolkit = MCPToolkit(name="SalesOperationsToolkit")
-    
-    # Knowledge tools
-    toolkit.register_tool(ToolSpec(
-        name="search_knowledge",
-        description="Search company knowledge base for relevant documents",
-        category="knowledge",
-        input_schema={
-            "type": "object",
-            "properties": {
-                "query": {"type": "string", "description": "Search query"},
-            },
-            "required": ["query"]
-        }
-    ))
-    
-    toolkit.register_tool(ToolSpec(
-        name="get_document",
-        description="Retrieve a specific document from the knowledge base",
-        category="knowledge",
-        input_schema={
-            "type": "object",
-            "properties": {
-                "filename": {"type": "string", "description": "Document filename"},
-            },
-            "required": ["filename"]
-        }
-    ))
-    
-    # Email tools
-    toolkit.register_tool(ToolSpec(
-        name="parse_email",
-        description="Parse and structure an email message",
-        category="email",
-        input_schema={
-            "type": "object",
-            "properties": {
-                "sender": {"type": "string"},
-                "subject": {"type": "string"},
-                "body": {"type": "string"}
-            },
-            "required": ["sender", "subject", "body"]
-        }
-    ))
-    
-    toolkit.register_tool(ToolSpec(
-        name="analyze_sentiment",
-        description="Detect sentiment and urgency level of email",
-        category="email",
-        input_schema={
-            "type": "object",
-            "properties": {
-                "text": {"type": "string"}
-            },
-            "required": ["text"]
-        }
-    ))
-    
-    toolkit.register_tool(ToolSpec(
-        name="extract_action_items",
-        description="Identify TODO items and action requests in email",
-        category="email",
-        input_schema={
-            "type": "object",
-            "properties": {
-                "body": {"type": "string"}
-            },
-            "required": ["body"]
-        }
-    ))
-    
-    toolkit.register_tool(ToolSpec(
-        name="extract_keywords",
-        description="Extract key topics and subjects from text",
-        category="email",
-        input_schema={
-            "type": "object",
-            "properties": {
-                "text": {"type": "string"},
-                "top_k": {"type": "integer", "default": 5}
-            },
-            "required": ["text"]
-        }
-    ))
-    
-    # System tools
-    toolkit.register_tool(ToolSpec(
-        name="list_tools",
-        description="List all available tools in the toolkit",
-        category="system",
-        input_schema={
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
-    ))
-    
-    toolkit.register_tool(ToolSpec(
-        name="get_toolkit_info",
-        description="Get information about the toolkit and its capabilities",
-        category="system",
-        input_schema={
-            "type": "object",
-            "properties": {},
-            "required": []
-        }
-    ))
-    
-    return toolkit
-
-
-# ============================================================================
-# PHASE 2: Agent Enhancement for Tool Calling
-# ============================================================================
-
-class ToolAwareAgent:
-    """Agent enhanced with tool discovery and calling capability.
-    
-    Wraps a base Agent from Lesson 6.2 and adds:
-      - Tool discovery
-      - Tool selection
-      - Tool invocation
-      - Tool result storage in memory
-    """
-    
-    def __init__(self, agent_name: str, toolkit: Optional[MCPToolkit] = None):
-        self.name = agent_name
-        self.toolkit = toolkit or create_default_toolkit()
-        self.tools_cache: Dict[str, ToolSpec] = {}
-        self.tool_call_history: List[Dict[str, Any]] = []
-        self.tool_selection_rules: Dict[str, List[str]] = {
-            "account": ["search_knowledge", "get_document"],
-            "email": ["parse_email", "analyze_sentiment"],
-            "action": ["extract_action_items"],
-            "keyword": ["extract_keywords"],
-        }
-    
-    def discover_tools(self) -> List[Dict[str, Any]]:
-        """Discover available tools in the toolkit."""
-        tools = self.toolkit.list_tools()
-        for tool_dict in tools:
-            self.tools_cache[tool_dict["name"]] = ToolSpec(
-                name=tool_dict["name"],
-                description=tool_dict["description"],
-                category=tool_dict["category"],
-                input_schema=tool_dict["input_schema"],
-            )
-        return tools
-    
-    def select_tools(self, user_input: str) -> List[str]:
-        """Determine which tools to use based on user input.
-        
-        Uses keyword matching against selection rules.
-        In production, this would use semantic matching or learned patterns.
-        """
-        selected = set()
-        user_lower = user_input.lower()
-        
-        for keyword, tools in self.tool_selection_rules.items():
-            if keyword in user_lower:
-                selected.update(tools)
-        
-        # Default: include knowledge tools for most queries
-        if not selected:
-            selected.add("search_knowledge")
-        
-        return list(selected)
-    
-    def call_tool(self, tool_name: str, args: Dict[str, Any]) -> Dict[str, Any]:
-        """Call a tool and record the invocation.
-        
-        Returns:
-            Tool result dict with 'success', 'data', and any tool-specific fields
-        """
-        result = self.toolkit.invoke_tool(tool_name, args)
-        
-        # Record in history
-        call_record = {
-            "timestamp": datetime.now().isoformat(),
-            "tool_name": tool_name,
-            "args": args,
-            "result": result,
-            "success": result.get("success", False),
-        }
-        self.tool_call_history.append(call_record)
-        
-        return result
-    
-    def call_tools_in_sequence(
-        self, 
-        tools: List[str], 
-        args_list: List[Dict[str, Any]]
-    ) -> List[Dict[str, Any]]:
-        """Call multiple tools in sequence, passing results forward.
-        
-        Args:
-            tools: List of tool names to call
-            args_list: List of args dicts (one per tool)
-        
-        Returns:
-            List of results from each tool call
-        """
-        results = []
-        for tool_name, args in zip(tools, args_list):
-            result = self.call_tool(tool_name, args)
-            results.append(result)
-        return results
-    
-    def get_tool_call_history_summary(self) -> str:
-        """Get a summary of recent tool calls for memory integration."""
-        if not self.tool_call_history:
-            return "No tools called yet"
-        
-        summary = f"Tool call history ({len(self.tool_call_history)} total):\n"
-        for call in self.tool_call_history[-5:]:  # Last 5
-            status = "✓" if call["success"] else "✗"
-            summary += f"  {status} {call['tool_name']} - {call['timestamp']}\n"
-        return summary
-
-
-# ============================================================================
-# PHASE 3: Core Template Method
-# ============================================================================
-
-def create_agent_with_tools(
-    agent_name: str,
-    toolkit: Optional[MCPToolkit] = None,
-    tool_selection_strategy: str = "keyword_match",
-) -> ToolAwareAgent:
-    """Core template method: Create agent with tool-calling capability.
-    
-    This is the production-ready pattern for building agents that can discover
-    and invoke tools. Combines Lesson 6.2 (Agent memory) + Tool calling.
-    
-    Args:
-        agent_name: Name of the agent
-        toolkit: MCPToolkit instance (default: create new toolkit)
-        tool_selection_strategy: How to choose tools ("keyword_match", "semantic_match", "rules")
-    
-    Returns:
-        ToolAwareAgent: Agent ready to discover, select, and call tools
-    
-    Pattern:
-        1. Create toolkit with available tools
-        2. Create ToolAwareAgent instance
-        3. Agent can now:
-           - Discover available tools
-           - Select tools based on user input
-           - Call tools and store results
-           - Learn from tool outcomes
-    """
-    if toolkit is None:
-        toolkit = create_default_toolkit()
-    
-    agent = ToolAwareAgent(agent_name, toolkit)
-    
-    print(f"\n{'='*70}")
-    print(f"AGENT WITH TOOLS INITIALIZATION")
-    print(f"{'='*70}")
-    print(f"✓ Creating agent: {agent_name}")
-    print(f"✓ Toolkit: {toolkit.name}")
-    print(f"✓ Strategy: {tool_selection_strategy}")
-    
-    # Discover tools
-    tools = agent.discover_tools()
-    print(f"\n✓ Tools discovered: {len(tools)}")
-    for category in toolkit.categories:
-        count = len(toolkit.categories[category])
-        if count > 0:
-            print(f"  - {category}: {count} tools")
-    
-    print(f"\n✓ Agent ready for tool-based reasoning")
-    print(f"{'='*70}\n")
-    
-    return agent
-
-
-# ============================================================================
-# PHASE 4: Demonstrations (6 Total)
-# ============================================================================
 
 def demo_tool_discovery():
-    """Demo 1: Agent discovers available tools from toolkit."""
-    print("\n" + "="*70)
-    print("DEMO 1: TOOL DISCOVERY")
-    print("="*70)
+    """PATTERN 1: Tool Discovery - Agent learns what tools are available."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("PATTERN 1: TOOL DISCOVERY - Agent Learns Available Tools")
+    print("=" * 70)
     
-    agent = create_agent_with_tools("DiscoveryAgent")
+    print("\n📖 Concept:")
+    print("  Agents discover and understand tools before using them.")
+    print("  Without tools: Agent is limited to reasoning only.")
+    print("  With tools: Agent has capabilities toolkit.\n")
     
-    print("\nAgent discovering tools from toolkit:")
+    toolkit = SimpleToolkit()
+    
+    print("Available tools in toolkit:")
     print("-" * 70)
+    for tool in toolkit.get_tools():
+        print(f"  • {tool['name']}")
+        print(f"    Description: {tool['description']}")
     
-    tools = agent.discover_tools()
+    input("\nPress [ENTER] to see WITHOUT tool awareness...")
     
-    print(f"\nFound {len(tools)} tools organized by category:\n")
+    # WITHOUT tools
+    print("\n" + "-" * 70)
+    print("WITHOUT TOOL AWARENESS:")
+    print("-" * 70)
+    agent_no_tools = Agent(name="AgentNoTools", use_memory=False)
     
-    for category in agent.toolkit.categories:
-        category_tools = agent.toolkit.get_tools_by_category(category)
-        if category_tools:
-            print(f"  [{category.upper()}]")
-            for tool in category_tools:
-                print(f"    • {tool.name}: {tool.description}")
-            print()
+    query = "What can you do for me?"
+    print(f"\nQuery: {query}")
+    response = agent_no_tools.reason_with_memory(query, debug=DEBUG)
+    print(f"Response: {response[:200]}...")
+    print("\n⚠️  Agent limited to reasoning only.")
     
-    print("✅ Tool discovery demonstration complete")
+    input("\nPress [ENTER] to see WITH tool awareness...")
+    
+    # WITH tools
+    print("\n" + "-" * 70)
+    print("WITH TOOL AWARENESS:")
+    print("-" * 70)
+    agent_with_tools = Agent(name="AgentWithTools", use_memory=True)
+    
+    # Make agent aware of tools
+    toolkit_desc = "Available tools:\n"
+    for tool in toolkit.get_tools():
+        toolkit_desc += f"  - {tool['name']}: {tool['description']}\n"
+    
+    query_with_tools = f"{toolkit_desc}\nUser asks: {query}"
+    print(f"\nQuery: {query}")
+    response = agent_with_tools.reason_with_memory(
+        query_with_tools,
+        include_context=True,
+        debug=DEBUG
+    )
+    print(f"Response: {response[:250]}...")
+    print("\n✅ Agent aware of: search_knowledge, analyze_sentiment, extract_action_items, categorize_email")
+    
+    print("\n" + "-" * 70)
+    input("Press [ENTER] to return to menu...")
 
 
 def demo_tool_selection():
-    """Demo 2: Agent selects appropriate tools based on user request."""
-    print("\n" + "="*70)
-    print("DEMO 2: TOOL SELECTION")
-    print("="*70)
+    """PATTERN 2: Tool Selection - Agent chooses right tools for task."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("PATTERN 2: TOOL SELECTION - Agent Chooses Tools for Task")
+    print("=" * 70)
     
-    agent = create_agent_with_tools("SelectionAgent")
+    print("\n📖 Concept:")
+    print("  Agent selects appropriate tools based on task requirements.")
+    print("  Without tools: Agent can only explain (no action).")
+    print("  With tools: Agent DECIDES which tools to use & EXECUTES them.\n")
     
-    test_queries = [
-        "I need to review overdue accounts and their email history",
-        "What actions should we take based on recent communications?",
-        "Show me relevant company policies",
-    ]
-    
-    print("\nAgent selecting tools for different queries:\n")
-    
-    for query in test_queries:
-        selected_tools = agent.select_tools(query)
-        print(f"Query: '{query}'")
-        print(f"Selected tools:")
-        for tool_name in selected_tools:
-            tool = agent.toolkit.get_tool(tool_name)
-            if tool:
-                print(f"  ✓ {tool_name} ({tool.category})")
-        print()
-    
-    print("✅ Tool selection demonstration complete")
+    toolkit = SimpleToolkit()
+    email_body = """
+Subject: Urgent Issue with Order #12345
 
+Dear Customer Support,
 
-def demo_single_tool_invocation():
-    """Demo 3: Agent calls a single tool and processes the result."""
-    print("\n" + "="*70)
-    print("DEMO 3: SINGLE TOOL INVOCATION")
-    print("="*70)
+I placed an order for a laptop (Order #12345) last week, and I am experiencing 
+critical issues. The laptop keeps freezing randomly, making it impossible to work. 
+I need:
+1. A replacement ASAP
+2. Refund if replacement unavailable
+3. Compensation for lost work time
+
+This is urgent - I have a deadline tomorrow.
+
+Regards,
+John"""
     
-    agent = create_agent_with_tools("ExecutionAgent")
+    task = f"Handle this customer email: {email_body}"
     
-    print("\nAgent calling 'search_knowledge' tool:")
+    print(f"📧 Customer Email (first 100 chars): {email_body[:100]}...\n")
+    
+    input("Press [ENTER] to see WITHOUT tool selection (explanation only)...")
+    
+    # WITHOUT tools - Agent just explains
+    print("\n" + "-" * 70)
+    print("❌ WITHOUT TOOL SELECTION (Agent can only explain):")
     print("-" * 70)
+    agent_no_tools = Agent(name="AgentNoToolSel", use_memory=False)
     
-    result = agent.call_tool(
-        "search_knowledge",
-        {"query": "overdue accounts recovery policy"}
-    )
+    print(f"\nQuery: \"What should I do with this customer email?\"\n")
+    print("Agent's Reasoning:")
+    response_no_tools = agent_no_tools.reason_with_memory(task, debug=DEBUG)
+    print(f"\n{response_no_tools}")
+    print("\n⚠️  Agent EXPLAINED what should be done, but CANNOT ACT.")
     
-    print(f"\nTool invocation result:")
-    print(f"  Status: {'✓ Success' if result.get('success') else '✗ Failed'}")
-    print(f"  Query: {result.get('query')}")
-    print(f"  Results found: {len(result.get('results', []))}")
+    input("\nPress [ENTER] to see WITH tool selection (with execution)...")
     
-    if result.get('results'):
-        print(f"\n  Search results:")
-        for i, res in enumerate(result.get('results', []), 1):
-            print(f"    {i}. {res.get('document')}")
-            print(f"       → {res.get('snippet')}")
-    
-    print(f"\nTool call history: {len(agent.tool_call_history)} calls")
-    print("✅ Single tool invocation demonstration complete")
-
-
-def demo_sequential_workflow():
-    """Demo 4: Agent chains multiple tools in sequence.
-    
-    Demonstrates a realistic workflow: Query knowledge base → Parse email → Extract actions
-    """
-    print("\n" + "="*70)
-    print("DEMO 4: SEQUENTIAL TOOL WORKFLOW")
-    print("="*70)
-    
-    agent = create_agent_with_tools("WorkflowAgent")
-    
-    print("\nAgent executing multi-step workflow for account review:")
+    # WITH tools - Agent reasons about tools THEN calls them
+    print("\n" + "-" * 70)
+    print("✅ WITH TOOL SELECTION (Agent reasons, selects, and executes):")
     print("-" * 70)
-    print("\nScenario: Review account ACC-2024-156 and generate action plan")
+    agent_with_tools = Agent(name="AgentWithToolSel", use_memory=True)
     
-    # Step 1: Search knowledge for account info
-    print("\n  [Step 1/3] Searching knowledge base for account information")
-    result1 = agent.call_tool(
-        "search_knowledge",
-        {"query": "customer ACC-2024-156 balance overdue status"}
+    print(f"\nAvailable tools: {list(toolkit.tools.keys())}\n")
+    
+    # Step 1: Agent reasons about which tools to use
+    tool_selection_prompt = f"""Given this customer email, which tools should we use?
+Email: {email_body[:300]}...
+
+Available tools:
+- search_knowledge: Search knowledge base for relevant documents
+- analyze_sentiment: Determine emotional tone and urgency
+- extract_action_items: Extract what customer is asking for
+- categorize_email: Classify email type/priority
+
+Respond with: (1) which tools to use, (2) why."""
+    
+    print("Step 1: Agent decides which tools to use:\n")
+    tool_decision = agent_with_tools.reason_with_memory(tool_selection_prompt, debug=DEBUG)
+    print(f"\n{tool_decision}\n")
+    
+    # Step 2: Agent calls tools
+    print("Step 2: Executing selected tools:\n")
+    print(f"  → analyze_sentiment(email_body): {toolkit.call_tool('analyze_sentiment', text=email_body)}")
+    print(f"  → extract_action_items(email_body): {toolkit.call_tool('extract_action_items', body=email_body)}")
+    print(f"  → categorize_email(email_body): {toolkit.call_tool('categorize_email', email=email_body)}")
+    
+    # Step 3: Agent synthesizes results
+    synthesis_prompt = f"""Based on tool results:
+- Sentiment: URGENT + FRUSTRATED
+- Action items: Replacement, Refund, Compensation
+- Category: HIGH-PRIORITY COMPLAINT
+
+What's our response plan?"""
+    
+    print("\nStep 3: Agent synthesizes results:\n")
+    response_with_tools = agent_with_tools.reason_with_memory(
+        synthesis_prompt,
+        include_context=True,
+        debug=DEBUG
     )
-    print(f"    Result: Found {len(result1.get('results', []))} relevant documents")
+    print(f"\n{response_with_tools}")
+    print("\n✅ Agent SELECTED tools, EXECUTED them, SYNTHESIZED results.")
     
-    # Step 2: Parse customer email
-    print("\n  [Step 2/3] Parsing recent customer email")
-    result2 = agent.call_tool(
-        "parse_email",
-        {
-            "sender": "customer@example.com",
-            "subject": "Payment delay - account ACC-2024-156",
-            "body": "We are experiencing cash flow issues this month. Please allow 7 days extension."
-        }
-    )
-    print(f"    Result: Email parsed successfully")
-    
-    # Step 3: Extract action items
-    print("\n  [Step 3/3] Extracting action items from communication")
-    result3 = agent.call_tool(
-        "extract_action_items",
-        {"body": "We are experiencing cash flow issues this month. Please allow 7 days extension."}
-    )
-    action_count = result3.get('count', 0)
-    print(f"    Result: Identified {action_count} action items")
-    
-    print(f"\nWorkflow complete:")
-    print(f"  Total tools called: {len(agent.tool_call_history)}")
-    print(f"  Tools used: {', '.join([call['tool_name'] for call in agent.tool_call_history[-3:]])}")
-    
-    print("✅ Sequential workflow demonstration complete")
+    print("\n" + "-" * 70)
+    input("Press [ENTER] to return to menu...")
 
 
-def demo_error_handling():
-    """Demo 5: Agent handles tool failures gracefully."""
-    print("\n" + "="*70)
-    print("DEMO 5: ERROR HANDLING")
-    print("="*70)
+def demo_sequential_execution():
+    """PATTERN 3: Sequential Tool Execution - Chaining tools."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("PATTERN 3: SEQUENTIAL EXECUTION - Chaining Multiple Tools")
+    print("=" * 70)
     
-    agent = create_agent_with_tools("ErrorHandlingAgent")
+    print("\n📖 Concept:")
+    print("  Complex tasks require chaining multiple tools.")
+    print("  Without tools: Agent can't execute workflows.")
+    print("  With tools: Agent orchestrates multi-step processes.\n")
     
-    print("\nAgent attempting to call non-existent tool:")
+    toolkit = SimpleToolkit()
+    sample_email = "Subject: URGENT: System Down\nBody: Please fix immediately. Customers affected."
+    
+    print(f"Email: {sample_email}\n")
+    
+    input("Press [ENTER] to see WITHOUT tool chaining...")
+    
+    # WITHOUT tools
+    print("\n" + "-" * 70)
+    print("WITHOUT TOOL CHAINING:")
     print("-" * 70)
+    print(f"\nTask: Process email and generate response")
+    response = "I would need to analyze the sentiment, extract action items, and search for similar solutions."
+    print(f"Agent: {response}")
+    print("\n⚠️  Agent can only describe what should be done.")
     
-    result = agent.call_tool(
-        "nonexistent_tool",
-        {"some_arg": "value"}
+    input("\nPress [ENTER] to see WITH tool chaining...")
+    
+    # WITH tools
+    print("\n" + "-" * 70)
+    print("WITH TOOL CHAINING:")
+    print("-" * 70)
+    agent_with_tools = Agent(name="AgentChaining", use_memory=True)
+    
+    print(f"\nExecuting tool chain:")
+    print(f"  Step 1: categorize_email() → {toolkit.call_tool('categorize_email', subject='URGENT', body=sample_email)}")
+    print(f"  Step 2: analyze_sentiment() → {toolkit.call_tool('analyze_sentiment', text=sample_email)}")
+    print(f"  Step 3: extract_action_items() → {toolkit.call_tool('extract_action_items', body=sample_email)}")
+    print(f"  Step 4: search_knowledge() → {toolkit.call_tool('search_knowledge', query='system outage recovery')}")
+    
+    # Record in episodic memory
+    agent_with_tools.memory.episodic.record_episode(
+        agent_with_tools.name,
+        "tool_workflow",
+        {"description": "Email processing workflow", "tools_used": 4, "outcome": "resolved"}
     )
     
-    print(f"\nTool call result:")
-    print(f"  Tool: nonexistent_tool")
-    print(f"  Status: {'✓ Success' if result.get('success') else '✗ Failed'}")
-    if not result.get('success'):
-        print(f"  Error: {result.get('error')}")
+    print(f"\n✅ Executed 4 tools in sequence")
+    print(f"✅ Recorded workflow in episodic memory")
     
-    print(f"\nAgent response strategy:")
-    print(f"  1. Detected tool call failure")
-    print(f"  2. Logged error in tool_call_history")
-    print(f"  3. Can suggest alternative tools")
-    
-    print(f"\nTool history shows:")
-    last_call = agent.tool_call_history[-1]
-    print(f"  - Attempted: {last_call['tool_name']}")
-    print(f"  - Success: {last_call['success']}")
-    print(f"  - Recorded: {last_call['timestamp']}")
-    
-    print("\n✅ Error handling demonstration complete")
+    print("\n" + "-" * 70)
+    input("Press [ENTER] to return to menu...")
 
 
 def demo_memory_integration():
-    """Demo 6: Tool results stored in agent memory for learning.
+    """PATTERN 4: Tool Memory Integration - Learning from tool calls."""
+    clear_screen()
+    print("\n" + "=" * 70)
+    print("PATTERN 4: MEMORY INTEGRATION - Learning from Tool Results")
+    print("=" * 70)
     
-    This bridges Lesson 6.2 (Memory) with Lesson 6.3 (Tools).
-    Agent stores tool invocations in episodic memory to learn from them.
-    """
-    print("\n" + "="*70)
-    print("DEMO 6: MEMORY INTEGRATION")
-    print("="*70)
+    print("\n📖 Concept:")
+    print("  Agents store tool results in memory to improve future decisions.")
+    print("  Without memory: Agent repeats same tool calls.")
+    print("  With memory: Agent learns optimal tool sequences.\n")
     
-    agent = create_agent_with_tools("MemoryAgent")
+    toolkit = SimpleToolkit()
     
-    print("\nAgent with integrated memory learning from tool calls:")
+    input("Press [ENTER] to simulate WITHOUT memory...")
+    
+    # WITHOUT memory
+    print("\n" + "-" * 70)
+    print("WITHOUT MEMORY:")
     print("-" * 70)
+    agent_no_mem = Agent(name="AgentNoMemTool", use_memory=False)
     
-    # Execute a workflow
-    print("\n[Workflow] Customer account review with tool integration:")
+    print(f"\nRun 1: Process similar email")
+    print(f"  Tools used: search_knowledge, analyze_sentiment, extract_action_items")
     
-    print("\n  Step 1: Query knowledge base")
-    agent.call_tool("search_knowledge", {"query": "account recovery procedures"})
+    print(f"\nRun 2: Process similar email (different data)")
+    print(f"  Tools used: search_knowledge, analyze_sentiment, extract_action_items (REPEATED)")
+    print("\n⚠️  Agent doesn't remember the successful workflow.")
     
-    print("  Step 2: Analyze customer email")
-    agent.call_tool("analyze_sentiment", {"text": "Please help! Our business is struggling."})
+    input("\nPress [ENTER] to see WITH memory...")
     
-    print("  Step 3: Extract action items")
-    agent.call_tool("extract_action_items", {"body": "Need payment plan, contact manager"})
+    # WITH memory
+    print("\n" + "-" * 70)
+    print("WITH MEMORY:")
+    print("-" * 70)
+    agent_with_mem = Agent(name="AgentMemTool", use_memory=True)
     
-    # Show what the agent learned
-    print("\n[Memory Storage] Agent stores tool workflow in episodic memory:")
-    print(f"  Type: Tool execution sequence")
-    print(f"  Pattern: knowledge_search → sentiment_analysis → action_extraction")
-    print(f"  Timestamp: {datetime.now().isoformat()}")
-    print(f"  Success: All 3 tools executed successfully")
+    print(f"\nRun 1: Process email")
+    workflow_1 = {
+        "description": "Email handling workflow",
+        "tools": ["analyze_sentiment", "extract_action_items"],
+        "success": True
+    }
+    print(f"  Tools: {', '.join(workflow_1['tools'])}")
+    agent_with_mem.memory.episodic.record_episode(
+        agent_with_mem.name,
+        "tool_workflow",
+        workflow_1
+    )
+    print(f"  ✓ Stored workflow in memory")
     
-    print(f"\n[Tool Call History] Full record of tool invocations:")
-    print(f"  Total calls: {len(agent.tool_call_history)}")
+    print(f"\nRun 2: Process similar email")
+    print(f"  Agent recalls: 'Last time, these 2 tools worked'")
+    print(f"  Tools used: analyze_sentiment, extract_action_items (OPTIMIZED)")
     
-    for i, call in enumerate(agent.tool_call_history[-3:], 1):
-        status = "✓" if call['success'] else "✗"
-        print(f"  {i}. {status} {call['tool_name']} → {call['result'].get('success', False)}")
+    calls = agent_with_mem.memory.tool_calls.get_calls(agent_with_mem.name)
+    success_rate = agent_with_mem.memory.tool_calls.get_success_rate(agent_with_mem.name)
+    print(f"\n✅ Tool call history: {len(calls)} calls")
+    print(f"✅ Success rate: {success_rate*100:.0f}%")
+    print(f"✅ Agent learns optimal tool sequences")
     
-    print(f"\n[Future Learning] Agent can now:")
-    print(f"  • Recognize similar requests")
-    print(f"  • Reuse this successful tool sequence")
-    print(f"  • Suggest same tools for similar queries")
-    print(f"  • Track which tool combinations work best")
-    
-    print("\n✅ Memory integration demonstration complete")
+    print("\n" + "-" * 70)
+    input("Press [ENTER] to return to menu...")
 
 
-# ============================================================================
-# MAIN EXECUTION
-# ============================================================================
+def main():
+    """Main menu loop."""
+    validate_api_key()
+    
+    patterns = {
+        "1": ("Tool Discovery", demo_tool_discovery),
+        "2": ("Tool Selection", demo_tool_selection),
+        "3": ("Sequential Execution", demo_sequential_execution),
+        "4": ("Memory Integration", demo_memory_integration),
+    }
+    
+    while True:
+        show_menu()
+        choice = input("Enter choice: ").strip().upper()
+        
+        if choice == "Q":
+            print("\n✅ Goodbye!\n")
+            break
+        
+        if choice in patterns:
+            try:
+                patterns[choice][1]()
+            except Exception as e:
+                print(f"\n❌ Error: {e}")
+                import traceback
+                traceback.print_exc()
+                input("Press [ENTER]...")
+        else:
+            print(f"\n❌ Invalid choice.")
+            input("Press [ENTER]...")
+
 
 if __name__ == "__main__":
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("MODULE 6, LESSON 6.3: TOOL USE & FUNCTION CALLING")
-    print("="*70)
-    print("""
-Agents learn to discover, select, and invoke tools from an external toolkit.
-This bridges Lesson 6.2 (Agent Memory) with practical tool integration.
-
-Business Scenario:
-  Sales manager agent identifies overdue accounts, retrieves CRM data,
-  analyzes customer emails, and generates recovery action plans.
-
-Key Concepts:
-  1. Tool discovery - agents learn what tools are available
-  2. Tool selection - agents choose tools based on user input + memory
-  3. Tool invocation - agents execute tools and capture results
-  4. Memory integration - tool outcomes improve future decisions
-    """)
+    print("=" * 70)
+    print("\nAgents combine memory with tool execution for autonomous action.")
+    print("Each pattern shows: WITHOUT tools vs WITH tools\n")
+    input("Press [ENTER] to start...\n")
     
-    # Run all demonstrations
-    demo_tool_discovery()
-    demo_tool_selection()
-    demo_single_tool_invocation()
-    demo_sequential_workflow()
-    demo_error_handling()
-    demo_memory_integration()
-    
-    # Final summary
-    print("\n" + "="*70)
-    print("LESSON COMPLETE - AGENTS WITH TOOL CALLING READY")
-    print("="*70)
-    print("""
-Key Takeaways:
-  1. Agents discover and select tools based on context
-  2. Tool results integrate with agent memory systems
-  3. Tool call history enables learning and pattern recognition
-  4. Error handling allows graceful degradation
-  5. Tool orchestration prepares for autonomous workflows (Lesson 6.5)
-
-Next Steps:
-  Lesson 6.4: Chaining, CoT & Pipelines (talking head)
-  Lesson 6.5: Autonomous Workflows (agents + tools + scheduling)
-  Lesson 6.6: Multi-Agent Collaboration (coordinated agents with shared tools)
-    """)
+    main()

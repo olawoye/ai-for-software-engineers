@@ -1,0 +1,13 @@
+# Module 6: AI Agents & Autonomy
+
+# Core: Most functionality in pure Python (sqlite3, json, pathlib built-in)
+
+# Required for LLM integration (uses Module 3's LLMClient):
+httpx>=0.24.0
+
+# Required for Lesson 6.6 (Multi-Agent Collaboration Dashboard):
+streamlit>=1.28.0
+
+# Optional for advanced features:
+# schedule>=1.2.0              # Advanced workflow scheduling
+# python-dotenv>=1.0.0         # Environment variable management

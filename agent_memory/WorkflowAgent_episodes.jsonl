@@ -1,0 +1,6 @@
+{"timestamp": "2026-08-07T16:50:27.362294", "agent_name": "WorkflowAgent", "type": "workflow_execution", "content": {"name": "Executive Report", "duration": 2.3, "success": true, "steps_optimized": false}}
+{"timestamp": "2026-08-07T16:50:27.363434", "agent_name": "WorkflowAgent", "type": "workflow_execution", "content": {"name": "Executive Report", "duration": 2.1, "success": true, "steps_optimized": true}}
+{"timestamp": "2026-08-07T16:50:27.363878", "agent_name": "WorkflowAgent", "type": "workflow_execution", "content": {"name": "Executive Report", "duration": 1.9, "success": true, "steps_optimized": true}}
+{"timestamp": "2026-08-07T17:08:31.751969", "agent_name": "WorkflowAgent", "type": "workflow_execution", "content": {"name": "Executive Report", "duration": 2.3, "success": true, "steps_optimized": false}}
+{"timestamp": "2026-08-07T17:08:31.760178", "agent_name": "WorkflowAgent", "type": "workflow_execution", "content": {"name": "Executive Report", "duration": 2.1, "success": true, "steps_optimized": true}}
+{"timestamp": "2026-08-07T17:08:31.760724", "agent_name": "WorkflowAgent", "type": "workflow_execution", "content": {"name": "Executive Report", "duration": 1.9, "success": true, "steps_optimized": true}}
