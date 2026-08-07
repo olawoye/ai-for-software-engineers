@@ -538,7 +538,6 @@ def show_menu():
     print("  2) Knowledge Server: Secure a knowledge server with guardrails")
     print("  3) Email Server: Secure an email server with guardrails")
     print("  4) Visible Toggle: Compare behavior WITH vs WITHOUT guardrails")
-    print("  5) All Demonstrations: Run all security features (lectures)")
     print("  Q) Quit")
     print("-" * 70)
 
@@ -773,7 +772,7 @@ if __name__ == "__main__":
     while True:
         os.system('clear')
         show_menu()
-        choice = input("Enter your choice [1-5, Q]: ").strip().upper()
+        choice = input("Enter your choice [1-4, Q]: ").strip().upper()
         
         if choice == "1":
             pattern_1_permission_system()
@@ -786,9 +785,6 @@ if __name__ == "__main__":
             input("\nPress Enter to continue...")
         elif choice == "4":
             pattern_4_visible_toggle()
-            input("\nPress Enter to continue...")
-        elif choice == "5":
-            pattern_5_all_demos()
             input("\nPress Enter to continue...")
         elif choice == "Q":
             os.system('clear')
@@ -807,6 +803,6 @@ if __name__ == "__main__":
             print("  Lesson 5.6 combines all concepts into a complete MCP Toolkit\n")
             break
         else:
-            print("❌ Invalid choice. Please enter 1-5 or Q.")
+            print("❌ Invalid choice. Please enter 1-4 or Q.")
             input("\nPress Enter to continue...")
 
