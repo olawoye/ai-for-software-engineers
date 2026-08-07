@@ -1061,52 +1061,186 @@ def demo_benchmark_tracking():
 
 
 # ============================================================================
-# MAIN EXECUTION
+# INTERACTIVE MENU-DRIVEN CLI
 # ============================================================================
 
-if __name__ == "__main__":
+def display_main_menu():
+    """Display main menu options."""
     print("\n" + "="*70)
     print("LESSON 7.5: EVALUATION & PERFORMANCE FRAMEWORKS FOR AI SYSTEMS")
     print("="*70)
     print("\nThis is a PRODUCTION-READY evaluation framework tool.")
-    print("Extract the classes and methods into your own projects!")
-    print("\nKey Reusable Components:")
-    print("  • TestCase: Define test scenarios")
-    print("  • Metric: Calculate performance measurements")
-    print("  • EvaluationFramework: Main reusable container")
-    print("  • create_evaluation_framework(): Core template method")
-    print("\nCore Use Case:")
-    print("  Systematically evaluate AI systems (RAG, agents, workflows)")
-    print("  Measure performance (latency, throughput, accuracy, ROI)")
-    print("  Track improvement over time with benchmarks")
+    print("Extract the classes and methods into your own projects!\n")
     
-    # Run all demonstrations
-    demo_rag_evaluation()
-    demo_agent_evaluation()
-    demo_system_evaluation()
-    demo_business_evaluation()
-    demo_benchmark_tracking()
-    
-    # Final summary
+    print("SELECT AN EVALUATION TYPE:")
+    print("  1. RAG Evaluation - Test retrieval quality")
+    print("  2. Agent Evaluation - Test task completion")
+    print("  3. System Evaluation - Test performance (latency, throughput, cost)")
+    print("  4. Business Evaluation - Test business outcomes")
+    print("  5. Benchmark Tracking - Track improvement across runs")
+    print("  6. View Framework Information")
+    print("  0. Exit")
+    print("-"*70)
+
+
+def display_framework_info():
+    """Display framework information and reusable components."""
     print("\n" + "="*70)
-    print("LESSON COMPLETE - EVALUATION FRAMEWORKS READY")
+    print("FRAMEWORK INFORMATION & REUSABLE COMPONENTS")
     print("="*70)
     
-    print("\nKey Takeaways:")
-    print("  1. Define test cases with expected outcomes")
-    print("  2. Build evaluation frameworks for your systems")
-    print("  3. Calculate meaningful metrics (precision, latency, cost)")
-    print("  4. Compare against baselines to track improvement")
-    print("  5. Generate reports for stakeholders")
-    print("  6. Extend framework with custom evaluators")
+    print("\nKey Reusable Classes:")
+    print("  • TestCase: Define test scenarios with expected outcomes")
+    print("  • Metric: Define measurable performance metrics")
+    print("  • EvaluationResult: Score for a single test case")
+    print("  • Benchmark: Aggregate results from evaluation runs")
+    print("  • EvaluationFramework: Main reusable container")
+    
+    print("\nCore Template Method:")
+    print("  create_evaluation_framework()")
+    print("    - framework_name: Name for this evaluation")
+    print("    - evaluation_types: ['rag', 'agent', 'system', 'business']")
+    print("    - test_dataset: List of TestCase objects")
+    print("    - Returns: Ready-to-use EvaluationFramework")
+    
+    print("\nCore Use Case:")
+    print("  1. Systematically evaluate AI systems (RAG, agents, workflows)")
+    print("  2. Measure performance (latency, throughput, accuracy, ROI)")
+    print("  3. Track improvement over time with benchmarks")
+    print("  4. Compare against baselines for continuous improvement")
     
     print("\nReusable Pattern for Your Projects:")
-    print("  framework = create_evaluation_framework()")
-    print("  results = framework.evaluate_system(my_system, 'rag')")
+    print("  ```python")
+    print("  # Step 1: Create framework")
+    print("  framework = create_evaluation_framework(")
+    print("      framework_name='My RAG Evaluator',")
+    print("      evaluation_types=['rag'],")
+    print("      test_dataset=my_test_cases")
+    print("  )")
+    print("  ")
+    print("  # Step 2: Evaluate your system")
+    print("  results = framework.evaluate_system(my_system_fn, 'rag')")
+    print("  ")
+    print("  # Step 3: Generate report")
     print("  report = framework.generate_report()")
+    print("  ")
+    print("  # Step 4: Compare against baseline")
     print("  improvement = framework.compare_to_baseline(baseline)")
+    print("  ```")
+
+
+def run_interactive_cli():
+    """Run interactive menu-driven CLI for evaluation framework."""
     
-    print("\nNext Module: Module 8 - Production AI Systems")
-    print("  • Deployment strategies")
-    print("  • Security & reliability")
-    print("  • Observability & monitoring")
+    print("\n" + "="*70)
+    print("LESSON 7.5: INTERACTIVE EVALUATION FRAMEWORK EXPLORER")
+    print("="*70)
+    print("\nWelcome! This tool demonstrates a PRODUCTION-READY evaluation")
+    print("framework. You can run different evaluation types, view results,")
+    print("and explore benchmarking capabilities.")
+    
+    # Store frameworks for benchmarking comparison
+    frameworks = {}
+    last_framework = None
+    last_results = None
+    
+    while True:
+        display_main_menu()
+        choice = input("Enter your choice (0-6): ").strip()
+        
+        if choice == "0":
+            print("\n" + "="*70)
+            print("THANK YOU FOR EXPLORING EVALUATION FRAMEWORKS!")
+            print("="*70)
+            print("\nKey Takeaways:")
+            print("  1. Define comprehensive test cases with expected outcomes")
+            print("  2. Build evaluation frameworks for ANY AI system")
+            print("  3. Calculate meaningful metrics across 4 dimensions:")
+            print("     - RAG: Retrieval precision, recall, relevance")
+            print("     - Agent: Task success, tool success, goal completion")
+            print("     - System: Latency, throughput, cost per request")
+            print("     - Business: Workflow completion, time savings, ROI")
+            print("  4. Track improvement over time using benchmarks")
+            print("  5. Compare against baselines for continuous improvement")
+            print("  6. Generate reports for stakeholders")
+            print("\nNext: Module 8 - Production AI Systems")
+            print("  • Deployment strategies")
+            print("  • Security & reliability")
+            print("  • Observability & monitoring")
+            break
+        
+        elif choice == "1":
+            print("\n" + "-"*70)
+            framework = demo_rag_evaluation()
+            frameworks["rag"] = framework
+            last_framework = framework
+            last_results = framework.evaluation_history[-1]
+            print("-"*70)
+            print("\nFramework stored. You can compare against this in Benchmark Tracking!")
+            input("Press Enter to continue...")
+        
+        elif choice == "2":
+            print("\n" + "-"*70)
+            framework = demo_agent_evaluation()
+            frameworks["agent"] = framework
+            last_framework = framework
+            last_results = framework.evaluation_history[-1]
+            print("-"*70)
+            print("\nFramework stored. You can compare against this in Benchmark Tracking!")
+            input("Press Enter to continue...")
+        
+        elif choice == "3":
+            print("\n" + "-"*70)
+            framework = demo_system_evaluation()
+            frameworks["system"] = framework
+            last_framework = framework
+            last_results = framework.evaluation_history[-1]
+            print("-"*70)
+            print("\nFramework stored. You can compare against this in Benchmark Tracking!")
+            input("Press Enter to continue...")
+        
+        elif choice == "4":
+            print("\n" + "-"*70)
+            framework = demo_business_evaluation()
+            frameworks["business"] = framework
+            last_framework = framework
+            last_results = framework.evaluation_history[-1]
+            print("-"*70)
+            print("\nFramework stored. You can compare against this in Benchmark Tracking!")
+            input("Press Enter to continue...")
+        
+        elif choice == "5":
+            if not last_framework:
+                print("\n⚠️  Please run an evaluation first (options 1-4)")
+                print("   Benchmark tracking requires baseline results to compare against.")
+                input("Press Enter to continue...")
+            else:
+                print("\n" + "-"*70)
+                framework = demo_benchmark_tracking()
+                frameworks["tracking"] = framework
+                print("-"*70)
+                print("\nBenchmark comparison complete!")
+                if last_results:
+                    print("\nComparing against your previous evaluation...")
+                    comparison = framework.compare_to_baseline(last_results)
+                    print("\nComparison Results:")
+                    print(f"  Previous Pass Rate: {comparison['pass_rate_change']['baseline']}")
+                    print(f"  Current Pass Rate: {comparison['pass_rate_change']['current']}")
+                    print(f"  Improvement: {comparison['pass_rate_change']['improvement']}")
+                input("Press Enter to continue...")
+        
+        elif choice == "6":
+            display_framework_info()
+            input("\nPress Enter to continue...")
+        
+        else:
+            print("\n❌ Invalid choice. Please enter 0-6.")
+            input("Press Enter to continue...")
+
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+if __name__ == "__main__":
+    run_interactive_cli()
