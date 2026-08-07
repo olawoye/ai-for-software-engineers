@@ -127,7 +127,7 @@ st.divider()
 # ============================================================================
 
 tab1, tab2, tab3, tab4 = st.tabs(
-    ["System State", "Agent Reasoning", "Execution History", "Documentation"]
+    ["System State", "Agent Reasoning", "Execution History", "Learning Objectives"]
 )
 
 with tab1:
@@ -426,11 +426,11 @@ with tab3:
 
 
 # ============================================================================
-# TAB 4: DOCUMENTATION
+# TAB 4: LEARNING OBJECTIVES
 # ============================================================================
 
 with tab4:
-    st.header("Lesson Documentation")
+    st.header("Learning Objectives")
     
     st.subheader("Learning Goals")
     st.write("""
