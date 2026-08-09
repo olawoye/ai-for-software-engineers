@@ -2,10 +2,11 @@
 Lesson 3.2: Calling LLM APIs — TODO Scaffold
 
 Learn practical API integration patterns through interactive demonstrations.
+Understand how to initialize clients, handle different models, and manage API responses.
 
-PHASE 1: Menu structure and API key validation
-PHASE 2: Implement 5 pattern demonstrations
-PHASE 3: Error handling and user experience
+BUSINESS SCENARIO:
+Developers need practical knowledge of calling LLMs to build production AI systems.
+This lesson teaches core patterns through interactive demonstrations.
 
 Run: python lesson-02-calling-llm-apis.py
 Requires: export OPENROUTER_API_KEY='your-key-here'
@@ -15,153 +16,82 @@ import os
 import sys
 import time
 
-# TODO PHASE 1: Import required modules
-# from shared.llm_client import LLMClient
-# from shared.config import ...
+# ============================================================================
+# STAGE 1: Setup & Validation
+# ============================================================================
+# Initialize API connection and validate credentials.
+# Available utilities: shared.llm_client (LLMClient), os module for env vars
+# TODO: Add your Stage 1 implementation here
 
 
 def clear_screen():
     """Clear terminal screen."""
-    # TODO: Implement using os.system()
     pass
 
 
 def validate_api_key():
-    """
-    PHASE 1: Check if API key is set.
-
-    TODO:
-    - Get OPENROUTER_API_KEY from environment
-    - If missing, print error message with setup instructions
-    - Exit if not found
-    """
+    """Check if API key is set."""
     pass
 
 
 def display_code(lines: list, title: str = ""):
-    """
-    PHASE 2: Display code with line numbers for easy reference.
-
-    TODO:
-    - Print title
-    - Loop through lines with enumerate (start=1)
-    - Print formatted: "  {line_num:2} | {code_line}"
-    """
+    """Display code with line numbers for easy reference."""
     pass
 
 
-def pattern_1_basic():
-    """
-    PHASE 2: Demonstrate basic synchronous API call.
+# ============================================================================
+# STAGE 2: Pattern 1 - Basic API Call
+# ============================================================================
+# Implement basic synchronous API call demonstration.
+# Available utilities: LLMClient.complete(), time module for measurements
+# TODO: Add your Stage 2 implementation here
 
-    TODO:
-    - Clear screen and show heading
-    - Display code pattern with line numbers
-    - Show learning objectives
-    - Initialize LLMClient with "gpt-3.5-turbo"
-    - Call complete() with a sample prompt
-    - Measure timing with time.time()
-    - Display response and metrics
-    - Return to menu
-    """
+def pattern_1_basic():
+    """Pattern 1: Basic synchronous API call."""
     pass
 
 
 def pattern_2_provider_switching():
-    """
-    PHASE 2: Show how same code works with different models.
-
-    TODO:
-    - Clear screen and show heading
-    - Display code pattern
-    - Initialize with multiple models: ["gpt-3.5-turbo", "claude-3-sonnet"]
-    - Loop through each model
-    - Call complete() for each
-    - Display response and timing
-    - Show trade-offs between models
-    """
+    """Pattern 2: Show how same code works with different models."""
     pass
 
 
-def pattern_3_temperature():
-    """
-    PHASE 2: Demonstrate temperature effect on responses.
+# ============================================================================
+# STAGE 3: Pattern 3-5 - Temperature, Use Cases, Error Handling
+# ============================================================================
+# Implement temperature effects, real-world classification, and error handling.
+# Available utilities: temperature parameter, try/except blocks, prompt formatting
+# TODO: Add your Stage 3 implementation here
 
-    TODO:
-    - Clear screen and show heading
-    - Display code pattern
-    - Test same prompt with different temperatures: [0.3, 0.7, 0.9]
-    - For each temperature:
-      - Call complete(prompt, temperature=temp, max_tokens=50)
-      - Display response labeled [Precise/Balanced/Creative]
-      - Show difference in variation
-    """
+def pattern_3_temperature():
+    """Pattern 3: Demonstrate temperature effect on responses."""
     pass
 
 
 def pattern_4_use_case():
-    """
-    PHASE 2: Real-world use case - text classification.
-
-    TODO:
-    - Clear screen and show heading
-    - Display code pattern
-    - Create classification prompt template
-    - Define sample tickets/texts to classify
-    - For each ticket:
-      - Format prompt
-      - Call complete()
-      - Extract and display category
-    - Show production pattern
-    """
+    """Pattern 4: Real-world use case - text classification."""
     pass
 
 
 def pattern_5_error_handling():
-    """
-    PHASE 3: Demonstrate error scenarios and handling.
-
-    TODO:
-    - Clear screen and show heading
-    - Display code pattern
-    - Show scenarios:
-      1. API key validation check
-      2. Try/except for API errors
-      3. Invalid model handling
-    - Use try/except blocks
-    - Display status for each scenario
-    """
+    """Pattern 5: Demonstrate error scenarios and handling."""
     pass
 
 
 def show_menu():
-    """
-    PHASE 1: Display interactive menu.
-
-    TODO:
-    - Clear screen
-    - Print formatted menu with title
-    - Show 5 patterns: [1-5]
-    - Show quit option: [Q]
-    - Print separator lines
-    """
+    """Display interactive menu."""
     pass
 
 
-def main():
-    """
-    PHASE 1-3: Main interactive loop.
+# ============================================================================
+# STAGE 4: Interactive Menu Loop
+# ============================================================================
+# Build interactive CLI for users to explore patterns.
+# Available utilities: show_menu(), pattern functions, user input handling
+# TODO: Add your Stage 4 implementation here
 
-    TODO:
-    - Call validate_api_key() at start
-    - Infinite loop:
-      - Show menu
-      - Get user input
-      - If 'q': exit gracefully with message
-      - If '1-5': call corresponding pattern function
-      - Handle errors and return to menu
-      - Handle KeyboardInterrupt
-    """
+def main():
+    """Main interactive loop."""
     pass
 
 

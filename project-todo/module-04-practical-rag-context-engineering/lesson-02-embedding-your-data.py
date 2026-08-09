@@ -1,33 +1,15 @@
 """
-Lesson 4.2 TODO: Embedding Your Data
+Lesson 4.2: Embedding Your Data — TODO Scaffold
 
-In this lesson, you'll build the document ingestion pipeline for RAG systems.
-Your goal: implement the core embed_documents() template method that chunks
-raw text and generates embeddings via OpenRouter.
+Build the document ingestion pipeline for RAG systems.
+Implement core chunking and embedding methods that prepare raw documents for retrieval.
 
-This method should be production-ready and reusable in your own projects.
+BUSINESS SCENARIO:
+Transform company documentation into a searchable knowledge base by chunking
+text intelligently and generating semantic embeddings via OpenRouter API.
 
-PHASE 1: Core Template Method (embed_documents)
-  - Accept documents, chunk_size, chunk_overlap, provider, and openrouter_key
-  - Return a structured list of dicts with embeddings and metadata
-  - Use the _smart_chunk helper to split text intelligently
-
-PHASE 2: Smart Chunking Helper (_smart_chunk)
-  - Split text by sentences to preserve logical boundaries
-  - Implement overlap between chunks to maintain context
-  - Filter out tiny chunks
-
-PHASE 3: Demonstrations
-  - demo_core_method(): Show the embed_documents() template in action
-  - demo_semantic_search(): Query an embedded document collection
-  - demo_chunking_strategies(): Visualize different chunk sizes
-  - demo_provider_fallback(): Show provider priority (OpenRouter → Cohere → TF-IDF)
-
-REFERENCE:
-  - Completed implementation: project-completed/module-04-practical-rag-context-engineering/lesson-02-embedding-your-data.py
-  - Embedding engine: shared/embeddings.py (updated for OpenRouter)
-  - Settings: shared/utils/settings.py (provider config)
-  - Business scenario: Transform company documentation into searchable knowledge base
+Run: python lesson-02-embedding-your-data.py
+Requires: export OPENROUTER_API_KEY='your-key-here'
 """
 
 import os
@@ -39,6 +21,30 @@ import numpy as np
 # Import from shared module
 sys.path.insert(0, str(Path(__file__).parent))
 from shared.embeddings import EmbeddingEngine, batch_similarity
+
+
+# ============================================================================
+# STAGE 1: Smart Chunking Helper
+# ============================================================================
+# Implement intelligent text chunking that preserves logical boundaries.
+# Available utilities: string operations, list handling
+# TODO: Add your Stage 1 implementation here
+
+
+# ============================================================================
+# STAGE 2: Core Template Method (embed_documents)
+# ============================================================================
+# Chunk documents and generate embeddings via OpenRouter or fallback providers.
+# Available utilities: EmbeddingEngine, chunk processing, metadata tracking
+# TODO: Add your Stage 2 implementation here
+
+
+# ============================================================================
+# STAGE 3: Demonstrations
+# ============================================================================
+# Implement demo functions showing the embedding workflow in action.
+# Available utilities: sample documents, embedding validation, similarity search
+# TODO: Add your Stage 3 implementation here
 
 
 # ============================================================================

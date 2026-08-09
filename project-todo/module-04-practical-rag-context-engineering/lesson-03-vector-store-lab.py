@@ -1,36 +1,15 @@
 """
-Lesson 4.3 TODO: The Vector Store Lab
+Lesson 4.3: The Vector Store Lab — TODO Scaffold
 
-In this lesson, you'll build the retrieval layer for RAG systems.
-Your goal: implement the core semantic_search() template method that
-consumes embedded chunks from Lesson 4.2 and executes efficient searches.
+Build the retrieval layer for RAG systems.
+Implement semantic search methods that efficiently find relevant chunks.
 
-This method should support NumPy (always available) and optional FAISS backend.
+BUSINESS SCENARIO:
+Efficiently search millions of company policy documents using vector similarity.
+Common backends: NumPy (always available) and FAISS (production-optimized).
 
-PHASE 1: Core Template Method (semantic_search)
-  - Accept embedded_chunks, query_embedding, top_k, use_faiss, metadata_filter
-  - Initialize VectorStore with proper embedding dimensions
-  - Extract and add chunks to the store
-  - Execute similarity search and rank results
-  - Return structured results with similarity scores
-
-PHASE 2: Performance Comparison Helper (compare_search_backends)
-  - Test NumPy vs FAISS search performance
-  - Measure timing and count results
-  - Calculate speedup ratio
-
-PHASE 3: Demonstrations
-  - demo_core_method(): Execute semantic_search() on sample embedded chunks
-  - demo_vector_store_backends(): Compare NumPy vs FAISS performance
-  - demo_metadata_filtering(): Filter search results by metadata
-  - demo_vector_store_options(): Overview of production vector store options
-
-REFERENCE:
-  - Completed implementation: project-completed/module-04-practical-rag-context-engineering/lesson-03-vector-store-lab.py
-  - VectorStore class: shared/vector_store.py
-  - Embedding utilities: shared/embeddings.py (batch_similarity)
-  - Lesson 4.2: lesson-02-embedding-your-data.py (embedded chunks format)
-  - Business scenario: Efficiently search millions of company policy documents
+Run: python lesson-03-vector-store-lab.py
+Requires: export OPENROUTER_API_KEY='your-key-here'
 """
 
 import numpy as np
@@ -44,6 +23,30 @@ from typing import List, Dict, Tuple
 sys.path.insert(0, str(Path(__file__).parent))
 from shared.embeddings import EmbeddingEngine, batch_similarity
 from shared.vector_store import VectorStore
+
+
+# ============================================================================
+# STAGE 1: Core Template Method (semantic_search)
+# ============================================================================
+# Execute similarity search on embedded chunks with optional FAISS backend.
+# Available utilities: VectorStore, batch_similarity, NumPy/FAISS operations
+# TODO: Add your Stage 1 implementation here
+
+
+# ============================================================================
+# STAGE 2: Performance Comparison
+# ============================================================================
+# Test NumPy vs FAISS search performance and measure speedup.
+# Available utilities: time module, performance metrics, timing utilities
+# TODO: Add your Stage 2 implementation here
+
+
+# ============================================================================
+# STAGE 3: Demonstrations
+# ============================================================================
+# Implement demo functions showing vector store capabilities.
+# Available utilities: sample embedded chunks, search queries, metadata filtering
+# TODO: Add your Stage 3 implementation here
 
 
 # ============================================================================
