@@ -79,6 +79,7 @@ This pattern works for:
 
 import json
 import time
+import os
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Any, Callable, Tuple
 from enum import Enum
@@ -1072,19 +1073,23 @@ def display_main_menu():
     print("\nThis is a PRODUCTION-READY evaluation framework tool.")
     print("Extract the classes and methods into your own projects!\n")
     
-    print("SELECT AN EVALUATION TYPE:")
+    print("SELECT AN OPTION:")
+    print("\n  INTERACTIVE DEMONSTRATIONS (with mock outputs):")
     print("  1. RAG Evaluation - Test retrieval quality")
     print("  2. Agent Evaluation - Test task completion")
     print("  3. System Evaluation - Test performance (latency, throughput, cost)")
     print("  4. Business Evaluation - Test business outcomes")
     print("  5. Benchmark Tracking - Track improvement across runs")
+    print("\n  REAL-WORLD USAGE PATTERNS (code examples you can adapt):")
     print("  6. View Framework Information")
-    print("  0. Exit")
+    print("  7. View Real-World Usage Patterns")
+    print("\n  Q. Quit")
     print("-"*70)
 
 
 def display_framework_info():
     """Display framework information and reusable components."""
+    os.system("clear" if os.name == "posix" else "cls")
     print("\n" + "="*70)
     print("FRAMEWORK INFORMATION & REUSABLE COMPONENTS")
     print("="*70)
@@ -1118,15 +1123,121 @@ def display_framework_info():
     print("      test_dataset=my_test_cases")
     print("  )")
     print("  ")
-    print("  # Step 2: Evaluate your system")
-    print("  results = framework.evaluate_system(my_system_fn, 'rag')")
+    print("  # Step 2: Run evaluation")
+    print("  results = framework.evaluate_system(your_system, 'rag')")
     print("  ")
     print("  # Step 3: Generate report")
     print("  report = framework.generate_report()")
-    print("  ")
-    print("  # Step 4: Compare against baseline")
-    print("  improvement = framework.compare_to_baseline(baseline)")
     print("  ```")
+
+
+def display_real_world_patterns():
+    """Display real-world usage patterns that learners can adapt."""
+    os.system("clear" if os.name == "posix" else "cls")
+    print("\n" + "="*70)
+    print("REAL-WORLD USAGE PATTERNS")
+    print("="*70)
+    print("\nThese patterns show how to use the evaluation framework with")
+    print("actual systems from earlier modules. Copy and adapt these patterns")
+    print("for your own projects!\n")
+    
+    print("PATTERN 1: EVALUATE A RAG SYSTEM (from Module 4)")
+    print("-"*70)
+    print("Location: example_rag_evaluation_pattern()")
+    print("\nWhat it does:")
+    print("  • Define test cases for retrieval quality")
+    print("  • Create wrapper function for your RAG system")
+    print("  • Run evaluation and measure precision, recall, relevance")
+    print("\nWhen to use:")
+    print("  • Testing knowledge base retrieval systems")
+    print("  • Measuring which documents are found and ranked correctly")
+    print("  • Comparing RAG performance over time")
+    print("\nKey metrics:")
+    print("  • docs_retrieved: Number of documents found")
+    print("  • avg_relevance: Relevance score (0-1)")
+    print("  • precision: What % of results are relevant?")
+    
+    print("\n" + "-"*70)
+    print("PATTERN 2: EVALUATE AN AGENT SYSTEM (from Module 6)")
+    print("-"*70)
+    print("Location: example_agent_evaluation_pattern()")
+    print("\nWhat it does:")
+    print("  • Define test cases for agent task completion")
+    print("  • Create wrapper function for your agent")
+    print("  • Measure task success, error handling, memory usage")
+    print("\nWhen to use:")
+    print("  • Testing autonomous agents with multiple tools")
+    print("  • Measuring task completion rates")
+    print("  • Verifying error handling and recovery")
+    print("\nKey metrics:")
+    print("  • task_completed: Did agent finish the task?")
+    print("  • error_handled: Did agent recover from errors?")
+    print("  • success_rate: % of tasks completed successfully")
+    
+    print("\n" + "-"*70)
+    print("PATTERN 3: SYSTEM EVALUATION (Latency, Throughput, Cost)")
+    print("-"*70)
+    print("Location: example_system_evaluation_pattern()")
+    print("\nWhat it does:")
+    print("  • Measure response time (SLA compliance)")
+    print("  • Measure throughput (requests per second)")
+    print("  • Calculate cost per request")
+    print("\nWhen to use:")
+    print("  • Ensuring system meets performance SLAs")
+    print("  • Monitoring resource usage and costs")
+    print("  • Optimizing infrastructure and models")
+    print("\nKey metrics:")
+    print("  • response_time_seconds: Latency")
+    print("  • requests_per_second: Throughput capacity")
+    print("  • cost_per_request: Cost efficiency")
+    
+    print("\n" + "-"*70)
+    print("PATTERN 4: BUSINESS EVALUATION (Workflow Outcomes)")
+    print("-"*70)
+    print("Location: example_business_evaluation_pattern()")
+    print("\nWhat it does:")
+    print("  • Measure workflow completion time")
+    print("  • Calculate cost savings and ROI")
+    print("  • Track quality improvements")
+    print("\nWhen to use:")
+    print("  • Justifying AI investment to business leaders")
+    print("  • Tracking savings (time, money, quality)")
+    print("  • Measuring real business impact")
+    print("\nKey metrics:")
+    print("  • time_hours: How long to complete workflow?")
+    print("  • cost_saved_dollars: How much money saved?")
+    print("  • roi_percent: Return on investment")
+    
+    print("\n" + "-"*70)
+    print("PATTERN 5: BENCHMARK TRACKING (Track Improvements)")
+    print("-"*70)
+    print("Location: example_benchmark_tracking_pattern()")
+    print("\nWhat it does:")
+    print("  • Evaluate v1.0 of your system")
+    print("  • Evaluate v1.1 with improvements")
+    print("  • Compare and show progress")
+    print("\nWhen to use:")
+    print("  • Proving a new version is better than old one")
+    print("  • Tracking improvements month-to-month")
+    print("  • Identifying which improvements worked")
+    print("\nKey metrics:")
+    print("  • pass_rate_improvement: % points better")
+    print("  • average_score_improvement: Score increase")
+    print("  • metrics_improvement: Per-metric changes")
+    
+    print("\n" + "="*70)
+    print("HOW TO USE THESE PATTERNS IN YOUR PROJECT")
+    print("="*70)
+    print("\n1. FIND the pattern that matches your system")
+    print("   (RAG system → Pattern 1, Agent → Pattern 2, etc.)")
+    print("\n2. COPY the pattern function to your project")
+    print("\n3. REPLACE the TODO placeholder with your actual system:")
+    print("   # TODO: Replace with your actual RAG from Module 4")
+    print("   # from module-04 import RAGRetriever")
+    print("\n4. ADAPT the test cases to match your scenarios")
+    print("\n5. RUN the evaluation and collect metrics")
+    print("\n6. ITERATE: Improve your system, re-run, track progress")
+    print("\nAll pattern functions are defined at the end of this file!")
 
 
 def run_interactive_cli():
@@ -1145,10 +1256,11 @@ def run_interactive_cli():
     last_results = None
     
     while True:
+        os.system("clear" if os.name == "posix" else "cls")
         display_main_menu()
-        choice = input("Enter your choice (0-6): ").strip()
+        choice = input("Enter your choice (1-7, Q to quit): ").strip().lower()
         
-        if choice == "0":
+        if choice == "q":
             print("\n" + "="*70)
             print("THANK YOU FOR EXPLORING EVALUATION FRAMEWORKS!")
             print("="*70)
@@ -1170,6 +1282,7 @@ def run_interactive_cli():
             break
         
         elif choice == "1":
+            os.system("clear" if os.name == "posix" else "cls")
             print("\n" + "-"*70)
             framework = demo_rag_evaluation()
             frameworks["rag"] = framework
@@ -1180,6 +1293,7 @@ def run_interactive_cli():
             input("Press Enter to continue...")
         
         elif choice == "2":
+            os.system("clear" if os.name == "posix" else "cls")
             print("\n" + "-"*70)
             framework = demo_agent_evaluation()
             frameworks["agent"] = framework
@@ -1190,6 +1304,7 @@ def run_interactive_cli():
             input("Press Enter to continue...")
         
         elif choice == "3":
+            os.system("clear" if os.name == "posix" else "cls")
             print("\n" + "-"*70)
             framework = demo_system_evaluation()
             frameworks["system"] = framework
@@ -1200,6 +1315,7 @@ def run_interactive_cli():
             input("Press Enter to continue...")
         
         elif choice == "4":
+            os.system("clear" if os.name == "posix" else "cls")
             print("\n" + "-"*70)
             framework = demo_business_evaluation()
             frameworks["business"] = framework
@@ -1210,6 +1326,7 @@ def run_interactive_cli():
             input("Press Enter to continue...")
         
         elif choice == "5":
+            os.system("clear" if os.name == "posix" else "cls")
             if not last_framework:
                 print("\n⚠️  Please run an evaluation first (options 1-4)")
                 print("   Benchmark tracking requires baseline results to compare against.")
@@ -1233,9 +1350,559 @@ def run_interactive_cli():
             display_framework_info()
             input("\nPress Enter to continue...")
         
+        elif choice == "7":
+            display_real_world_patterns()
+            input("\nPress Enter to continue...")
+        
         else:
-            print("\n❌ Invalid choice. Please enter 0-6.")
+            print("\n❌ Invalid choice. Please enter 1-7 or Q to quit.")
             input("Press Enter to continue...")
+
+
+# ============================================================================
+# SECTION: REAL-WORLD USAGE PATTERNS
+# ============================================================================
+# This section shows how to apply the evaluation framework to actual
+# systems built in earlier modules. These are code patterns (not executed)
+# that learners can copy and adapt to their own projects.
+# ============================================================================
+
+
+# PATTERN 1: Evaluate a RAG System (from Module 4)
+# ============================================================================
+def example_rag_evaluation_pattern():
+    """
+    This pattern shows how to evaluate a RAG retrieval system built in Module 4.
+    The learner would replace 'my_rag_retriever' with their actual RAG system.
+    
+    Key Steps:
+    1. Define test cases based on real queries and expected documents
+    2. Create a wrapper function that calls your RAG system
+    3. Create evaluation framework with RAG type
+    4. Run evaluation and get results
+    """
+    
+    # Step 1: Real test cases from actual use cases
+    rag_test_cases = [
+        TestCase(
+            test_id="rag_retrieval_001",
+            test_type="retrieval",
+            input_data={"query": "How do I reset my password?"},
+            # Expected output: system should find password reset documentation
+            expected_output={"docs_retrieved": 3, "top_match": "password_reset_guide.md"},
+            success_criteria="Finds 3+ relevant docs with correct top match"
+        ),
+        TestCase(
+            test_id="rag_retrieval_002",
+            test_type="retrieval",
+            input_data={"query": "Enterprise billing invoice format"},
+            # Expected output: system should retrieve billing documentation
+            expected_output={"docs_retrieved": 2, "top_match": "enterprise_billing.md"},
+            success_criteria="Finds 2+ billing docs in top 5 results"
+        ),
+        TestCase(
+            test_id="rag_relevance_001",
+            test_type="relevance",
+            input_data={"query": "API authentication methods"},
+            # Expected output: documents should be highly relevant to API authentication
+            expected_output={"avg_relevance": 0.85, "docs_relevant": 4},
+            success_criteria="Average relevance score >= 0.85"
+        ),
+    ]
+    
+    # Step 2: Wrapper function that calls YOUR actual RAG system
+    # Replace this with your real RAG implementation from Module 4
+    def evaluate_my_rag_system(test_input: Dict) -> Dict:
+        """
+        Wrapper function for your RAG system.
+        This function receives test input and returns actual output from your system.
+        """
+        # TODO: Replace with your actual RAG retriever from Module 4
+        # Example pattern:
+        #   from module-04 import RAGRetriever
+        #   retriever = RAGRetriever(knowledge_base="my_docs")
+        #   results = retriever.search(test_input["query"], top_k=5)
+        #   return {
+        #         "docs_found": len(results),
+        #         "contains": results[0]["content"] if results else "",
+        #         "precision": calculate_precision(results)
+        #   }
+        
+        # For now, simulate the output
+        query = test_input["query"]
+        docs_found = 3 if "password" in query.lower() else 2
+        top_doc = "password_reset_guide.md" if "password" in query.lower() else "enterprise_billing.md"
+        
+        return {
+            "docs_retrieved": docs_found,
+            "top_match": top_doc,
+            "avg_relevance": 0.87,
+            "docs_relevant": docs_found - 1
+        }
+    
+    # Step 3: Create evaluation framework for RAG type
+    rag_framework = create_evaluation_framework(
+        framework_name="My RAG System Evaluation",
+        evaluation_types=["rag"],
+        test_dataset=rag_test_cases,
+        metrics_config={
+            "retrieval": {
+                "name": "Retrieval Accuracy",
+                "target": 0.90
+            }
+        }
+    )
+    
+    # Step 4: Run evaluation on your system
+    rag_results = rag_framework.evaluate_system(
+        system_fn=evaluate_my_rag_system,
+        evaluation_type="rag"
+    )
+    
+    # Step 5: Review results
+    # Print results to see how your RAG system is performing:
+    #   rag_results.pass_rate  # What % of tests passed?
+    #   rag_results.average_score  # Average accuracy score
+    #   rag_results.metrics_summary  # Per-metric breakdown
+    
+    return rag_framework
+
+
+# PATTERN 2: Evaluate an Agent System (from Module 6)
+# ============================================================================
+def example_agent_evaluation_pattern():
+    """
+    This pattern shows how to evaluate an autonomous agent built in Module 6.
+    The learner would replace 'my_agent' with their actual agent implementation.
+    
+    Key Steps:
+    1. Define test cases based on agent tasks and expected outcomes
+    2. Create a wrapper function that executes your agent
+    3. Create evaluation framework with AGENT type
+    4. Run evaluation and get results
+    """
+    
+    # Step 1: Real test cases for agent task execution
+    agent_test_cases = [
+        TestCase(
+            test_id="agent_task_001",
+            test_type="task_completion",
+            input_data={"task": "Find all overdue invoices from Q3", "customer_id": "cust_123"},
+            # Expected output: agent successfully finds and lists invoices
+            expected_output={"task_completed": True, "invoices_found": 3, "status": "success"},
+            success_criteria="Agent successfully finds overdue invoices"
+        ),
+        TestCase(
+            test_id="agent_task_002",
+            test_type="task_completion",
+            input_data={"task": "Generate payment reminder for client", "client_name": "Acme Corp"},
+            # Expected output: agent generates and sends reminder
+            expected_output={"task_completed": True, "reminder_sent": True, "status": "success"},
+            success_criteria="Agent generates and sends reminder successfully"
+        ),
+        TestCase(
+            test_id="agent_error_handling_001",
+            test_type="error_handling",
+            input_data={"task": "Fetch data from nonexistent customer", "customer_id": "invalid_999"},
+            # Expected output: agent handles error gracefully
+            expected_output={"task_completed": False, "error_handled": True, "error_message": "Customer not found"},
+            success_criteria="Agent handles errors gracefully without crashing"
+        ),
+    ]
+    
+    # Step 2: Wrapper function that executes YOUR actual agent
+    # Replace this with your real agent from Module 6
+    def evaluate_my_agent(task_input: Dict) -> Dict:
+        """
+        Wrapper function for your agent.
+        This function receives a task and returns the agent's output.
+        """
+        # TODO: Replace with your actual agent from Module 6
+        # Example pattern:
+        #   from module-06 import create_agent_with_memory
+        #   agent = create_agent_with_memory(name="TaskAgent", memory_size=10)
+        #   result = agent.execute_task(task_input["task"])
+        
+        # For now, simulate agent execution
+        task = task_input.get("task", "").lower()
+        
+        if "invalid" in task:
+            # Simulate error handling
+            return {
+                "task_completed": False,
+                "error_handled": True,
+                "error_message": "Customer not found"
+            }
+        else:
+            # Simulate successful task completion
+            return {
+                "task_completed": True,
+                "invoices_found": 3 if "overdue" in task else 0,
+                "reminder_sent": True if "reminder" in task else False,
+                "status": "success"
+            }
+    
+    # Step 3: Create evaluation framework for AGENT type
+    agent_framework = create_evaluation_framework(
+        framework_name="My Agent System Evaluation",
+        evaluation_types=["agent"],
+        test_dataset=agent_test_cases,
+        metrics_config={
+            "task_success": {
+                "name": "Task Completion Rate",
+                "target": 0.90
+            },
+            "error_handling": {
+                "name": "Error Recovery Rate",
+                "target": 0.95
+            }
+        }
+    )
+    
+    # Step 4: Run evaluation on your agent
+    agent_results = agent_framework.evaluate_system(
+        system_fn=evaluate_my_agent,
+        evaluation_type="agent"
+    )
+    
+    # Step 5: Review agent performance
+    # Print results to understand agent reliability:
+    #   agent_results.pass_rate  # What % of tasks completed successfully?
+    #   agent_results.average_score  # Overall agent performance score
+    #   agent_results.failed_tests  # Which tasks failed? Why?
+    
+    return agent_framework
+
+
+# PATTERN 3: System Evaluation (Latency, Throughput, Cost)
+# ============================================================================
+def example_system_evaluation_pattern():
+    """
+    This pattern shows how to evaluate system-level performance metrics
+    (response time, throughput, computational cost).
+    
+    This applies to ANY AI system - RAG, Agent, Chatbot, etc.
+    
+    Key Steps:
+    1. Define test cases that measure performance characteristics
+    2. Instrument your system to measure latency and resource usage
+    3. Create evaluation framework with SYSTEM type
+    4. Run evaluation and get performance report
+    """
+    
+    # Step 1: Test cases focused on system performance
+    system_test_cases = [
+        TestCase(
+            test_id="system_latency_001",
+            test_type="latency",
+            input_data={"query": "Short query", "complexity": "low"},
+            # Expected output: system responds quickly for simple queries
+            expected_output={"response_time_seconds": 0.5, "within_sla": True},
+            success_criteria="Response time <= 0.5 seconds"
+        ),
+        TestCase(
+            test_id="system_latency_002",
+            test_type="latency",
+            input_data={"query": "Complex multi-document query", "complexity": "high"},
+            # Expected output: system responds within acceptable time even for complex queries
+            expected_output={"response_time_seconds": 2.0, "within_sla": True},
+            success_criteria="Response time <= 2 seconds even for complex queries"
+        ),
+        TestCase(
+            test_id="system_throughput_001",
+            test_type="throughput",
+            input_data={"num_requests": 100, "time_window_seconds": 60},
+            # Expected output: system can handle multiple requests per second
+            expected_output={"requests_per_second": 1.5, "achieved_throughput": 1.7},
+            success_criteria="Achieve >= 1.5 requests per second"
+        ),
+        TestCase(
+            test_id="system_cost_001",
+            test_type="cost_efficiency",
+            input_data={"request_type": "simple_query", "tokens_estimated": 500},
+            # Expected output: cost is within budget per request
+            expected_output={"cost_per_request": 0.002, "within_budget": True},
+            success_criteria="Cost per request <= $0.002"
+        ),
+    ]
+    
+    # Step 2: Wrapper function that measures performance
+    def evaluate_system_performance(test_input: Dict) -> Dict:
+        """
+        Wrapper function that executes your system and measures performance.
+        This function simulates response timing and resource usage.
+        """
+        import time
+        
+        # Simulate system execution with timing
+        start_time = time.time()
+        
+        # TODO: Replace with your actual system call
+        # complexity = test_input.get("complexity", "low")
+        # response = your_system.query(test_input.get("query", ""))
+        
+        # Simulate different latencies based on complexity
+        if test_input.get("complexity") == "high":
+            time.sleep(0.05)  # Simulate 50ms latency
+            response_time = 1.8
+        else:
+            time.sleep(0.01)  # Simulate 10ms latency
+            response_time = 0.3
+        
+        elapsed = time.time() - start_time
+        
+        return {
+            "response_time_seconds": response_time,
+            "within_sla": response_time <= 2.0,
+            "requests_per_second": 1.7,
+            "achieved_throughput": 1.7,
+            "cost_per_request": 0.0015,
+            "within_budget": True
+        }
+    
+    # Step 3: Create evaluation framework for SYSTEM metrics
+    system_framework = create_evaluation_framework(
+        framework_name="My System Performance Evaluation",
+        evaluation_types=["system"],
+        test_dataset=system_test_cases,
+        metrics_config={
+            "latency": {
+                "name": "Response Time",
+                "target": 1.0  # Target: 1 second average
+            },
+            "throughput": {
+                "name": "Requests Per Second",
+                "target": 2.0  # Target: 2 RPS
+            },
+            "cost": {
+                "name": "Cost Efficiency",
+                "target": 0.002  # Target: $0.002 per request
+            }
+        }
+    )
+    
+    # Step 4: Run system performance evaluation
+    system_results = system_framework.evaluate_system(
+        system_fn=evaluate_system_performance,
+        evaluation_type="system"
+    )
+    
+    # Step 5: Review system performance
+    # Use results to monitor:
+    #   system_results.metrics_summary  # All performance metrics
+    #   Are we meeting SLA (latency <= 2s)?
+    #   Is throughput acceptable (>= 1.5 RPS)?
+    #   Is cost per request within budget (<= $0.002)?
+    
+    return system_framework
+
+
+# PATTERN 4: Business Evaluation (Workflow Outcomes)
+# ============================================================================
+def example_business_evaluation_pattern():
+    """
+    This pattern shows how to measure the business impact of your AI system.
+    Instead of just "does it work technically?", ask "does it create business value?"
+    
+    Key Steps:
+    1. Define business outcomes (time saved, quality improved, revenue, etc.)
+    2. Create test cases that measure real business metrics
+    3. Run evaluation and show business impact
+    """
+    
+    # Step 1: Business-focused test cases
+    business_test_cases = [
+        TestCase(
+            test_id="business_workflow_001",
+            test_type="workflow_completion",
+            input_data={"workflow": "invoice_processing", "num_invoices": 50},
+            # Expected output: system completes workflow with business success
+            expected_output={
+                "workflow_completed": True,
+                "time_hours": 0.5,  # How long did it take?
+                "manual_review_reduced": True,
+                "accuracy_percent": 95  # Business metric: accuracy %
+            },
+            success_criteria="Complete workflow in < 1 hour with 90%+ accuracy"
+        ),
+        TestCase(
+            test_id="business_roi_001",
+            test_type="business_impact",
+            input_data={"scenario": "customer_support_deflection", "tickets": 100},
+            # Expected output: system deflects tickets, saves money
+            expected_output={
+                "tickets_resolved_by_ai": 75,  # 75% deflection rate
+                "manual_tickets_saved": 75,
+                "cost_saved_dollars": 450,  # $6 per manual ticket
+                "roi_percent": 180  # 180% ROI on AI system
+            },
+            success_criteria="Deflect 70%+ of support tickets, achieve 150%+ ROI"
+        ),
+        TestCase(
+            test_id="business_quality_001",
+            test_type="quality_improvement",
+            input_data={"metric": "document_classification_error_rate"},
+            # Expected output: system improves quality vs. baseline
+            expected_output={
+                "error_rate_before": 0.15,  # 15% errors before AI
+                "error_rate_after": 0.03,   # 3% errors after AI
+                "quality_improvement_percent": 80  # 80% error reduction
+            },
+            success_criteria="Reduce error rate by 70%+ compared to baseline"
+        ),
+    ]
+    
+    # Step 2: Wrapper function that calculates business impact
+    def evaluate_business_impact(test_input: Dict) -> Dict:
+        """
+        Wrapper function that measures business outcomes.
+        This simulates running a business workflow and measuring results.
+        """
+        workflow = test_input.get("workflow", "").lower()
+        
+        if "invoice" in workflow:
+            return {
+                "workflow_completed": True,
+                "time_hours": 0.45,  # Faster than 1 hour SLA
+                "manual_review_reduced": True,
+                "accuracy_percent": 96  # High accuracy
+            }
+        elif "support" in test_input.get("scenario", "").lower():
+            return {
+                "tickets_resolved_by_ai": 78,  # 78% deflection
+                "manual_tickets_saved": 78,
+                "cost_saved_dollars": 468,  # 78 * $6
+                "roi_percent": 195  # Strong ROI
+            }
+        else:
+            return {
+                "error_rate_before": 0.15,
+                "error_rate_after": 0.025,  # Better than target
+                "quality_improvement_percent": 83  # 83% improvement
+            }
+    
+    # Step 3: Create evaluation framework for BUSINESS metrics
+    business_framework = create_evaluation_framework(
+        framework_name="My Business Impact Evaluation",
+        evaluation_types=["business"],
+        test_dataset=business_test_cases,
+        metrics_config={
+            "workflow_speed": {
+                "name": "Workflow Time Saved",
+                "target": 0.5  # Target: complete in 30 minutes
+            },
+            "cost_savings": {
+                "name": "Cost Savings per Workflow",
+                "target": 400  # Target: save $400 per workflow
+            },
+            "quality": {
+                "name": "Quality Improvement",
+                "target": 0.75  # Target: 75% improvement
+            }
+        }
+    )
+    
+    # Step 4: Run business impact evaluation
+    business_results = business_framework.evaluate_system(
+        system_fn=evaluate_business_impact,
+        evaluation_type="business"
+    )
+    
+    # Step 5: Present business metrics to stakeholders
+    # business_results shows:
+    #   - Time saved per workflow
+    #   - Cost savings
+    #   - Revenue impact
+    #   - ROI percentage
+    #   - Quality improvements
+    # These are the metrics that matter to business leaders!
+    
+    return business_framework
+
+
+# PATTERN 5: Benchmark Tracking (Compare Improvements)
+# ============================================================================
+def example_benchmark_tracking_pattern():
+    """
+    This pattern shows how to track improvements over time.
+    Compare a new version against a baseline to measure progress.
+    
+    Use Case:
+    - Version 1.0 of your RAG system has 85% accuracy
+    - You improve it to Version 1.1
+    - Use benchmarks to verify it's actually better (87% accuracy)
+    - Track improvements month-to-month
+    """
+    
+    # Baseline results from your current system (v1.0)
+    baseline_test_cases = [
+        TestCase(
+            test_id="baseline_001",
+            test_type="retrieval",
+            input_data={"query": "How do I reset password?"},
+            expected_output={"docs_found": 2, "relevance": 0.82},
+            success_criteria="Baseline retrieval"
+        ),
+    ]
+    
+    # New/improved system (v1.1)
+    improved_test_cases = [
+        TestCase(
+            test_id="improved_001",
+            test_type="retrieval",
+            input_data={"query": "How do I reset password?"},
+            expected_output={"docs_found": 3, "relevance": 0.91},
+            success_criteria="Improved retrieval with better ranking"
+        ),
+    ]
+    
+    # Step 1: Evaluate baseline system
+    def baseline_system(test_input: Dict) -> Dict:
+        # Current system performance
+        return {
+            "docs_found": 2,
+            "relevance": 0.82,  # 82% relevance score
+            "response_time": 1.2
+        }
+    
+    baseline_framework = create_evaluation_framework(
+        framework_name="My System v1.0",
+        evaluation_types=["rag"],
+        test_dataset=baseline_test_cases
+    )
+    baseline_results = baseline_framework.evaluate_system(baseline_system, "rag")
+    baseline_benchmark = baseline_framework.evaluation_history[-1]
+    
+    # Step 2: Evaluate improved system
+    def improved_system(test_input: Dict) -> Dict:
+        # Improved system with better retrieval
+        return {
+            "docs_found": 3,  # Found more relevant docs
+            "relevance": 0.91,  # Higher relevance score
+            "response_time": 1.1  # Also faster
+        }
+    
+    improved_framework = create_evaluation_framework(
+        framework_name="My System v1.1",
+        evaluation_types=["rag"],
+        test_dataset=improved_test_cases
+    )
+    improved_results = improved_framework.evaluate_system(improved_system, "rag")
+    improved_benchmark = improved_framework.evaluation_history[-1]
+    
+    # Step 3: Compare improvements
+    comparison = improved_framework.compare_to_baseline(baseline_benchmark)
+    
+    # Step 4: Track metrics over time
+    # Print improvement summary:
+    #   - Baseline pass rate: 85%
+    #   - Improved pass rate: 92%
+    #   - Improvement: +7% better
+    #   - Relevance score: 0.82 -> 0.91 (+11%)
+    #   - Response time: 1.2s -> 1.1s (9% faster)
+    # Use this to justify improvements to stakeholders
+    
+    return improved_framework
 
 
 # ============================================================================

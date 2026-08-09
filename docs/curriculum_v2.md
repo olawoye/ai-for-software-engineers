@@ -1448,37 +1448,6 @@ Agents:
 
 ---
 
-### Module 6 Repository Structure
-
-```text
-module-06-ai-agents-autonomy/
-│
-├── lesson-02-agent-memory-systems.py
-├── lesson-03-tool-use-function-calling.py
-├── lesson-05-autonomous-workflows.py
-├── lesson-06-multi-agent-collaboration.py
-│
-├── shared/
-│   ├── agent.py
-│   ├── planner.py
-│   ├── executor.py
-│   ├── memory.py
-│   ├── tools.py
-│   ├── workflow.py
-│   └── state_manager.py
-│
-├── datasets/
-│   ├── crm-data.json
-│   ├── erp-data.json
-│   └── marketing-content/
-│
-├── evaluations/
-│   ├── task_success_tests.json
-│   ├── workflow_tests.json
-│   └── expected_outputs.json
-│
-└── assets/
-```
 
 ### Module Progression
 
@@ -1738,32 +1707,6 @@ By the end of this lesson, students will understand how high-performing AI organ
 
 ---
 
-### Module 7 Repository Structure
-
-```text
-module-07-designing-ai-native-systems/
-│
-├── lesson-05-evaluation-frameworks.py
-│
-├── shared/
-│   ├── evaluation.py
-│   ├── benchmarks.py
-│   ├── metrics.py
-│   ├── scoring.py
-│   └── reporting.py
-│
-├── datasets/
-│   ├── evaluation-dataset.json
-│   ├── rag-test-cases.json
-│   ├── agent-test-cases.json
-│   └── benchmark-scenarios.json
-│
-├── reports/
-│   ├── evaluation-report.md
-│   └── benchmark-results.json
-│
-└── assets/
-```
 
 ### Module Progression
 
@@ -1831,7 +1774,7 @@ By the end of this module, students will understand how leading organizations de
 
 **Repository Folder:** `module-08-production-ai-systems`
 
-**Code File:** `lesson-01-deployment-strategies.py`
+**Code File:** N/A
 
 **Business Scenario:**
 A company has successfully developed an AI application and must deploy updates safely without disrupting customers or business operations.
@@ -1869,7 +1812,7 @@ By the end of this lesson, students will understand how to move AI systems from 
 
 **Repository Folder:** `module-08-production-ai-systems`
 
-**Code File:** `lesson-02-security-reliability.py`
+**Code File:** N/A
 
 **Business Scenario:**
 An enterprise wants employees to use AI systems safely while preventing data leaks, prompt injection attacks, unauthorized access, and harmful outputs.
@@ -1916,7 +1859,7 @@ By the end of this lesson, students will understand how to build AI systems that
 
 **Repository Folder:** `module-08-production-ai-systems`
 
-**Code File:** `lesson-03-observability-monitoring.py`
+**Code File:** N/A
 
 **Business Scenario:**
 A deployed AI assistant begins producing degraded results and increased costs, but the engineering team cannot identify the source of the problem.
@@ -1962,7 +1905,7 @@ By the end of this lesson, students will understand how to diagnose production i
 
 **Repository Folder:** `module-08-production-ai-systems`
 
-**Code File:** `lesson-04-scaling-ai-systems.py`
+**Code File:** N/A
 
 **Business Scenario:**
 An AI application serving 50 users suddenly needs to support 50,000 users while maintaining acceptable performance and response times.
@@ -2000,7 +1943,7 @@ By the end of this lesson, students will understand the major architectural deci
 
 **Repository Folder:** `module-08-production-ai-systems`
 
-**Code File:** `lesson-05-cost-optimization.py`
+**Code File:** N/A
 
 **Business Scenario:**
 An AI solution provides strong business value but becomes financially unsustainable because of excessive token consumption and inefficient model usage.
@@ -2056,7 +1999,7 @@ Examples:
 
 **Repository Folder:** `module-08-production-ai-systems`
 
-**Code File:** `lesson-06-performance-evaluation.py`
+**Code File:** N/A
 
 **Business Scenario:**
 Leadership asks whether an AI system is actually improving business outcomes, reducing errors, and delivering measurable value.
@@ -2117,58 +2060,6 @@ By the end of this lesson, students will understand how mature AI teams establis
 
 ---
 
-### Module 8 Repository Structure
-
-```text
-module-08-production-ai-systems/
-│
-├── lesson-01-deployment-strategies.py
-├── lesson-02-security-reliability.py
-├── lesson-03-observability-monitoring.py
-├── lesson-04-scaling-ai-systems.py
-├── lesson-05-cost-optimization.py
-├── lesson-06-performance-evaluation.py
-│
-├── shared/
-│   ├── monitoring.py
-│   ├── metrics.py
-│   ├── evaluation.py
-│   ├── routing.py
-│   ├── caching.py
-│   └── observability.py
-│
-├── dashboards/
-│   ├── metrics-dashboard.json
-│   └── evaluation-dashboard.json
-│
-├── reports/
-│   ├── cost-analysis.md
-│   ├── performance-report.md
-│   └── evaluation-summary.md
-│
-└── assets/
-```
-
-### Module Progression
-
-```text
-Deployment
-      ↓
-Security & Reliability
-      ↓
-Observability
-      ↓
-Monitoring
-      ↓
-Scaling
-      ↓
-Cost Optimization
-      ↓
-Performance Evaluation
-      ↓
-Production AI Operations
-```
-
 ### Strategic Importance of Module 8
 
 This module consolidates many concepts introduced earlier:
@@ -2222,7 +2113,7 @@ By the end of this module, students will understand when advanced techniques are
 
 **Repository Folder:** `module-09-advanced-capabilities-specializations`
 
-**Code File:** `lesson-01-multimodal-systems.py`
+**Code File:** N/A
 
 **Business Scenario:**
 A finance department wants an AI system capable of processing invoices, receipts, emails, PDFs, screenshots, and voice notes through a single workflow.
@@ -2342,7 +2233,7 @@ Build a domain-specific assistant using a fine-tuned open-source model or API-ba
 
 **Repository Folder:** `module-09-advanced-capabilities-specializations`
 
-**Code File:** `lesson-03-rlhf-foundations.py`
+**Code File:** N/A
 
 **Business Scenario:**
 An AI company wants to improve the quality of model responses based on user preferences rather than relying solely on supervised training.
@@ -2386,7 +2277,7 @@ By the end of this lesson, students will understand the mechanisms behind RLHF a
 
 **Repository Folder:** `module-09-advanced-capabilities-specializations`
 
-**Code File:** `lesson-04-mechanistic-interpretability.py`
+**Code File:** N/A
 
 **Business Scenario:**
 Researchers and AI safety teams want to understand how models arrive at decisions rather than treating them as opaque black boxes.
@@ -2423,7 +2314,7 @@ By the end of this lesson, students will gain a practical understanding of how i
 
 **Repository Folder:** `module-09-advanced-capabilities-specializations`
 
-**Code File:** `lesson-05-ethical-ai-bias.py`
+**Code File:** N/A
 
 **Business Scenario:**
 An organization plans to deploy AI-powered decision systems and must ensure fairness, transparency, and responsible use.
@@ -2454,52 +2345,7 @@ By the end of this lesson, students will understand the importance of ethical de
 
 ---
 
-### Module 9 Repository Structure
 
-```text
-module-09-advanced-capabilities-specializations/
-│
-├── lesson-02-fine-tuning-models.py
-│
-├── shared/
-│   ├── datasets.py
-│   ├── fine_tuning.py
-│   ├── evaluation.py
-│   ├── training.py
-│   └── model_utils.py
-│
-├── datasets/
-│   ├── instruction-data.jsonl
-│   ├── preference-data.jsonl
-│   ├── evaluation-data.jsonl
-│   └── sample-domain-data.jsonl
-│
-├── notebooks/
-│   ├── fine_tuning_demo.ipynb
-│   └── evaluation_demo.ipynb
-│
-└── assets/
-```
-
-### Module Progression
-
-```text
-Multimodal Systems
-          ↓
-Fine-Tuning
-          ↓
-LoRA & QLoRA
-          ↓
-RLHF
-          ↓
-Alignment
-          ↓
-Mechanistic Interpretability
-          ↓
-Ethical AI
-          ↓
-Advanced AI Engineering
-```
 
 ### Strategic Importance of Module 9
 
@@ -2624,7 +2470,7 @@ By the end of this lesson, students will understand the major career pathways av
 
 **Repository Folder:** `module-10-career-transition-monetization`
 
-**Code File:** `lesson-02-portfolio-roadmap.md`
+**Code File:** N/A
 
 **Business Scenario:**
 A developer has gained AI skills but struggles to demonstrate practical competence to employers, clients, or investors.
@@ -2679,7 +2525,7 @@ Results & Learnings
 
 **Repository Folder:** `module-10-career-transition-monetization`
 
-**Code File:** `lesson-03-ai-saas-planning.md`
+**Code File:** N/A
 
 **Business Scenario:**
 A developer wants to launch an AI-powered software product that generates recurring revenue.
@@ -2734,7 +2580,7 @@ By the end of this lesson, students will understand how to move from technical i
 
 **Repository Folder:** `module-10-career-transition-monetization`
 
-**Code File:** `lesson-04-consulting-playbook.md`
+**Code File:** N/A
 
 **Business Scenario:**
 A software engineer wants to offer AI services to businesses without building a SaaS product.
@@ -2789,7 +2635,7 @@ By the end of this lesson, students will understand how to generate revenue thro
 
 **Repository Folder:** `module-10-career-transition-monetization`
 
-**Code File:** `lesson-05-learning-roadmap.md`
+**Code File:** N/A
 
 **Business Scenario:**
 An AI engineer wants to remain relevant in a rapidly evolving field where tools, frameworks, models, and best practices change continuously.

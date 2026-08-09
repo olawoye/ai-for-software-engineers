@@ -63,6 +63,7 @@ import json
 import time
 import random
 import hashlib
+import os
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Any, Tuple
 from enum import Enum
@@ -934,39 +935,45 @@ def run_interactive_menu():
     dataset = create_legal_dataset()
     
     while True:
+        # Clear screen before displaying menu
+        os.system("clear" if os.name == "posix" else "cls")
+        
         print("\n" + "="*70)
         print("CHOOSE YOUR FINE-TUNING PATH:")
         print("="*70)
-        print("\n  1️⃣  Local Lightweight Demo (DistilGPT-2, no cloud)")
+        print("\n  1. Local Lightweight Demo (DistilGPT-2, no cloud)")
         print("     • Runs on CPU in seconds")
         print("     • Shows before/after quality comparison")
         print("     • Requires: pip install transformers torch")
         print("     • Cost: $0 (local processing)\n")
         
-        print("  2️⃣  Mock Cloud API Simulation")
+        print("  2. Mock Cloud API Simulation")
         print("     • Realistic API workflow without cloud costs")
         print("     • Job submission, polling, cost estimation")
         print("     • No dependencies needed")
         print("     • Perfect for understanding real workflows\n")
         
-        print("  3️⃣  Production Code Templates")
+        print("  3. Production Code Templates")
         print("     • Copy-paste ready code for real services")
         print("     • OpenAI, Together.ai, Replicate")
         print("     • Step-by-step execution guide")
         print("     • API keys required for real usage\n")
         
-        print("  4️⃣  Decision Framework")
+        print("  4. Decision Framework")
         print("     • When to fine-tune vs. RAG vs. prompt engineering")
         print("     • Comparison of approaches, costs, effort\n")
         
-        print("  5️⃣  Cost Calculator")
+        print("  5. Cost Calculator")
         print("     • Estimate costs for your dataset")
         print("     • Compare different fine-tuning services\n")
         
-        print("  0️⃣  Exit\n")
+        print("  0. Exit\n")
         print("-"*70)
         
         choice = input("Enter your choice (0-5): ").strip()
+        
+        # Clear screen before processing choice
+        os.system("clear" if os.name == "posix" else "cls")
         
         if choice == "0":
             print("\n" + "="*70)
@@ -991,8 +998,59 @@ def run_interactive_menu():
                 if not tuner.installed:
                     print("\n⚠️  Dependencies not installed.")
                     print("Install with: pip install transformers torch")
-                    print("\nFalling back to mock simulation...")
-                    choice = "2"  # Fall back to mock
+                    print("\nFalling back to mock simulation (PATH 2)...\n")
+                    time.sleep(2)
+                    
+                    # Execute PATH 2 directly
+                    print("\n" + "-"*70)
+                    print("PATH 2: MOCK CLOUD API SIMULATION")
+                    print("-"*70)
+                    
+                    api = MockCloudAPI()
+                    
+                    print("\n📝 Dataset Summary:")
+                    stats = dataset.get_stats()
+                    print(f"  Examples: {stats['example_count']}")
+                    print(f"  Domain: {stats['domain']}")
+                    print(f"  Total tokens: {stats['total_tokens']:,}")
+                    
+                    # Submit job
+                    job = api.submit_fine_tuning_job(dataset, model_name="gpt-3.5-turbo")
+                    
+                    # Poll for completion
+                    print("\n⏳ Polling for job completion...\n")
+                    for poll_num in range(1, 6):
+                        time.sleep(1)
+                        updated_job = api.get_job_status(job.job_id)
+                        status = updated_job.status
+                        
+                        if status == "queued":
+                            print(f"  Poll {poll_num}: Status = {status}")
+                        elif status == "processing":
+                            progress = updated_job.metrics.get("progress", 0)
+                            print(f"  Poll {poll_num}: Status = {status} ({progress}%)")
+                        elif status == "completed":
+                            print(f"  Poll {poll_num}: Status = {status} ✓")
+                            break
+                    
+                    # Show results
+                    if updated_job.status == "completed":
+                        print("\n" + "-"*70)
+                        print("JOB COMPLETED")
+                        print("-"*70)
+                        print(f"\nJob ID: {updated_job.job_id}")
+                        print(f"Fine-tuned Model: {updated_job.fine_tuned_model}")
+                        print(f"Status: {updated_job.status}")
+                        print(f"\nMetrics:")
+                        for metric, value in updated_job.metrics.items():
+                            if isinstance(value, float):
+                                print(f"  • {metric}: {value:.4f}")
+                            else:
+                                print(f"  • {metric}: {value}")
+                        print(f"\nCost: ${updated_job.cost_usd:.4f}")
+                        print(f"Training tokens: {updated_job.training_tokens:,}")
+                    
+                    input("\nPress Enter to continue...")
                 else:
                     job, evaluations = tuner.fine_tune(dataset)
                     
@@ -1067,6 +1125,9 @@ def run_interactive_menu():
             input("\nPress Enter to continue...")
         
         elif choice == "3":
+            # Clear screen before entering submenu
+            os.system("clear" if os.name == "posix" else "cls")
+            
             print("\n" + "-"*70)
             print("PATH 3: PRODUCTION CODE TEMPLATES")
             print("-"*70)
@@ -1079,6 +1140,9 @@ def run_interactive_menu():
                 print("  0. Back")
                 
                 svc_choice = input("\nEnter choice: ").strip()
+                
+                # Clear screen before processing submenu choice
+                os.system("clear" if os.name == "posix" else "cls")
                 
                 if svc_choice == "1":
                     print("\n" + "="*70)
