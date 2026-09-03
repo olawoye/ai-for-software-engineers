@@ -32,16 +32,19 @@ source .venv/bin/activate
 echo "⬆️  Upgrading pip..."
 pip install --upgrade pip setuptools wheel
 
-# Install dependencies
+# Install base dependencies and all modules (2-7)
 if [ -f "requirements.txt" ]; then
-    echo "📥 Installing dependencies from requirements.txt..."
+    echo "📥 Installing base dependencies..."
     pip install -r requirements.txt
 fi
 
-if [ -f "requirements-module-02.txt" ]; then
-    echo "📥 Installing Module 2 dependencies..."
-    pip install -r requirements-module-02.txt
-fi
+# Install all module dependencies upfront (Modules 2-7)
+for MODULE in 2 3 4 5 6 7; do
+    if [ -f "requirements-module-${MODULE}.txt" ]; then
+        echo "📥 Installing Module ${MODULE} dependencies..."
+        pip install -r requirements-module-${MODULE}.txt
+    fi
+done
 
 echo ""
 echo "✨ Setup complete!"
@@ -50,4 +53,8 @@ echo "📋 Next steps:"
 echo "1. Activate environment: source .venv/bin/activate"
 echo "2. Run Lesson 2.2: streamlit run project-completed/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py"
 echo "3. Set API key: export OPENROUTER_API_KEY='your-key-here'"
+echo ""
+echo "📌 Module 9 (Fine-Tuning):"
+echo "   When ready, install heavy dependencies separately:"
+echo "   pip install -r requirements-module-09.txt"
 echo ""

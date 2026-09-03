@@ -22,6 +22,37 @@ Advanced Specialization (Module 9) ← YOU ARE HERE
 Career & Business (Module 10)
 ```
 
+---
+
+## ⚠️ Installation Requirements
+
+**Module 9 is OPTIONAL and has separate dependency requirements.**
+
+The main setup script (`setup.sh`) installs dependencies for **Modules 2-7 only** to keep initial setup lightweight.
+
+When you're ready to work on Module 9 (Lesson 9.2 - Fine-Tuning), install the optional dependencies:
+
+```bash
+# Only required for PATH 1 (Local Lightweight Fine-Tuning)
+pip install -r requirements-module-09.txt
+```
+
+**What's in requirements-module-09.txt:**
+- `torch>=2.0.0` (PyTorch library, ~2GB)
+- `transformers>=4.30.0` (HuggingFace models, ~500MB)
+
+**Which PATH requires which dependencies:**
+
+| Path | Requires Module 9 Deps? | Notes |
+|------|-------------------------|-------|
+| PATH 1: Local Fine-Tuning | ✅ Yes | Requires `torch` and `transformers` |
+| PATH 2: Mock Cloud API | ❌ No | Pure Python simulation, no extra deps |
+| PATH 3: Production Templates | ⚠️ Optional | Only if using those cloud APIs |
+
+**Recommendation:** Start with PATH 2 or PATH 3 before installing heavy dependencies. Install Module 9 requirements only when you need local fine-tuning.
+
+---
+
 ### Lessons
 
 | Lesson | Type | Status | Focus |

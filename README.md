@@ -15,7 +15,7 @@ This repository is the code companion for the "AI For Software Engineers" course
 
 ### One-Time Project Setup (All Platforms)
 1. Clone this repo and open it in your terminal.
-2. **Run the setup script** (creates isolated virtual environment + installs all dependencies):
+2. **Run the setup script** (creates isolated virtual environment + installs dependencies for Modules 2-7):
    ```bash
    ./setup.sh
    ```
@@ -29,6 +29,12 @@ This repository is the code companion for the "AI For Software Engineers" course
    ```bash
    export OPENROUTER_API_KEY='your-key-here'
    ```
+
+**Note on Module 9:** The setup script includes dependencies for Modules 2-7 only. When you're ready to work on Module 9 (Lesson 9.2 - Fine-Tuning), install optional heavy dependencies separately:
+   ```bash
+   pip install -r requirements-module-09.txt  # PyTorch + HuggingFace (~2.5GB)
+   ```
+See [Module 9 README](project-completed/module-09-advanced-capabilities-specializations/README.md) for details on which fine-tuning paths require this.
 
 ### Local IDE
 1. Clone this repo and open it inside VS Code or your preferred Python editor.

@@ -1,0 +1,23 @@
+# Module 9: Advanced Capabilities & Specializations
+# ⚠️  OPTIONAL - ONLY install when ready to use fine-tuning features
+
+# Module 9 Lesson 9.2 (Fine-Tuning Models) offers 3 paths:
+# - PATH 1: Local Lightweight (requires torch & transformers)
+# - PATH 2: Mock Cloud API (pure Python, no additional deps)
+# - PATH 3: Cloud API (pure Python, no additional deps)
+
+# ONLY install these if you choose PATH 1 (Local Fine-Tuning):
+torch>=2.0.0
+transformers>=4.30.0
+
+# Optional performance enhancements for fine-tuning:
+# accelerate>=0.20.0        # Multi-GPU/TPU training
+# bitsandbytes>=0.41.0      # 8-bit optimization
+# peft>=0.4.0               # Parameter-Efficient Fine-Tuning (LoRA)
+
+# Installation:
+# When you're ready for Module 9, run:
+#   pip install -r requirements-module-09.txt
+#
+# Note: torch is ~2GB; transformers is ~500MB
+# For demo purposes, PATH 2 (Mock API) requires no extra dependencies
