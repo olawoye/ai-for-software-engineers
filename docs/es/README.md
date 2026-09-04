@@ -104,7 +104,7 @@ Esta guía explica el entorno de Python requerido, la configuración de VS Code,
 
 ## Navegación
 
-- [English overview](../README.md)
+- [English overview](../index.md)
 - [Español](./README.md)
 - [Repositorio fuente](../../README.md)
 - [Curso en Udemy](https://www.udemy.com/course/complete-ai-for-software-engineers-course/?referralCode=BFC504E1BDACC6774CD1)

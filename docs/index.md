@@ -115,7 +115,7 @@ This guide walks through the required Python environment, VS Code setup, reposit
 
 ## Navigation
 
-- [English overview](./README.md)
+- [English overview](./index.md)
 - [Español](./es/README.md)
 - [Repository source](../README.md)
 - [Course on Udemy](https://www.udemy.com/course/complete-ai-for-software-engineers-course/?referralCode=BFC504E1BDACC6774CD1)

@@ -15,7 +15,7 @@ This repository is the code companion for the "AI For Software Engineers" course
 ## Course Website
 The public course site lives in `docs/` and is designed for GitHub Pages at `https://<your-user>.github.io/ai-for-software-engineers/` or the equivalent repository GitHub Pages URL. The docs area is intentionally lightweight and uses Markdown plus front matter for clean navigation and language entry points.
 
-- `docs/README.md` — main course landing page
+- `docs/index.md` — main course landing page
 - `docs/es/README.md` — Spanish-language intro page
 - `knowledge/` — deeper setup, curriculum, and reference material
 
