@@ -125,8 +125,9 @@ This guide walks through the required Python environment, VS Code setup, reposit
 
 ## Related resources
 
-- [Source curriculum](../knowledge/curriculum_v2.md)
-- [Knowledge guides](../knowledge/)
+- [Source curriculum](./knowledge/curriculum_v2.md)
+- [Knowledge guides](./knowledge/)
+- [Technical environment setup](./setup.html)
 - [Course companion repo](../README.md)
 - [Udemy course](https://www.udemy.com/course/complete-ai-for-software-engineers-course/?referralCode=BFC504E1BDACC6774CD1)
 

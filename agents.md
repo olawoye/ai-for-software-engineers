@@ -4,9 +4,9 @@ This is a **project code implementation companion** for the "AI For Software Eng
 
 ## Awareness
 - The repo has two parallel tracks: `project-completed/` (finished reference code) and `project-todo/` (scaffolded lessons you are expected to update). Treat `project-completed/` as view-only reference material.
-- Shared utilities live in `src/` and the runtime expects Python plus the Streamlit/CLI helpers documented in the course knowledge guides under `knowledge/`.
+- Shared utilities live in `src/` and the runtime expects Python plus the Streamlit/CLI helpers documented in the course knowledge guides under `docs/knowledge/` for the public GitHub Pages version.
 - The public-facing course site is in `docs/` and is styled for GitHub Pages using Markdown files with front matter for clean navigation and simple landing pages.
-- `docs/` is intended for public consumption; `knowledge/` remains the working source/reference area for setup notes, curriculum context, and deeper course material.
+- `docs/` is intended for public consumption; the local `knowledge/` folder remains as a project reference, while published course docs live under `docs/knowledge/`.
 - Every module folder is prefixed with `module-XX-...` to align with the course curriculum.
 - Each language folder under `docs/` should include its own landing page and setup guide as part of the localized site structure. For example, `docs/es/` should contain both `README.md` and `setup.html`, and future language folders should follow the same pattern.
 - When adding a new language, copy the structure and intent of the source English page, preserve the original meaning, and keep technical terms in English where appropriate (for example: Python, LLM, API, embeddings, tokens, arrays, boolean, LangChain, Streamlit, Git, VS Code). Do not translate core programming concepts or tool names unless the language-specific convention is already standard and widely accepted in the target region.
@@ -19,7 +19,7 @@ This is a **project code implementation companion** for the "AI For Software Eng
 5. **Declare completion.** After finishing a lesson, summarize what was done and which phase is now covered.
 
 ## Samples & References
-- Reference `knowledge/module-structure.md` for module-to-lesson alignment.
+- Reference `docs/knowledge/module-structure.md` for module-to-lesson alignment.
 - Use the public-facing docs site in `docs/` as the GitHub Pages landing surface; keep the pages concise and navigable with front matter and lightweight cross-links.
 - Look at `project-completed/` lessons for working implementations; for example, `project-completed/module-02-ai-fundamentals/lesson-01-llms-under-the-hood.py` demonstrates how to score tokens.
 - Use `src/settings.py` placeholders (once added) to toggle between OpenAI, Anthropic, OpenRouter, and Ollama.
@@ -208,7 +208,7 @@ Use this pattern for code-screencast lessons in Modules 4, 5, and 6 (and future 
 
 ### 9) Business Scenario Cohesion Rule
 - Every example must be anchored to a realistic business scenario.
-- Prefer the business scenario explicitly defined in `knowledge/curriculum_v2.md` for that lesson.
+- Prefer the business scenario explicitly defined in `docs/knowledge/curriculum_v2.md` for that lesson.
 - If a lesson does not define one, choose a common, practical scenario that fits the lesson objective.
 - For modules with a lesson-6 capstone (for example Modules 4 and 5), lessons before the capstone should be designed so their examples can converge into the capstone system.
 - This means earlier lessons may address different technical topics, but their outputs, data shapes, and design choices should intentionally support the capstone goal.

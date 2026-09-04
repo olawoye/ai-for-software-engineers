@@ -279,6 +279,6 @@ pip install sentence-transformers faiss-cpu
 
 ## Reference
 
-- Full curriculum: `knowledge/curriculum_v2.md`
+- Full curriculum: `docs/knowledge/curriculum_v2.md`
 - Agent instructions: `agents.md`
-- Knowledge base: `knowledge/`
+- Knowledge base: `docs/knowledge/`

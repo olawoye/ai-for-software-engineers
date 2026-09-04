@@ -1,0 +1,873 @@
+================================================================================
+MASTER PROMPT FOR LESSON 1.5: TECHNICAL ENVIRONMENT SETUP
+Course: AI For Software Engineers
+Repository: https://github.com/[REPO_OWNER]/ai-for-software-engineers
+================================================================================
+
+## LESSON OVERVIEW
+
+Title: Lesson 1.5 — Technical Environment Setup
+Course: AI For Software Engineers
+Target Audience: Software engineers new to AI, regardless of experience level
+Duration: 30-45 minutes for complete setup (varies by OS and internet speed)
+
+## PURPOSE
+
+This lesson prepares learners' development environment to run the course materials
+in both project-completed/ (reference implementations) and project-todo/ (scaffolded
+lessons for hands-on learning). After completing this lesson, students will be able
+to run any lesson from the course using either Streamlit UI, CLI agents, or direct
+Python execution.
+
+## CORE STRUCTURE: FOUR MAIN SECTIONS
+
+The article must have exactly four major sections with this hierarchy:
+
+### SECTION 1: PREPARING THE OPERATING SYSTEM
+### SECTION 2: VISUAL STUDIO CODE AND PROJECT SETUP
+### SECTION 3: LLM ACCESS SETUP
+### SECTION 4: RUNNING THE PROJECT
+
+================================================================================
+SECTION 1: PREPARING THE OPERATING SYSTEM
+================================================================================
+
+## SUBSECTION 1A: MACOS SETUP
+
+**Target Users:** macOS (Intel and Apple Silicon)
+
+**Opening Context:** 
+Most macOS users already have the required tools. This section is a quick verification
+step with minimal setup needed.
+
+**Steps to include:**
+
+1. **Verify Terminal Access**
+   - macOS ships with Terminal.app pre-installed
+   - Alternative: Install iTerm2 (https://iterm2.com/) for enhanced terminal features
+   - Both work equally well; choice is personal preference
+
+2. **Verify Python 3 Installation**
+   - Command to verify: `python3 --version`
+   - Expected output: Python 3.11 or higher (course requires Python >= 3.11 per pyproject.toml)
+   - If Python 3 is not installed:
+     - Option A (Recommended): Install Homebrew first (https://brew.sh/), then run `brew install python3`
+     - Option B: Download from python.org (https://www.python.org/downloads/)
+     - Verify installation after: `python3 --version`
+
+3. **Verify Git Installation**
+   - Command: `git --version`
+   - Expected output: git version 2.x or higher
+   - If not installed: `brew install git`
+
+4. **Verify pip (Python Package Manager)**
+   - Command: `pip3 --version`
+   - Expected output: pip version 20.0 or higher
+   - If not available: `python3 -m ensurepip --upgrade`
+
+**Outcome:** You have Python 3.11+, git, and pip3. Ready to proceed to Section 2.
+
+---
+
+## SUBSECTION 1B: WINDOWS SETUP
+
+**Target Users:** Windows 10/11
+
+**Opening Context:**
+Windows requires Windows Subsystem for Linux (WSL) to run this course environment
+properly. WSL provides a native Linux kernel inside Windows, ensuring compatibility
+with all course scripts and dependencies that assume POSIX/Linux conventions.
+
+**Why WSL and not native Windows Python?**
+- Course uses bash scripts (setup.sh, run_streamlit.sh, run_cli_agent.sh)
+- Virtual environment paths and symlinks work correctly in WSL
+- Most AI/ML tooling community develops primarily for Linux/macOS
+- WSL 2 has near-native performance on modern Windows systems
+
+**Steps to include:**
+
+1. **Enable WSL 2 (Windows Subsystem for Linux 2)**
+   - Open Windows PowerShell as Administrator (right-click, "Run as administrator")
+   - Run: `wsl --install` (this installs WSL 2 and default Ubuntu distribution)
+   - Restart your computer when prompted
+   - On restart, a terminal will launch for first Ubuntu setup; create a Unix username and password
+   - Detailed guide: https://learn.microsoft.com/en-us/windows/wsl/install
+
+2. **Verify WSL 2 is Running**
+   - In Windows PowerShell: `wsl --list --verbose`
+   - You should see your Ubuntu distribution with VERSION = 2
+   - If it shows VERSION = 1, upgrade with: `wsl --set-version Ubuntu 2`
+
+3. **Open Ubuntu Terminal**
+   - Method A: Start Menu → "Ubuntu" → Click to open
+   - Method B: Windows PowerShell or Command Prompt → run `wsl`
+   - You are now in a Linux bash shell
+
+4. **Update Package Manager Inside Ubuntu**
+   - Run: `sudo apt update && sudo apt upgrade -y`
+   - This ensures your Linux system has the latest packages
+
+5. **Verify Python 3 Inside Ubuntu**
+   - Command: `python3 --version`
+   - Expected: Python 3.11 or higher
+   - If not installed or version is too old:
+     - Run: `sudo apt install python3.11 -y` or `sudo apt install python3 python3-pip -y`
+     - Verify again: `python3 --version`
+
+6. **Install Required Build Tools**
+   - Some Python packages compile native extensions; you need build tools
+   - Run: `sudo apt install build-essential curl git -y`
+   - This installs gcc, g++, make, curl, and git
+
+7. **Verify Git Installation**
+   - Command: `git --version`
+   - Should show git 2.x or higher; if not in previous step, it's now installed
+
+**Outcome:** You have WSL 2 running Ubuntu with Python 3.11+, git, and build tools.
+All subsequent commands in this lesson are run inside the Ubuntu terminal (WSL 2).
+From this point forward, Windows and macOS instructions converge.
+
+---
+
+## SUBSECTION 1C: FINAL OS-LEVEL VERIFICATION (Both macOS and Windows/WSL)
+
+After completing 1A or 1B, run these verification commands in your terminal:
+
+```bash
+# Verify Python version (should be 3.11+)
+python3 --version
+
+# Verify pip is available
+pip3 --version
+
+# Verify git
+git --version
+
+# Verify you can create a basic Python virtual environment
+python3 -m venv test_env && rm -rf test_env && echo "Virtual environment creation works!"
+```
+
+**Expected output:** All four commands succeed without errors.
+
+**If any command fails:** Double-check the relevant subsection (1A for macOS, 1B for Windows)
+or consult official documentation linked in that subsection.
+
+================================================================================
+SECTION 2: VISUAL STUDIO CODE AND PROJECT SETUP
+================================================================================
+
+## SUBSECTION 2A: VISUAL STUDIO CODE INSTALLATION
+
+**Opening Context:**
+VS Code is the recommended editor for this course. It integrates seamlessly with
+Python, supports virtual environments, and allows you to run course scripts directly.
+
+**Steps to include:**
+
+1. **Download and Install VS Code**
+   - Go to https://code.visualstudio.com/
+   - Download the version for your OS (macOS or Windows)
+   - Install using the installer; follow default settings
+   - Launch VS Code
+
+2. **Install Python Extension**
+   - In VS Code, open Extensions (Ctrl+Shift+X or Cmd+Shift+X on macOS)
+   - Search for "Python"
+   - Click the top result published by Microsoft
+   - Click "Install"
+   - Once installed, you may be prompted to install Pylint or similar tools; accept these
+
+3. **Optional but Recommended Extensions**
+   - "Pylance" (by Microsoft) — Enhanced Python language server and autocompletion
+   - "Black Formatter" — Automatic code formatting
+   - "Streamlit" (by Streamlit, Inc.) — Streamlit syntax highlighting and snippets
+
+---
+
+## SUBSECTION 2B: PROJECT SETUP
+
+**Opening Context:**
+The course repository contains both completed lessons (reference implementations)
+and scaffolded lessons (project-todo/) where you implement TODOs. You'll clone the
+repository and set up a virtual environment.
+
+**Steps to include:**
+
+1. **Clone the Repository**
+   - Open a terminal (macOS: Terminal or iTerm2; Windows: WSL Ubuntu terminal)
+   - Choose a workspace directory (e.g., ~/Code or ~/Documents)
+   - Run: `cd ~/Code` (or your chosen directory)
+   - Clone the repository:
+     ```bash
+     git clone https://github.com/[REPO_OWNER]/ai-for-software-engineers.git
+     cd ai-for-software-engineers
+     ```
+   - You now have the full course repository locally
+
+2. **Open Repository in VS Code**
+   - In the terminal, while in the repository root: `code .`
+   - OR: Open VS Code → File → Open Folder → Navigate to ai-for-software-engineers
+   - VS Code should now show the repository structure in the left sidebar
+
+3. **Run the Setup Script**
+   - This script creates a Python virtual environment and installs all dependencies
+   - In VS Code's integrated terminal (Ctrl+` or View → Terminal):
+     ```bash
+     ./setup.sh
+     ```
+   - On Windows/WSL, if you get "permission denied":
+     ```bash
+     bash setup.sh
+     ```
+   - **What the setup script does:**
+     - Checks for Python 3 availability
+     - Creates `.venv/` directory (Python virtual environment)
+     - Upgrades pip, setuptools, wheel
+     - Installs all packages from requirements.txt
+     - Installs module-specific requirements (requirements-module-02.txt, etc.)
+   - Wait for completion (this may take 2-5 minutes depending on internet speed)
+
+4. **Verify Virtual Environment Creation**
+   - You should see `.venv/` folder in the repository root
+   - Confirm with: `ls -la | grep venv` (macOS/WSL) or `dir | find "venv"` (Windows native)
+
+5. **Configure VS Code to Use the Virtual Environment**
+   - Press Ctrl+Shift+P (Cmd+Shift+P on macOS) to open Command Palette
+   - Type: `Python: Select Interpreter`
+   - Choose the interpreter path that ends with `.venv/bin/python` (macOS/WSL)
+     or `.venv\Scripts\python.exe` (Windows native)
+   - VS Code now recognizes your project's isolated environment
+
+6. **Verify Virtual Environment in Terminal**
+   - Open a new integrated terminal in VS Code: Ctrl+`
+   - Activate the environment:
+     - macOS/WSL: `source .venv/bin/activate`
+     - Windows (PowerShell): `.venv\Scripts\Activate.ps1`
+   - Your terminal prompt should now start with `(.venv)`
+   - Verify packages are installed: `pip list`
+   - You should see: streamlit, langchain, openai, anthropic, chromadb, uvicorn, python-dotenv, etc.
+
+---
+
+## SUBSECTION 2C: ENVIRONMENT VARIABLES SETUP
+
+**Opening Context:**
+The course uses API keys for LLM providers (OpenAI, Anthropic, OpenRouter, Cohere).
+Rather than hardcoding these in code, they're managed via environment variables.
+You can set these in your terminal session or in VS Code settings.
+
+**Steps to include:**
+
+1. **Temporary Setup (Per Terminal Session)**
+   - Useful for testing; settings are lost when terminal closes
+   - In your activated terminal (.venv), run:
+     ```bash
+     export OPENROUTER_API_KEY='your-actual-key-here'
+     export OPENAI_API_KEY='your-key-if-using-openai'
+     export ANTHROPIC_API_KEY='your-key-if-using-anthropic'
+     export COHERE_API_KEY='your-key-if-using-cohere'
+     export OLLAMA_URL='http://localhost:11434/completions'  # if using local Ollama
+     ```
+   - Verify: `echo $OPENROUTER_API_KEY` (should print your key)
+
+2. **Persistent Setup (Optional: VS Code Settings)**
+   - Allows keys to persist across terminal sessions within VS Code
+   - In VS Code: File → Preferences → Settings (Ctrl+,)
+   - Search for "Python: Env File"
+   - Set the value to: `.env`
+   - Create a `.env` file in the repository root:
+     ```bash
+     # Example .env file
+     OPENROUTER_API_KEY=your-key-here
+     OPENAI_API_KEY=your-key-if-applicable
+     ANTHROPIC_API_KEY=your-key-if-applicable
+     COHERE_API_KEY=your-key-if-applicable
+     OLLAMA_URL=http://localhost:11434/completions
+     ```
+   - Save the file
+   - VS Code will load these variables automatically when you open a new terminal
+   - **Important:** Add `.env` to `.gitignore` (already present in the repo)
+     to prevent accidentally committing API keys to GitHub
+
+3. **Provider Configuration in Code**
+   - The course uses `shared/utils/settings.py` to load these environment variables
+   - This module is imported by all lessons and handles provider selection
+   - Supported providers:
+     - OpenRouter (URL-based, free-friendly, recommended): `OPENROUTER_API_KEY`
+     - OpenAI (requires paid account): `OPENAI_API_KEY`
+     - Anthropic (requires paid account): `ANTHROPIC_API_KEY`
+     - Cohere (for embeddings, free tier): `COHERE_API_KEY`
+     - Ollama (local, free): `OLLAMA_URL`
+   - Each lesson will tell you which provider it uses and which environment variable to set
+
+---
+
+## SUBSECTION 2D: REPOSITORY STRUCTURE OVERVIEW
+
+**Why this matters:** Knowing the structure helps you navigate lessons and understand
+the course flow.
+
+**Key folders:**
+
+- **`project-completed/`** — Working implementations of every lesson (reference code)
+  - Structure: `project-completed/module-XX-[name]/lesson-NN-[name].py`
+  - Use these to see finished implementations or to understand expected behavior
+  - **Read-only during the course; you should not modify these**
+
+- **`project-todo/`** — Scaffolded lessons with TODO comments (where you practice)
+  - Same folder structure as project-completed/
+  - Contains skeleton code with labeled TODO sections
+  - You edit only the TODO comments; the rest of the code is already provided
+  - Recommended workflow: Keep project-completed/ open in a tab as reference
+
+- **`shared/`** — Reusable utilities and helpers
+  - `shared/utils/settings.py` — Provider configuration and API key loading
+  - `shared/utils/helpers.py` — Common helper functions
+  - `shared/llm/` — LLM client wrappers
+  - `shared/rag/` — RAG utilities (embeddings, vector stores)
+  - `shared/agents/` — Agent infrastructure
+  - All lessons import from shared/ to avoid code duplication
+
+- **`src/`** — Main application entry points
+  - `src/app.py` — Streamlit UI dashboard for navigating lessons
+  - `src/cli_agent.py` — CLI interface for agent-driven lesson completion
+
+- **`scripts/`** — Convenience shell scripts
+  - `scripts/run_streamlit.sh` — Launches the Streamlit UI
+  - `scripts/run_cli_agent.sh` — Launches the CLI agent interface
+
+- **`docs/knowledge/`** — Detailed setup and architecture guides
+  - `docs/knowledge/01-local-setup.md` — Python and environment setup
+  - `docs/knowledge/02-vscode-setup.md` — VS Code configuration
+  - `docs/knowledge/03-claude-code-setup.md` — Cursor/Claude Code agent setup
+  - `docs/knowledge/04-codex-setup.md` — GitHub Copilot/Codex setup
+  - `docs/knowledge/05-openrouter-setup.md` — OpenRouter provider configuration
+  - `docs/knowledge/06-ollama-setup.md` — Local Ollama setup
+  - `docs/knowledge/curriculum_v2.md` — Complete course outline
+
+- **`requirements.txt`** — Core dependencies (installed by setup.sh)
+- **`requirements-module-XX.txt`** — Module-specific additional dependencies
+- **`pyproject.toml`** — Project metadata and uv tool configuration
+
+================================================================================
+SECTION 3: LLM ACCESS SETUP
+================================================================================
+
+**Opening Context:**
+The course teaches AI concepts using Large Language Models (LLMs). You need API access
+to at least one LLM provider. We recommend OpenRouter (free, no credit card required).
+Alternatively, use local Ollama (completely free, runs on your machine) or your own
+OpenAI/Anthropic subscriptions.
+
+**Pricing context:**
+- OpenRouter: Free tier available, pay-as-you-go ($0.01-$0.50 per 1M tokens typical)
+- Ollama: Completely free, runs locally
+- OpenAI: $0.50-$15 per 1M input tokens depending on model
+- Anthropic: Similar pricing to OpenAI
+- Cohere: Free tier for embeddings (100k requests/month)
+
+---
+
+## SUBSECTION 3A: OPENROUTER SETUP (RECOMMENDED FOR BEGINNERS)
+
+**Why OpenRouter?**
+- No credit card required for signup (free tier available)
+- Aggregates many models (OpenAI, Anthropic, Google, Mistral, etc.)
+- Simple HTTP API, easy to debug
+- Pay-as-you-go; only pay for what you use
+- Many free models available through the free tier
+
+**Steps to include:**
+
+1. **Create OpenRouter Account**
+   - Go to https://openrouter.ai/
+   - Click "Sign Up"
+   - Use email, GitHub, or Google to register
+   - No credit card required for free tier
+
+2. **Get Your API Key**
+   - After signup, go to https://openrouter.ai/keys
+   - Copy your API key (looks like: `sk-or-v1-xxxxxxxxxxxxx...`)
+   - Store it securely (never share or commit to GitHub)
+
+3. **Set Environment Variable**
+   - In your terminal (with .venv activated):
+     ```bash
+     export OPENROUTER_API_KEY='sk-or-v1-your-actual-key'
+     ```
+   - Verify: `echo $OPENROUTER_API_KEY`
+   - To persist across sessions, add to `.env` file (see Subsection 2C)
+
+4. **Default Model Configuration**
+   - OpenRouter is set as the default provider in `shared/utils/settings.py`
+   - Default URL: `https://api.openrouter.ai/v1/chat/completions`
+   - Most course lessons use this by default
+   - Lessons will specify if they require a different provider
+
+---
+
+## SUBSECTION 3B: COHERE API KEY SETUP (FOR EMBEDDINGS)
+
+**Why Cohere?**
+- Module 2, Lesson 5 uses Cohere for embeddings (semantic search)
+- Free tier: 100,000 embedding requests per month
+- Simple REST API, well-documented
+
+**Steps to include:**
+
+1. **Create Cohere Account**
+   - Go to https://cohere.com/
+   - Click "Sign Up"
+   - Use email to register
+   - No credit card required for free tier
+
+2. **Get Your API Key**
+   - After signup, go to https://dashboard.cohere.com/api-keys
+   - Copy your API key
+   - Store it securely
+
+3. **Set Environment Variable**
+   - In your terminal:
+     ```bash
+     export COHERE_API_KEY='your-actual-cohere-key'
+     ```
+   - Verify: `echo $COHERE_API_KEY`
+   - Add to `.env` file for persistence
+
+4. **Which Lessons Use Cohere?**
+   - Module 2, Lesson 5: "Embeddings & Semantic Search"
+   - Will prompt you if the key is missing when you run that lesson
+
+---
+
+## SUBSECTION 3C: OPTIONAL PROVIDERS (FOR LATER MODULES)
+
+**If you already have these subscriptions, configure them:**
+
+1. **OpenAI API Key**
+   - Requires paid OpenAI account with billing enabled
+   - Get key at https://platform.openai.com/api-keys
+   - Set: `export OPENAI_API_KEY='sk-...'`
+   - Used in Modules 3+
+
+2. **Anthropic (Claude) API Key**
+   - Requires paid Anthropic account
+   - Get key at https://console.anthropic.com/
+   - Set: `export ANTHROPIC_API_KEY='sk-ant-...'`
+   - Used in Modules 3+
+
+3. **Local Ollama (Free Alternative)**
+   - Download from https://ollama.com/
+   - Install and run: `ollama serve`
+   - By default listens at `http://localhost:11434`
+   - Set: `export OLLAMA_URL='http://localhost:11434/completions'`
+   - Completely free; runs on your machine
+   - See `docs/knowledge/06-ollama-setup.md` for detailed configuration
+
+================================================================================
+SECTION 4: RUNNING THE PROJECT
+================================================================================
+
+**Opening Context:**
+The course provides multiple ways to run lessons: Streamlit UI (visual, dashboard-based),
+CLI agent (text-based, agent-driven), and direct Python execution. This section covers
+all three approaches and explains how to run your first lesson.
+
+---
+
+## SUBSECTION 4A: INITIAL VERIFICATION AND BASE SETUP
+
+**Before running any lesson, verify everything is installed:**
+
+1. **Activate Virtual Environment**
+   - macOS/WSL: `source .venv/bin/activate`
+   - Windows PowerShell: `.venv\Scripts\Activate.ps1`
+   - You should see `(.venv)` in your terminal prompt
+
+2. **Verify Packages Are Installed**
+   - Run: `pip list | grep streamlit` (should show streamlit version)
+   - Run: `pip list | grep langchain` (should show langchain version)
+   - All core dependencies should be present (installed by setup.sh)
+
+3. **Set Your API Key (If Not in .env)**
+   - Temporary setup: `export OPENROUTER_API_KEY='your-key'`
+   - OR ensure `.env` file has it configured (see Subsection 2C)
+
+4. **Verify API Key is Available to Python**
+   - Quick test script:
+     ```bash
+     python3 -c "import os; print('OPENROUTER_API_KEY set:', bool(os.getenv('OPENROUTER_API_KEY')))"
+     ```
+   - Should print: `OPENROUTER_API_KEY set: True`
+
+---
+
+## SUBSECTION 4B: APPROACH 1 — STREAMLIT UI (RECOMMENDED FOR BEGINNERS)
+
+**What is Streamlit?**
+- Interactive web-based UI for Python scripts
+- Renders in your browser; no frontend code needed
+- Perfect for exploring lessons with real-time output
+- Easy to run and debug
+
+**Steps to include:**
+
+1. **Launch the Streamlit Dashboard**
+   - From repository root (with .venv activated):
+     ```bash
+     streamlit run src/app.py
+     ```
+   - OR use the convenience script:
+     ```bash
+     bash scripts/run_streamlit.sh
+     ```
+   - You should see output:
+     ```
+     You can now view your Streamlit app in your browser.
+     Local URL: http://localhost:8501
+     Network URL: http://192.168.x.x:8501
+     ```
+
+2. **Access the Dashboard**
+   - Open your web browser
+   - Navigate to: `http://localhost:8501`
+   - You should see the course dashboard with module/lesson navigation
+
+3. **Navigate to Your First Lesson**
+   - In the dashboard sidebar, click: "Module 2 — AI Fundamentals"
+   - Then click: "Lesson 2.2 — Tokens, Context & Completion"
+   - The lesson content loads in the main area
+   - Follow the on-screen instructions
+
+4. **Run a Lesson**
+   - Each lesson has interactive inputs (text boxes, sliders, buttons)
+   - Enter your inputs
+   - Click "Run" or equivalent button
+   - Results appear below
+   - All output is saved to module-specific JSON files for downstream lessons
+
+5. **View Output Files**
+   - Lesson outputs are saved to: `project-completed/datasets/lesson-NN-output.json`
+   - These files feed as input to subsequent lessons
+   - Example: Lesson 2.2 output → Lesson 2.3 input
+
+6. **Stop the Streamlit Server**
+   - In the terminal: Ctrl+C
+   - Browser connection will close
+   - Server stops cleanly
+
+---
+
+## SUBSECTION 4C: APPROACH 2 — CLI AGENT (FOR HANDS-ON LEARNING)
+
+**What is the CLI Agent?**
+- Text-based interface using your terminal
+- Useful for AI agent-assisted lesson completion (with Claude/Cursor)
+- Shows TODO sections you need to implement
+- Guides you through lesson implementation step-by-step
+
+**Steps to include:**
+
+1. **Run the CLI Agent for a Specific Lesson**
+   - From repository root (with .venv activated):
+     ```bash
+     python -m src.cli_agent project-todo/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py
+     ```
+   - OR use the convenience script:
+     ```bash
+     bash scripts/run_cli_agent.sh project-todo/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py
+     ```
+
+2. **CLI Output**
+   - You'll see:
+     - File path and name
+     - Current code with TODO markers highlighted
+     - Phase comments explaining what to implement
+     - Links to reference implementations in project-completed/
+
+3. **Implement TODOs**
+   - Follow the instructions in TODO comments
+   - Refer to the completed version in project-completed/
+   - Edit only the TODO sections; rest of file is pre-provided
+   - Save your changes to project-todo/ files
+
+4. **Run Your Lesson**
+   - After implementing TODOs, run:
+     ```bash
+     python project-todo/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py
+     ```
+   - View output or interact with Streamlit:
+     ```bash
+     streamlit run project-todo/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py
+     ```
+
+---
+
+## SUBSECTION 4D: APPROACH 3 — DIRECT PYTHON EXECUTION (ADVANCED)
+
+**What this means:**
+- Run lesson files directly as Python scripts
+- See raw output in your terminal
+- Useful for debugging and understanding flow
+
+**Steps to include:**
+
+1. **Run a Completed Lesson Directly**
+   - From repository root (with .venv activated):
+     ```bash
+     cd project-completed/module-02-ai-fundamentals
+     python lesson-02-tokens-context-completion.py
+     ```
+   - Output displays in terminal
+
+2. **Run a Scaffolded Lesson (After Implementing TODOs)**
+   - If you've filled in TODOs in project-todo/:
+     ```bash
+     cd project-todo/module-02-ai-fundamentals
+     python lesson-02-tokens-context-completion.py
+     ```
+   - Output displays in terminal
+
+3. **Capture Output to File**
+   - Some lessons print results to stdout; capture them:
+     ```bash
+     python lesson-02-tokens-context-completion.py > lesson-output.txt
+     ```
+   - View results: `cat lesson-output.txt` or open in editor
+
+---
+
+## SUBSECTION 4E: RUNNING MODULE-SPECIFIC REQUIREMENTS
+
+**Why?**
+- Base setup installs core dependencies (Streamlit, LangChain, OpenAI, etc.)
+- Some modules have additional specialized requirements
+  - Module 2 needs tiktoken (for token counting)
+  - Module 4 needs numpy (for vector operations)
+  - Module 5 needs pydantic (for data validation)
+  - Module 6+ inherit from previous modules
+
+**Steps to include:**
+
+1. **Check If Module-Specific Requirements Exist**
+   - Look for: `requirements-module-XX.txt` in repository root
+   - Example: `requirements-module-02.txt`
+
+2. **Install Module-Specific Dependencies (If Needed)**
+   - Activate your .venv first
+   - Run: `pip install -r requirements-module-02.txt`
+   - Wait for installation to complete
+   - Verify: `pip list` (new packages should appear)
+
+3. **When to Install**
+   - **Recommended:** Install for each new module as you start it
+   - Example flow:
+     ```bash
+     source .venv/bin/activate           # Already done; stays active
+     pip install -r requirements-module-02.txt   # Start Module 2
+     # ... complete Module 2 lessons ...
+     pip install -r requirements-module-03.txt   # Start Module 3
+     # ... and so on
+     ```
+
+4. **Module Requirements Mapping**
+   - Module 2: tiktoken (token counting)
+   - Module 3: openai (for advanced API features)
+   - Module 4 & 7: numpy (vector math)
+   - Module 5 & 6: pydantic (data validation)
+   - Modules inherit previous requirements; generally no conflicts
+
+---
+
+## SUBSECTION 4F: YOUR FIRST LESSON (DETAILED WALKTHROUGH)
+
+**Scenario:** You want to run Module 2, Lesson 2 to learn how LLMs tokenize text.
+
+**Complete Step-by-Step:**
+
+1. **Setup (One-Time)**
+   ```bash
+   # In terminal, navigate to project directory
+   cd ~/Code/ai-for-software-engineers
+   
+   # Activate virtual environment
+   source .venv/bin/activate
+   
+   # Should see (.venv) in prompt
+   ```
+
+2. **Ensure Module 2 Dependencies Are Installed**
+   ```bash
+   pip install -r requirements-module-02.txt
+   ```
+
+3. **Set API Key (If Not in .env)**
+   ```bash
+   export OPENROUTER_API_KEY='sk-or-v1-your-key-here'
+   ```
+
+4. **Choose Your Approach**
+
+   **Option A: Streamlit UI (Easiest)**
+   ```bash
+   streamlit run src/app.py
+   # Then navigate: Module 2 → Lesson 2.2 in browser at http://localhost:8501
+   ```
+
+   **Option B: Direct Streamlit for This Lesson**
+   ```bash
+   streamlit run project-completed/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py
+   # Opens in browser with just this lesson
+   ```
+
+   **Option C: CLI Agent (For Hands-On Learning)**
+   ```bash
+   python -m src.cli_agent project-todo/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py
+   # Review TODOs, implement them, then run the lesson
+   ```
+
+   **Option D: Direct Python Execution**
+   ```bash
+   python project-completed/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py
+   # View raw output in terminal
+   ```
+
+5. **What to Expect**
+   - Lesson loads with introductory text
+   - You see interactive inputs (text, sliders, buttons)
+   - You enter sample text: "Hello, world!"
+   - Lesson calls OpenRouter API to tokenize and count tokens
+   - Output shows: token count, cost estimate, context window usage
+   - Results saved to `project-completed/datasets/lesson-02-output.json`
+   - This output feeds into Lesson 2.3 (next lesson)
+
+6. **Troubleshooting**
+   - **Error: "API key not found"** → Set OPENROUTER_API_KEY; see Subsection 3A
+   - **Error: "streamlit not installed"** → Run `pip install -r requirements.txt` again
+   - **Browser won't open** → Manually navigate to http://localhost:8501
+   - **No output/hangs** → Check internet connection; API call may be slow
+
+---
+
+## SUBSECTION 4G: TYPICAL DAILY WORKFLOW
+
+**Example: Working through Week 1 of the course**
+
+```bash
+# Day 1: Setup (Sections 1-4 of this lesson)
+cd ~/Code/ai-for-software-engineers
+source .venv/bin/activate
+
+# Day 2: Module 1 (AI Shift for Engineers) — Talking head, no code
+# Watch the video/reading (no setup needed)
+
+# Day 3: Module 2, Lesson 1 (LLMs Under the Hood) — Talking head
+# No code; watch video
+
+# Day 4: Module 2, Lesson 2 (Tokens, Context & Completion) — Code Screencast
+export OPENROUTER_API_KEY='your-key'  # If not in .env
+pip install -r requirements-module-02.txt  # First time for Module 2
+streamlit run src/app.py  # OR direct: streamlit run project-completed/.../lesson-02-...py
+
+# Complete lesson, output saved to datasets/lesson-02-output.json
+
+# Day 5: Module 2, Lesson 4 (Prompting, Retrieval & Fine-Tuning) — Code Screencast
+export COHERE_API_KEY='your-key'  # This lesson uses Cohere embeddings
+streamlit run project-completed/module-02-ai-fundamentals/lesson-04-prompting-retrieval-finetuning.py
+# Output saved to datasets/lesson-04-output.json
+
+# And so on for subsequent modules...
+```
+
+---
+
+## SUBSECTION 4H: HELPFUL COMMANDS REFERENCE
+
+**Virtual Environment Management**
+```bash
+# Activate
+source .venv/bin/activate           # macOS/WSL
+.venv\Scripts\Activate.ps1          # Windows PowerShell
+
+# Deactivate
+deactivate
+
+# Check what's installed
+pip list
+
+# Upgrade all packages
+pip install --upgrade pip setuptools wheel
+```
+
+**Running Lessons**
+```bash
+# Streamlit dashboard
+streamlit run src/app.py
+
+# Streamlit for a specific lesson
+streamlit run project-completed/module-XX-name/lesson-NN-name.py
+
+# CLI agent
+python -m src.cli_agent project-todo/module-XX-name/lesson-NN-name.py
+
+# Direct execution
+python project-completed/module-XX-name/lesson-NN-name.py
+```
+
+**Environment Variables (Temporary)**
+```bash
+export OPENROUTER_API_KEY='your-key'
+export OPENAI_API_KEY='your-key'
+export ANTHROPIC_API_KEY='your-key'
+export COHERE_API_KEY='your-key'
+export OLLAMA_URL='http://localhost:11434/completions'
+```
+
+**Verify Setup**
+```bash
+python3 --version          # Check Python version
+pip list | grep streamlit  # Check specific package
+echo $OPENROUTER_API_KEY   # Verify API key is set
+```
+
+================================================================================
+CONCLUSION / NEXT STEPS
+================================================================================
+
+**You've successfully set up your environment and are ready to start the course!**
+
+**What comes next:**
+
+1. Start with Module 1 (AI Shift for Engineers) for conceptual context
+2. Move to Module 2 (AI Fundamentals) to learn how LLMs work
+3. Each module builds on the previous one; follow the sequence
+4. Use project-completed/ as reference implementations
+5. Use project-todo/ to practice hands-on by implementing TODOs
+6. Use the Streamlit dashboard or CLI agent to run lessons interactively
+
+**Key reminders:**
+
+- Always activate your .venv before running lessons: `source .venv/bin/activate`
+- Set your API key before running lessons that require LLM access
+- If you encounter errors, check:
+  1. Virtual environment is activated
+  2. API key is set and valid
+  3. Module-specific requirements are installed
+  4. Internet connection is working
+- Each lesson outputs results to JSON files; these feed into subsequent lessons
+- Don't modify files in project-completed/; treat as read-only reference
+- Edit only TODO sections in project-todo/ files during hands-on work
+
+**Support resources:**
+
+- Full repository: https://github.com/[REPO_OWNER]/ai-for-software-engineers
+- Curriculum overview: `docs/knowledge/curriculum_v2.md`
+- Detailed setup guides: `docs/knowledge/01-local-setup.md` through `docs/knowledge/06-ollama-setup.md`
+- Knowledge/reference docs: `docs/knowledge/`
+- Module structure reference: `docs/knowledge/module-structure.md`
+
+**Happy learning! You're now ready to begin your journey as an AI engineer.**
+
+================================================================================
+END OF MASTER PROMPT
+================================================================================

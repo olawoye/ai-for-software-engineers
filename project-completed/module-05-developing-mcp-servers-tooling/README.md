@@ -768,5 +768,5 @@ In Module 6, you'll learn how to build autonomous agents that consume MCP server
 ## Reference
 
 - MCP Specification: https://modelcontextprotocol.io
-- Full curriculum: `knowledge/curriculum_v2.md`
+- Full curriculum: `docs/knowledge/curriculum_v2.md`
 - Module 4 (RAG): `../module-04-practical-rag-context-engineering/`

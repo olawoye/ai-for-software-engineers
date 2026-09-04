@@ -981,6 +981,6 @@ In Module 5, you'll learn how to expose RAG systems (and other capabilities) as 
 
 ## Reference
 
-- Full curriculum: `knowledge/curriculum_v2.md`
+- Full curriculum: `docs/knowledge/curriculum_v2.md`
 - Agent instructions: `agents.md`
 - Module 3 (APIs & Deployment): `../module-03-ai-developer-toolkit/`
