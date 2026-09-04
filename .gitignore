@@ -133,4 +133,4 @@ datasets/*.json.bak
 datasets/*.json.tmp
 
 # Ignore temp custom files
-docs/lesson_1_5_prompt.txt
+knowledge/lesson_1_5_prompt.txt

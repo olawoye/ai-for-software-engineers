@@ -19,4 +19,4 @@ This guide keeps your workspace grounded in a predictable Python toolchain.
    - Point your AI assistant (Codex/Claude) at `agents.md` before asking for help.
 
 5. **Streamlit workflow**
-   - Launch the UI with `streamlit run src/app.py` and keep `docs/run-test-deploy.md` handy for deployment notes.
+   - Launch the UI with `streamlit run src/app.py` and keep `knowledge/run-test-deploy.md` handy for deployment notes.

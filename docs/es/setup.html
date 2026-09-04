@@ -1,0 +1,1148 @@
+<h4>Lecciones previas al código — Configuración técnica del entorno</h4>
+
+<p>Desde el Módulo 2, verás lecciones prácticas con demostraciones de código. Antes de comenzar a crear aplicaciones impulsadas por IA, necesitamos preparar un entorno moderno de Python que se utilizará durante el resto del curso.</p>
+
+<p>La buena noticia es que esta configuración solo se realiza una vez. Una vez que tu entorno esté configurado correctamente, cada lección del curso sigue exactamente el mismo flujo de trabajo.</p>
+
+<p>Este curso está diseñado para que puedas ejecutar y estudiar inmediatamente implementaciones completas y funcionales. Cada lección demostrada en los videos ya existe dentro del directorio <code>project-completed/</code> del repositorio. Esta es la ruta de aprendizaje recomendada porque te permite centrarte en comprender conceptos de IA y técnicas de ingeniería de software sin tener que construir cada lección desde cero.</p>
+
+<p>Si disfrutas de práctica adicional, también encontrarás un directorio correspondiente llamado <code>project-todo/</code>. Estos archivos contienen implementaciones con secciones de TODO que puedes completar tú mismo. Son completamente opcionales y están pensados como un desafío después de entender ya la implementación completa.</p>
+
+<p><strong>Flujo de trabajo recomendado</strong></p>
+
+<ul><li><p>Ve la lección.</p></li><li><p>Ejecuta la implementación completa desde <code>project-completed/</code>.</p></li><li><p>Estudia cómo funciona el código.</p></li><li><p>Experimenta con la implementación.</p></li><li><p>Opcionalmente, recrea la lección más adelante usando los archivos dentro de <code>project-todo/</code>.</p></li></ul>
+
+<p>A lo largo del resto de este curso, principalmente trabajarás con:</p>
+
+<ul><li><p>Python 3.11+</p></li><li><p>Visual Studio Code</p></li><li><p>Git</p></li><li><p>Entornos virtuales</p></li><li><p>APIs de modelos de lenguaje grande</p></li><li><p>Streamlit</p></li><li><p>El repositorio del curso</p></li></ul>
+
+<p>Al final de esta lección tendrás un entorno completo capaz de ejecutar cada proyecto demostrado durante el curso.</p>
+
+<h4>Elección de lenguaje / framework</h4>
+
+<p>Python, un lenguaje muy popular y recomendado, se utiliza a lo largo de este curso. Los métodos y las lecciones aprendidas se pueden aplicar fácilmente (e incluso portar con LLMs de IA) a otros lenguajes y frameworks.</p>
+
+<h4>Sección 1 — Preparación del sistema operativo</h4>
+
+<p>El curso es compatible con macOS y Windows. Los usuarios de Linux pueden seguir las instrucciones de macOS porque los comandos son idénticos.</p>
+
+<p>Si utilizas Windows, recomendamos encarecidamente usar Windows Subsystem for Linux (WSL2). El repositorio incluye scripts de Bash y sigue convenciones de desarrollo de Linux, por lo que WSL2 es la experiencia más cercana al entorno utilizado durante el desarrollo del curso.</p>
+
+<h4>1.1 Configuración en macOS</h4>
+
+<p>La mayoría de los sistemas macOS ya incluyen casi todo lo necesario para este curso. En muchos casos, esta sección es simplemente un proceso de verificación en lugar de una instalación completa.</p>
+
+<h4>Paso 1 — Verificar el acceso al terminal</h4>
+
+<p>Abre la aplicación Terminal integrada.</p>
+
+<p>También puedes instalar iTerm2 si prefieres una experiencia de terminal más avanzada.</p>
+
+<pre><code>Application     Recommendation
+-------------   -----------------------------------------------------
+Terminal.app    Fully supported and installed by default.
+iTerm2          Optional power-user replacement with tabs, profiles,
+                and improved usability.
+</code></pre>
+
+<p><strong>Consejo</strong></p>
+
+<p>Si ya te sientes cómodo usando Terminal.app, no hay ninguna obligación de instalar iTerm2.</p>
+
+<h4>Paso 2 — Verificar la instalación de Python</h4>
+
+<p>Abre tu terminal y ejecuta:</p>
+
+<pre>python3 --version</pre>
+
+<p>Deberías ver una versión similar a:</p>
+
+<pre>Python 3.11.x</pre>
+
+<p>El curso requiere <strong>Python 3.11 o una versión posterior</strong>.</p>
+
+<p>Si Python no está instalado, hay dos métodos recomendados de instalación.</p>
+
+<pre><code>Method          Recommendation
+-------------   ---------------------------------------------------
+Homebrew        Recommended for most developers.
+python.org      Official installer provided by the Python Software Foundation.
+</code></pre>
+
+<p>Si ya usas Homebrew, instala Python con:</p>
+
+<pre>brew install python3</pre>
+
+<p>Si Homebrew no está instalado, instálalo primero y luego instala Python.</p>
+
+<p>Alternativamente, descarga el instalador más reciente desde el sitio web oficial de Python.</p>
+
+<p>Después de la instalación, vuelve a verificar:</p>
+
+<pre>python3 --version</pre>
+
+<h4>Paso 3 — Verificar la instalación de Git</h4>
+
+<p>Git es necesario para descargar el repositorio del curso y gestionar el código fuente.</p>
+
+<pre>git --version</pre>
+
+<p>Una instalación correcta debería mostrar una versión de Git 2.x o superior.</p>
+
+<p>Si Git no está disponible, instálalo con:</p>
+
+<pre>brew install git</pre>
+
+<h4>Paso 4 — Verificar pip</h4>
+
+<p>Los paquetes de Python se instalan con pip.</p>
+
+<pre>pip3 --version</pre>
+
+<p>Si pip no está disponible, ejecuta:</p>
+
+<pre>python3 -m ensurepip --upgrade</pre>
+
+<p><strong>Por qué pip importa</strong></p>
+
+<p>Cada framework de IA utilizado en este curso, incluyendo Streamlit, LangChain, OpenAI, Anthropic, ChromaDB y muchos otros, se instala a través de pip. Verificarlo ahora previene problemas innecesarios más adelante.</p>
+
+<h4>Resultado esperado</h4>
+
+<p>Antes de pasar a la siguiente sección, tu Mac debería cumplir con la siguiente lista de comprobación.</p>
+
+<pre><code>Requirement          Status
+------------------  ---------
+Terminal available   ✓
+Python 3.11+         ✓
+Git installed        ✓
+pip available        ✓
+</code></pre>
+
+<p><strong>Punto de control</strong></p>
+
+<p>Si los cuatro elementos anteriores están completos, tu entorno macOS está listo. Continúa con la siguiente subsección solo si estás usando Windows. De lo contrario, pasa directamente a la verificación final del sistema operativo más adelante en esta lección.</p>
+
+<h4>1.2 Configuración en Windows (usando WSL2)</h4>
+
+<p>Si utilizas Windows 10 o Windows 11, este curso recomienda encarecidamente desarrollar dentro de <strong>Windows Subsystem for Linux 2 (WSL2)</strong>. Aunque Python puede instalarse directamente en Windows, WSL2 ofrece un entorno Linux totalmente compatible con las herramientas modernas de IA y desarrollo de software.</p>
+
+<p><strong>¿Por qué WSL2?</strong></p>
+
+<ul><li><p>El curso incluye scripts de Bash para la configuración y el lanzamiento de aplicaciones.</p></li><li><p>La mayoría de los frameworks de IA se desarrollan y prueban principalmente en Linux.</p></li><li><p>La instalación de paquetes suele ser más fiable.</p></li><li><p>Las rutas de archivos y los entornos virtuales se comportan de forma consistente con los ejemplos demostrados durante el curso.</p></li><li><p>Obtienes experiencia usando el mismo sistema operativo utilizado por muchos servidores en la nube y entornos de desarrollo.</p></li></ul>
+
+<h4>Paso 1 — Instalar Windows Subsystem for Linux</h4>
+
+<p>Abre <strong>Windows PowerShell</strong> como administrador.</p>
+
+<p>Ejecuta el siguiente comando.</p>
+
+<pre>wsl --install</pre>
+
+<p>Este comando instala Windows Subsystem for Linux junto con la distribución predeterminada de Ubuntu.</p>
+
+<p>Cuando termine la instalación, reinicia tu equipo si se te indica.</p>
+
+<p>Después de reiniciar, Ubuntu se iniciará automáticamente y te pedirá que crees un nombre de usuario y una contraseña de Linux. Estas credenciales solo se utilizan dentro de tu entorno Linux.</p>
+
+<p><strong>Nota</strong></p>
+
+<p>Tu nombre de usuario y contraseña de Linux son distintos de tus credenciales de inicio de sesión en Windows.</p>
+
+<h4>Paso 2 — Verificar la versión de WSL</h4>
+
+<p>Abre PowerShell otra vez y ejecuta:</p>
+
+<pre>wsl --list --verbose</pre>
+
+<p>Deberías ver una salida similar a:</p>
+
+<pre>NAME&nbsp; &nbsp; &nbsp; STATE&nbsp; &nbsp; &nbsp;VERSION
+
+Ubuntu&nbsp; &nbsp; Running&nbsp; &nbsp;2</pre>
+
+<p>El valor importante es la columna VERSION, que debería ser <strong>2</strong>.</p>
+
+<p>Si tu instalación informa la versión 1, actualízala con:</p>
+
+<pre>wsl --set-version Ubuntu 2</pre>
+
+<h4>Paso 3 — Abrir Ubuntu</h4>
+
+<p>Puedes abrir Ubuntu de varias formas.</p>
+
+<pre><code>Method            Description
+----------------  -------------------------------------------------
+Start Menu        Open Ubuntu directly from the Windows Start Menu.
+PowerShell        Run <code>wsl</code>.
+Command Prompt    Run <code>wsl</code>.
+Windows Terminal  Select the Ubuntu profile.
+</code></pre>
+
+<p>A partir de este punto, todos los comandos que se muestran en este curso deben ejecutarse dentro del terminal de Ubuntu, salvo que se indique lo contrario.</p>
+
+<h4>Paso 4 — Actualizar Ubuntu</h4>
+
+<p>Antes de instalar herramientas de desarrollo, actualiza el sistema operativo.</p>
+
+<pre>sudo apt update &amp;&amp; sudo apt upgrade -y</pre>
+
+<p>Esto puede tardar varios minutos según tu conexión a internet.</p>
+
+<h4>Paso 5 — Verificar Python</h4>
+
+<pre>python3 --version</pre>
+
+<p>Deberías tener Python 3.11 o una versión posterior.</p>
+
+<p>Si Python falta o tu versión es anterior, instálala con:</p>
+
+<pre>sudo apt install python3 python3-pip -y</pre>
+
+<p>Algunas versiones de Ubuntu también pueden requerir:</p>
+
+<pre>sudo apt install python3.11 -y</pre>
+
+<p>Verifica de nuevo después de la instalación.</p>
+
+<pre>python3 --version</pre>
+
+<h4>Paso 6 — Instalar herramientas de desarrollo</h4>
+
+<p>Varios paquetes de Python compilan extensiones nativas durante la instalación. Esto requiere las herramientas estándar de compilación de Linux.</p>
+
+<pre>sudo apt install build-essential curl git -y</pre>
+
+<p>Esto instala:</p>
+
+<ul><li><p>GCC</p></li><li><p>G++</p></li><li><p>Make</p></li><li><p>curl</p></li><li><p>Git</p></li></ul>
+
+<h4>Paso 7 — Verificar Git</h4>
+
+<pre>git --version</pre>
+
+<p>Deberías ver una versión de Git 2.x o superior.</p>
+
+<p><strong>Importante</strong></p>
+
+<p>Después de completar esta sección, puedes tratar tu terminal de Ubuntu casi exactamente como un terminal de Linux o macOS. A partir de este punto, casi todos los comandos que se muestran a lo largo del curso son idénticos, tanto si usas macOS como si usas Windows con WSL2.</p>
+
+<h4>Resultado esperado</h4>
+
+<pre><code>Requirement         Status
+-----------------  ---------
+WSL2 installed      ✓
+Ubuntu installed    ✓
+Python 3.11+        ✓
+Git installed       ✓
+Build tools        ✓
+</code></pre>
+
+<h4>1.3 Verificación final del sistema operativo</h4>
+
+<p>Sea cual sea tu sistema operativo, ya sea macOS o Windows con WSL2, tu entorno de desarrollo debería estar listo para el resto del curso.</p>
+
+<p>Ejecuta los siguientes comandos para verificar que todo funciona correctamente.</p>
+
+<pre># Verificar Python
+
+python3 --version
+
+# Verificar pip
+
+pip3 --version
+
+# Verificar Git
+
+git --version
+
+# Verificar soporte para entornos virtuales
+
+python3 -m venv test_env
+
+rm -rf test_env
+
+echo "Virtual environment creation works!"</pre>
+
+<p>Si cada comando se ejecuta correctamente sin errores, tu sistema operativo está totalmente preparado para el resto del proceso de configuración.</p>
+
+<p><strong>¡Éxito!</strong></p>
+
+<p>Ahora tienes un entorno de desarrollo moderno de Python capaz de ejecutar los frameworks y herramientas de IA utilizados en este curso.</p>
+
+<p><strong>Solución de problemas</strong></p>
+
+<p>Si algún comando falla, vuelve a la sección correspondiente del sistema operativo antes de continuar. La mayoría de los problemas de instalación en esta etapa se deben a una instalación incompleta de Python o a una variable PATH configurada incorrectamente.</p>
+
+<p>Con tu sistema operativo listo, la siguiente sección se centra en instalar Visual Studio Code, clonar el repositorio del curso, crear un entorno virtual de Python dedicado y preparar tu espacio de trabajo para el resto del curso.</p>
+
+<h4>Sección 2 — Visual Studio Code y configuración del proyecto</h4>
+
+<p>Ahora que tu sistema operativo está listo, el siguiente paso es preparar tu espacio de trabajo de desarrollo. A lo largo de este curso usaremos <strong>Visual Studio Code (VS Code)</strong> como nuestro editor principal. Proporciona un excelente soporte para Python, se integra perfectamente con Git, comprende los entornos virtuales y ofrece un ecosistema rico de extensiones que hacen que el desarrollo de aplicaciones de IA sea considerablemente más sencillo.</p>
+
+<p>También descargaremos el repositorio del curso e instalaremos todas las dependencias necesarias. Una vez completada esta configuración, podrás ejecutar cada lección completa demostrada a lo largo del curso con solo unos pocos comandos.</p>
+
+<h4>2.1 Instalación de Visual Studio Code</h4>
+
+<p>Visual Studio Code es un editor de código gratuito y multiplataforma de Microsoft. Se ha convertido en uno de los editores más populares para Python, desarrollo en la nube, DevOps e ingeniería de IA por su velocidad, flexibilidad y amplio ecosistema de extensiones.</p>
+
+<h4>Paso 1 — Descarga Visual Studio Code</h4>
+
+<p>Visita el sitio web oficial de Visual Studio Code y descarga el instalador adecuado para tu sistema operativo.</p>
+
+<pre><code>Operating System    Download
+------------------  --------------------------------
+macOS               Download the macOS installer.
+Windows             Download the Windows installer.
+</code></pre>
+
+<p>Sigue el proceso de instalación predeterminado. No se requiere ninguna configuración especial.</p>
+
+<p><strong>Buena práctica</strong></p>
+
+<p>Acepta las opciones de instalación predeterminadas a menos que tu organización tenga políticas específicas de desarrollo. La configuración predeterminada funciona perfectamente para este curso.</p>
+
+<h4>Paso 2 — Instalar la extensión de Python</h4>
+
+<p>Abre Visual Studio Code.</p>
+
+<p>Abre el Marketplace de extensiones usando:</p>
+
+<ul><li><p><strong>Windows:</strong> Ctrl + Shift + X</p></li><li><p><strong>macOS:</strong> Cmd + Shift + X</p></li></ul>
+
+<p>Busca <strong>Python</strong>.</p>
+
+<p>Instala la extensión publicada por <strong>Microsoft</strong>.</p>
+
+<p>Esta extensión proporciona:</p>
+
+<ul><li><p>Resaltado de sintaxis de Python</p></li><li><p>Depuración integrada</p></li><li><p>Navegación por el código</p></li><li><p>Detección automática del entorno</p></li><li><p>Autocompletado</p></li><li><p>Soporte integrado para pruebas</p></li></ul>
+
+<p>VS Code también puede recomendarte instalar herramientas adicionales de Python como Pylint. Puedes aceptar estas recomendaciones sin problema.</p>
+
+<h4>Paso 3 — Extensiones recomendadas</h4>
+
+<p>Las siguientes extensiones son opcionales pero altamente recomendadas a lo largo del curso.</p>
+
+<pre><code>Extension           Purpose
+------------------  --------------------------------------------------
+Python              Core Python development support.
+Pylance             Fast code completion, navigation and type analysis.
+Black Formatter     Automatically formats Python code consistently.
+Streamlit           Improves the Streamlit development experience.
+</code></pre>
+
+<p><strong>¿Por qué estas extensiones?</strong></p>
+
+<p>Aunque ninguna de estas extensiones es estrictamente necesaria para completar el curso, mejoran mucho la productividad al ofrecer autocompletado inteligente, detección de errores, formato automático y una mejor navegación por el repositorio.</p>
+
+<h4>2.2 Descarga del repositorio del curso</h4>
+
+<p>Cada lección demostrada en este curso está contenida dentro de un único repositorio Git.</p>
+
+<p>El repositorio contiene:</p>
+
+<ul><li><p>Implementaciones completas de lecciones.</p></li><li><p>Librerías compartidas.</p></li><li><p>Conjuntos de datos.</p></li><li><p>Aplicaciones Streamlit.</p></li><li><p>Documentación de apoyo.</p></li><li><p>Implementaciones opcionales de desafío.</p></li></ul>
+
+<h4>Paso 1 — Elige un espacio de trabajo</h4>
+
+<p>Selecciona una ubicación donde normalmente guardas tus proyectos de desarrollo.</p>
+
+<p>Opciones típicas incluyen:</p>
+
+<pre>~/Code
+
+~/Projects
+
+~/Development
+
+~/Documents</pre>
+
+<p>Navega hasta la ubicación que prefieras.</p>
+
+<pre>cd ~/Code</pre>
+
+<p>Si el directorio no existe, simplemente créalo.</p>
+
+<pre>mkdir -p ~/Code
+
+cd ~/Code</pre>
+
+<h4>Paso 2 — Clonar el repositorio</h4>
+
+<p>Descarga el repositorio desde GitHub usando Git.</p>
+
+<pre>git clone https://github.com/olawoye/ai-for-software-engineers.git</pre>
+
+<p>Cuando termine la clonación, entra en el directorio del proyecto.</p>
+
+<pre>cd ai-for-software-engineers</pre>
+
+<p><strong>¿Qué acaba de pasar?</strong></p>
+
+<p>Git descargó el historial completo del proyecto junto con cada lección, utilidad, conjunto de datos y recurso de apoyo necesario a lo largo del curso. Todo existe ahora localmente en tu computadora, permitiéndote trabajar incluso sin conexión (excepto cuando haces llamadas a APIs de LLMs en la nube).</p>
+
+<h4>Paso 3 — Abrir el repositorio en VS Code</h4>
+
+<p>Si el comando <code>code</code> está disponible en tu sistema, simplemente ejecuta:</p>
+
+<pre>code .</pre>
+
+<p>Si no lo está, abre Visual Studio Code manualmente y elige <strong>Archivo → Abrir carpeta</strong>, después selecciona la carpeta del repositorio.</p>
+
+<p>Ahora deberías ver la estructura del proyecto mostrada en el panel del Explorador a la izquierda.</p>
+
+<h4>2.3 Ejecutar el script de configuración</h4>
+
+<p>En lugar de instalar manualmente docenas de paquetes de Python, el repositorio incluye un script automatizado que realiza toda la instalación por ti.</p>
+
+<p>Abre el terminal integrado dentro de VS Code.</p>
+
+<ul><li><p><strong>Ver → Terminal</strong></p></li><li><p>o pulsa <strong>Ctrl + `</strong></p></li></ul>
+
+<p>Desde la raíz del repositorio, ejecuta:</p>
+
+<pre>./setup.sh</pre>
+
+<p>Si estás usando Windows con WSL y aparece un error de permisos, ejecuta:</p>
+
+<pre>bash setup.sh</pre>
+
+<h4>¿Qué hace el script de configuración?</h4>
+
+<p>El script de configuración automatiza todos los pasos repetitivos necesarios antes de desarrollar aplicaciones de IA.</p>
+
+<pre><code>Step                    Description
+---------------------  ---------------------------------------------------
+Python Verification     Checks that Python 3.11 or newer is available.
+Virtual Environment     Creates an isolated Python environment.
+Package Updates         Updates pip, setuptools and wheel.
+Dependency Installation Installs every package required by the course.
+Module Requirements     Installs additional module-specific dependencies where required.
+</code></pre>
+
+<p><strong>¿Por qué usar un entorno virtual?</strong></p>
+
+<p>Un entorno virtual es una instalación aislada de Python que pertenece solo a este proyecto. En lugar de instalar paquetes globalmente en tu computadora, cada proyecto mantiene su propio conjunto independiente de librerías.</p>
+
+<p>Esto evita conflictos de versiones entre diferentes proyectos y garantiza que todos los que sigan este curso trabajen con exactamente las mismas versiones de dependencias que se demuestran a lo largo de las lecciones.</p>
+
+<p>Dependiendo de tu conexión a internet, el proceso de instalación puede tardar varios minutos porque numerosas librerías de IA, incluidas Streamlit, LangChain, OpenAI, ChromaDB y otras dependencias, deben descargarse e instalarse.</p>
+
+<p><strong>Por favor, ten paciencia</strong></p>
+
+<p>La primera instalación siempre es la más larga. Después de que las dependencias se instalen correctamente, las lecciones futuras se lanzan casi de inmediato porque los paquetes ya están disponibles en tu máquina.</p>
+
+<h4>Verifica la instalación</h4>
+
+<p>Cuando el script termine correctamente, deberías encontrar un directorio llamado <code>.venv</code> en la raíz del repositorio.</p>
+
+<p>En macOS y Linux, verifica su existencia con:</p>
+
+<pre>ls -la</pre>
+
+<p>Deberías ver una entrada similar a:</p>
+
+<pre>.venv/</pre>
+
+<p>Esto confirma que tu entorno virtual aislado se ha creado correctamente.</p>
+
+<p><strong>Punto de control</strong></p>
+
+<p>En este punto ya has instalado Visual Studio Code, descargado el repositorio completo del curso y creado el entorno virtual dedicado del proyecto. En la siguiente sección activaremos ese entorno, configuraremos Visual Studio Code para usarlo automáticamente y prepararemos las credenciales de API necesarias para comunicarnos con modelos de lenguaje grande.</p>
+
+<h4>2.4 Configurar el entorno virtual de Python</h4>
+
+<p>En la sección anterior, el script de configuración creó un entorno virtual dentro del directorio <code>.venv</code>. Antes de ejecutar cualquier lección, normalmente activas este entorno para que Python use las versiones correctas de todas las librerías instaladas para este curso.</p>
+
+<p><strong>Recuerda</strong></p>
+
+<p>Un entorno virtual mantiene aislados los paquetes de Python de este proyecto de cualquier otro proyecto de Python en tu computadora. Esto evita conflictos de versiones y garantiza que tu entorno coincida con el demostrado a lo largo del curso.</p>
+
+<h4>Paso 1 — Configurar VS Code para usar el entorno virtual</h4>
+
+<p>Visual Studio Code puede detectar y usar automáticamente el entorno virtual del proyecto.</p>
+
+<ol><li><p>Abre la paleta de comandos.</p></li><li><p>Windows: <strong>Ctrl + Shift + P</strong></p></li><li><p>macOS: <strong>Cmd + Shift + P</strong></p></li><li><p>Busca <strong>Python: Select Interpreter</strong>.</p></li><li><p>Selecciona el intérprete ubicado dentro del directorio <code>.venv</code>.</p></li></ol>
+
+<p>La ruta del intérprete debería parecerse a una de estas opciones.</p>
+
+<pre>macOS / Linux
+
+.venv/bin/python
+
+Windows (PowerShell)
+
+.venv\Scripts\python.exe</pre>
+
+<p>Una vez seleccionado, VS Code usará automáticamente este intérprete cada vez que se abra el proyecto.</p>
+
+<p><strong>Buenas noticias</strong></p>
+
+<p>Solo necesitas seleccionar el intérprete una vez para este repositorio. Visual Studio Code lo recuerda para futuras sesiones.</p>
+
+<h4>Paso 2 — Activar el entorno virtual</h4>
+
+<p>Abre un nuevo terminal dentro de Visual Studio Code.</p>
+
+<p>Para macOS o WSL:</p>
+
+<pre>source .venv/bin/activate</pre>
+
+<p>Para Windows PowerShell:</p>
+
+<pre>.venv\Scripts\Activate.ps1</pre>
+
+<p>Después de la activación, tu indicador del terminal debería comenzar con:</p>
+
+<pre>(.venv)</pre>
+
+<p>Esto indica que los comandos de Python ahora se ejecutan dentro del entorno aislado del proyecto.</p>
+
+<h4>Paso 3 — Verificar paquetes instalados</h4>
+
+<p>Ejecuta:</p>
+
+<pre>pip list</pre>
+
+<p>Deberías ver numerosos paquetes instalados, incluidos muchos de los siguientes.</p>
+
+<pre><code>Package          Purpose
+---------------  ------------------------------------------------
+streamlit        Interactive web applications.
+langchain        LLM orchestration.
+openai           OpenAI API client.
+anthropic        Claude API client.
+chromadb         Vector database.
+python-dotenv    Environment variable loading.
+uvicorn          ASGI application server.
+</code></pre>
+
+<p><strong>Error común</strong></p>
+
+<p>Si los paquetes parecen faltar, asegúrate de que el entorno virtual esté activado antes de ejecutar <code>pip list</code>. Ejecutar pip fuera del entorno virtual puede mostrar paquetes instalados globalmente en tu computadora en lugar de los instalados específicamente para este proyecto.</p>
+
+<h4>2.5 Configuración de variables de entorno</h4>
+
+<p>Muchas lecciones se comunican con modelos de lenguaje grande usando APIs en la nube. Estos servicios requieren autenticación mediante claves API.</p>
+
+<p>En lugar de colocar información sensible directamente en el código fuente, las aplicaciones modernas almacenan credenciales como <strong>variables de entorno</strong>. Esto mejora la seguridad y facilita cambiar entre distintos proveedores.</p>
+
+<h4>Variables de entorno temporales</h4>
+
+<p>Si solo quieres experimentar, puedes definir claves API para la sesión actual del terminal.</p>
+
+<pre>export OPENROUTER_API_KEY="your-api-key"
+
+export OPENAI_API_KEY="your-openai-key"
+
+export ANTHROPIC_API_KEY="your-anthropic-key"
+
+export COHERE_API_KEY="your-cohere-key"
+
+export OLLAMA_URL="http://localhost:11434/completions"</pre>
+
+<p>Estos valores permanecen disponibles hasta que se cierre la ventana del terminal.</p>
+
+<p>Puedes verificar una variable de entorno con:</p>
+
+<pre>echo $OPENROUTER_API_KEY</pre>
+
+<h4>Configuración persistente usando un archivo .env</h4>
+
+<p>Para el desarrollo diario, almacenar la configuración en un archivo <code>.env</code> es considerablemente más conveniente.</p>
+
+<p>Crea un archivo llamado <code>.env</code> en la raíz del repositorio.</p>
+
+<pre>OPENROUTER_API_KEY=your-api-key
+
+OPENAI_API_KEY=your-openai-key
+
+ANTHROPIC_API_KEY=your-anthropic-key
+
+COHERE_API_KEY=your-cohere-key
+
+OLLAMA_URL=http://localhost:11434/completions</pre>
+
+<p>Dentro de Visual Studio Code, busca la configuración llamada <strong>Python: Env File</strong> y señala el archivo <code>.env</code> del proyecto. Los nuevos terminales cargarán estos valores automáticamente.</p>
+
+<p><strong>Recordatorio de seguridad</strong></p>
+
+<p>Tus claves API son credenciales privadas. Nunca las publiques en línea, nunca las incluyas en capturas de pantalla y nunca confirmes tu archivo <code>.env</code> en GitHub. El repositorio ya incluye un archivo <code>.gitignore</code> que evita confirmaciones accidentales.</p>
+
+<h4>Cómo usa el curso estas variables</h4>
+
+<p>Las utilidades compartidas de configuración leen estas variables de entorno cada vez que inicia una lección.</p>
+
+<pre><code>Variable              Purpose
+--------------------  ---------------------------------------------
+OPENROUTER_API_KEY     Recommended provider for most lessons.
+OPENAI_API_KEY         OpenAI models.
+ANTHROPIC_API_KEY      Claude models.
+COHERE_API_KEY         Embedding generation.
+OLLAMA_URL             Local LLM endpoint.
+</code></pre>
+
+<p>Las lecciones individuales indicarán qué proveedor requieren. En la mayoría de los casos, OpenRouter es el proveedor recomendado por defecto porque ofrece acceso a múltiples modelos a través de una sola API.</p>
+
+<h4>2.6 Comprender la estructura del repositorio</h4>
+
+<p>Antes de ejecutar tu primera lección, es útil entender cómo está organizado el repositorio. Una estructura de proyecto consistente hace que sea mucho más fácil localizar lecciones, utilidades compartidas y documentación de apoyo.</p>
+
+<pre><code>Folder              Purpose
+------------------  -------------------------------------------------------------------
+project-completed/  Complete working implementations used throughout the course.
+project-todo/      Optional scaffolded versions containing TODO sections for learners.
+shared/            Reusable utilities including LLM clients, configuration, and helpers.
+src/               Main application entry points including the Streamlit dashboard.
+scripts/           Convenience scripts for launching applications and automating tasks.
+docs/              Additional setup guides, architecture documentation, and reference material.
+requirements*.txt   Python dependency definitions.
+pyproject.toml     Project metadata and build configuration.
+</code></pre>
+
+<p><strong>Flujo de trabajo recomendado</strong></p>
+
+<ol><li><p>Sigue cada lección usando la implementación completa dentro de <code>project-completed/</code>.</p></li><li><p>Experimenta modificando el código y observando los resultados.</p></li><li><p>Cuando te sientas cómodo con los conceptos, opcionalmente desafíate a ti mismo implementando el scaffold correspondiente dentro de <code>project-todo/</code>.</p></li></ol>
+
+<p><strong>Punto de control</strong></p>
+
+<p>Tu entorno de desarrollo ya está configurado. Visual Studio Code está usando el intérprete correcto de Python, tus dependencias están instaladas, tus credenciales de API se gestionan de forma segura y entiendes cómo está organizado el repositorio. En la siguiente sección configuraremos el acceso a modelos de lenguaje grande y prepararemos tu primera aplicación impulsada por IA.</p>
+
+<h4>Sección 3 — Configuración del acceso a LLMs</h4>
+
+<p>Ahora que tu entorno de desarrollo está completamente configurado, el último paso es habilitar el acceso a un modelo de lenguaje grande (LLM).</p>
+
+<p>A lo largo de este curso crearás aplicaciones que se comunican con modelos de IA para generar texto, analizar documentos, responder preguntas, resumir información, crear sistemas RAG, desarrollar agentes de IA y mucho más.</p>
+
+<p>Para lograrlo, tus aplicaciones necesitan acceso a uno o más proveedores de LLMs.</p>
+
+<p><strong>Buenas noticias</strong></p>
+
+<p>Solo necesitas <strong>un</strong> proveedor para completar casi todo el curso. Los proveedores adicionales son totalmente opcionales y se presentan solo porque algunos alumnos ya tienen suscripciones existentes o quieren experimentar con distintos modelos.</p>
+
+<h4>¿Qué proveedor debes elegir?</h4>
+
+<pre><code>Provider       Recommended For                              Cost
+-------------  ------------------------------------------  ---------------------
+OpenRouter     Almost every learner; recommended here     Free + low-cost usage
+Ollama         Local-first workflows                      Free
+OpenAI         Existing OpenAI users                      Pay-as-you-go
+Anthropic      Existing Claude users                      Pay-as-you-go
+Cohere         Embedding generation in selected lessons   Generous free tier
+</code></pre>
+
+<p><strong>Recomendación</strong></p>
+
+<p>Si eres nuevo en el desarrollo de IA, usa <strong>OpenRouter</strong>. Proporciona acceso a muchos modelos distintos mediante una sola API y es el proveedor usado en la mayoría de las demostraciones del curso.</p>
+
+<h4>3.1 Configuración de OpenRouter (recomendada)</h4>
+
+<p>OpenRouter actúa como una pasarela unificada para muchos de los modelos de lenguaje más populares del momento.</p>
+
+<p>En lugar de crear cuentas con varios proveedores de IA, OpenRouter permite que tus aplicaciones accedan a numerosos modelos usando una sola API.</p>
+
+<h4>¿Por qué OpenRouter?</h4>
+
+<ul><li><p>Proceso de registro sencillo.</p></li><li><p>No se requiere tarjeta de crédito para el plan gratuito.</p></li><li><p>Acceso a múltiples proveedores de modelos.</p></li><li><p>Excelente para aprender y experimentar.</p></li><li><p>Una interfaz API única sin importar qué modelo elijas.</p></li></ul>
+
+<h4>Paso 1 — Crear una cuenta</h4>
+
+<p>Visita el sitio web de OpenRouter y crea una cuenta gratuita.</p>
+
+<p>Puedes registrarte usando tu dirección de correo electrónico, tu cuenta de GitHub o tu cuenta de Google.</p>
+
+<h4>Paso 2 — Generar una clave API</h4>
+
+<p>Después de iniciar sesión, ve a la página de API Keys y genera una nueva clave.</p>
+
+<p>Tu clave tendrá un aspecto similar a:</p>
+
+<pre>sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxx</pre>
+
+<p><strong>Importante</strong></p>
+
+<p>Trata tu clave API como si fuera una contraseña. Cualquier persona que tenga tu clave puede hacer peticiones en tu nombre.</p>
+
+<h4>Paso 3 — Añadir créditos (recomendado)</h4>
+
+<p>Esto es opcional, pero añadir entre $5 y $10 puede desbloquear límites bastante generosos.</p>
+
+<h4>Paso 4 — Configurar tu entorno</h4>
+
+<p>Si estás usando un archivo <code>.env</code>, simplemente añade:</p>
+
+<pre>OPENROUTER_API_KEY=sk-or-v1-your-api-key</pre>
+
+<p>Alternativamente, configúralo temporalmente en tu terminal.</p>
+
+<pre>export OPENROUTER_API_KEY="sk-or-v1-your-api-key"</pre>
+
+<p>Verifica que la variable se haya configurado correctamente.</p>
+
+<pre>echo $OPENROUTER_API_KEY</pre>
+
+<h4>Cómo usa el curso OpenRouter</h4>
+
+<p>La configuración del curso lee tu clave API de OpenRouter cada vez que una aplicación se inicia.</p>
+
+<p>Para la mayoría de las lecciones, no se requiere configuración adicional. Una vez añadida tu clave API, los proyectos completos demostrados a lo largo del curso se comunicarán con OpenRouter automáticamente.</p>
+
+<p><strong>Detrás del escenario</strong></p>
+
+<p>Las utilidades compartidas de configuración dentro del repositorio cargan tus variables de entorno y configuran el proveedor correcto automáticamente. Esto mantiene el código de las lecciones limpio y permite cambiar de proveedor sin modificar la lógica de la aplicación.</p>
+
+<h4>3.2 Configuración de la API de Cohere (embeddings)</h4>
+
+<p>La mayoría de las lecciones usan modelos de lenguaje generativos, pero varias lecciones más adelante introducen embeddings vectoriales para búsqueda semántica y Recuperación Aumentada por Generación (RAG).</p>
+
+<p>Esas lecciones usan la API de embeddings de Cohere.</p>
+
+<h4>¿Por qué Cohere?</h4>
+
+<ul><li><p>Modelos de embeddings de alta calidad.</p></li><li><p>API REST sencilla.</p></li><li><p>Plan gratuito generoso.</p></li><li><p>Documentación excelente.</p></li></ul>
+
+<h4>Paso 1 — Crear una cuenta</h4>
+
+<p>Crea una cuenta gratuita en Cohere.</p>
+
+<h4>Paso 2 — Generar una clave API</h4>
+
+<p>Copia tu clave API desde el panel de control.</p>
+
+<h4>Paso 3 — Añadir la variable de entorno</h4>
+
+<pre>COHERE_API_KEY=your-cohere-api-key</pre>
+
+<p>o temporalmente:</p>
+
+<pre>export COHERE_API_KEY="your-cohere-api-key"</pre>
+
+<p>Verifica la configuración.</p>
+
+<pre>echo $COHERE_API_KEY</pre>
+
+<p><strong>¿Cuándo necesitarás esto?</strong></p>
+
+<p>No necesitas una clave API de Cohere de inmediato. Solo unas pocas lecciones que implican embeddings y búsqueda semántica la requieren, y cada lección indicará claramente cuándo es necesaria.</p>
+
+<h4>3.3 Proveedores opcionales</h4>
+
+<p>El curso es agnóstico respecto al proveedor. Si ya tienes suscripciones con otros proveedores de IA, puedes usarlos en su lugar.</p>
+
+<h4>OpenAI</h4>
+
+<p>Si ya tienes una cuenta de desarrollador de OpenAI, añade:</p>
+
+<pre>OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxx</pre>
+
+<p>Los modelos de OpenAI pueden usarse en varias lecciones avanzadas, aunque OpenRouter sigue siendo el valor recomendado por defecto.</p>
+
+<h4>Anthropic (Claude)</h4>
+
+<p>Si ya usas Claude, configura:</p>
+
+<pre>ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxx</pre>
+
+<p>Muchos alumnos disfrutan comparando las respuestas de Claude con las producidas por otros proveedores.</p>
+
+<h4>Ollama local</h4>
+
+<p>Si prefieres ejecutar modelos de lenguaje completamente en tu propia máquina, Ollama es una alternativa excelente.</p>
+
+<p>Instala Ollama, inicia el servidor local y luego configura:</p>
+
+<pre>OLLAMA_URL=http://localhost:11434/completions</pre>
+
+<p>Tus aplicaciones se comunicarán directamente con tu máquina local en lugar de un servicio en la nube.</p>
+
+<p><strong>Modelos locales</strong></p>
+
+<p>Ejecutar modelos localmente elimina los costes de API y permite experimentar sin conexión, aunque los modelos más grandes requieren recursos significativos de CPU y memoria.</p>
+
+<h4>3.4 Resumen de proveedores</h4>
+
+<pre><code>Scenario                              Recommended Provider
+------------------------------------  --------------------
+New to AI development                 OpenRouter
+Need embeddings                      Cohere
+Already paying for OpenAI            OpenAI
+Already using Claude                 Anthropic
+Prefer local AI models               Ollama
+</code></pre>
+
+<p><strong>Punto de control</strong></p>
+
+<p>Tu proveedor de IA ya está configurado. Tienes un entorno de desarrollo, el repositorio del curso, todas las dependencias necesarias y acceso a uno o más proveedores de modelos de lenguaje grande. En la sección final verificaremos que todo funciona correctamente y ejecutaremos tu primera aplicación impulsada por IA.</p>
+
+<h4>Sección 4 — Ejecutar el proyecto</h4>
+
+<p>Tu entorno de desarrollo ya está completamente configurado. El último paso es aprender cómo lanzar y ejecutar las aplicaciones incluidas en este curso.</p>
+
+<p>El repositorio admite varias formas de trabajo según tu estilo de aprendizaje preferido. A lo largo de las lecciones en video, usaremos principalmente las implementaciones completas junto con la interfaz de Streamlit, permitiéndote centrarte en comprender conceptos de IA y diseño de aplicaciones en lugar de la configuración del proyecto.</p>
+
+<p><strong>Ruta de aprendizaje recomendada</strong></p>
+
+<ol><li><p>Ejecuta la implementación completa desde <code>project-completed/</code>.</p></li><li><p>Observa cómo se comporta la aplicación.</p></li><li><p>Lee y experimenta con el código fuente.</p></li><li><p>Modifica parámetros y prompts.</p></li><li><p>Si te gusta la práctica adicional, opcionalmente recrea la lección más tarde usando el scaffold correspondiente en <code>project-todo/</code>.</p></li></ol>
+
+<h4>4.1 Verificación inicial</h4>
+
+<p>Antes de lanzar tu primera lección, realiza una verificación rápida para asegurarte de que todo está configurado correctamente.</p>
+
+<h4>Activa el entorno virtual</h4>
+
+<p>macOS y WSL:</p>
+
+<pre>source .venv/bin/activate</pre>
+
+<p>Windows PowerShell:</p>
+
+<pre>.venv\Scripts\Activate.ps1</pre>
+
+<p>Tu terminal debería comenzar con:</p>
+
+<pre>(.venv)</pre>
+
+<h4>Verificar paquetes instalados</h4>
+
+<p>Comprueba que Streamlit esté disponible.</p>
+
+<pre>pip list | grep streamlit</pre>
+
+<p>Verifica LangChain.</p>
+
+<pre>pip list | grep langchain</pre>
+
+<p>También deberías ver paquetes como OpenAI, Anthropic, ChromaDB y Python Dotenv instalados.</p>
+
+<h4>Verifica tu clave API</h4>
+
+<p>Ejecuta el siguiente comando.</p>
+
+<pre>python3 -c "import os; print('OPENROUTER_API_KEY configured:',bool(os.getenv('OPENROUTER_API_KEY')))"</pre>
+
+<p>Si todo está configurado correctamente, la salida debería ser:</p>
+
+<pre>OPENROUTER_API_KEY configured: True</pre>
+
+<p><strong>Por qué esta comprobación importa</strong></p>
+
+<p>Esta verificación rápida confirma que Python puede acceder correctamente a tus variables de entorno. Si este comando informa <strong>False</strong>, las lecciones que requieren modelos de lenguaje en la nube no podrán autenticarse.</p>
+
+<h4>4.2 Ejecutar el panel de Streamlit (recomendado)</h4>
+
+<p>La forma principal de explorar este curso es a través del panel de Streamlit.</p>
+
+<p>Streamlit permite que las aplicaciones Python rendericen interfaces de usuario interactivas directamente en tu navegador sin requerir desarrollo en HTML, CSS o JavaScript.</p>
+
+<h4>Lanzar el panel</h4>
+
+<p>Desde la raíz del repositorio, ejecuta:</p>
+
+<pre>streamlit run src/app.py</pre>
+
+<p>Alternativamente, usa el script de conveniencia proporcionado.</p>
+
+<pre>bash scripts/run_streamlit.sh</pre>
+
+<p>Después de unos momentos, deberías ver una salida similar a:</p>
+
+<pre>You can now view your Streamlit app in your browser.
+
+Local URL: http://localhost:8501</pre>
+
+<h4>Abrir la aplicación</h4>
+
+<p>Abre tu navegador preferido y navega a:</p>
+
+<pre>http://localhost:8501</pre>
+
+<p>Debería aparecer el panel del curso, con acceso a cada módulo y lección.</p>
+
+<h4>Ejecutar una lección</h4>
+
+<p>La mayoría de las lecciones de programación incluyen controles interactivos como cuadros de texto, botones, deslizadores y opciones de configuración.</p>
+
+<p>Simplemente:</p>
+
+<ol><li><p>Selecciona la lección.</p></li><li><p>Revisa la introducción.</p></li><li><p>Proporciona cualquier entrada requerida.</p></li><li><p>Haz clic en el botón adecuado.</p></li><li><p>Observa los resultados generados por el modelo de IA.</p></li></ol>
+
+<p>Muchas lecciones también guardan resultados intermedios para usarlos en ejercicios posteriores.</p>
+
+<p><strong>Recomendación</strong></p>
+
+<p>A menos que una lección indique explícitamente lo contrario, usa la interfaz de Streamlit. Proporciona la misma experiencia demostrada a lo largo de los videos del curso y ofrece la forma más fácil de experimentar con prompts, parámetros y comportamiento de la aplicación.</p>
+
+<h4>Detener el servidor</h4>
+
+<p>Cuando hayas terminado, vuelve al terminal y pulsa:</p>
+
+<pre>Ctrl + C</pre>
+
+<p>El servidor de Streamlit se detendrá correctamente.</p>
+
+<h4>4.3 Ejecutar lecciones individuales</h4>
+
+<p>Aunque el panel de Streamlit ofrece la experiencia más fácil de navegación, también puedes lanzar lecciones individuales directamente.</p>
+
+<p>Por ejemplo:</p>
+
+<pre>streamlit run project-completed/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py</pre>
+
+<p>Esto inicia solo esa lección en lugar del panel completo.</p>
+
+<p>Este enfoque es útil cuando:</p>
+
+<ul><li><p>Quieres centrarte en un solo tema.</p></li><li><p>Estás probando modificaciones.</p></li><li><p>Estás experimentando con prompts.</p></li><li><p>Estás depurando lecciones individuales.</p></li></ul>
+
+<h4>4.4 Ejecutar lecciones desde la línea de comandos</h4>
+
+<p>Algunas lecciones también pueden ejecutarse directamente con Python.</p>
+
+<pre>python project-completed/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py</pre>
+
+<p>En lugar de abrir un navegador, los resultados se muestran directamente dentro del terminal.</p>
+
+<p>Este enfoque es especialmente útil para:</p>
+
+<ul><li><p>Depuración.</p></li><li><p>Pruebas automatizadas.</p></li><li><p>Entender la salida en consola.</p></li><li><p>Inspeccionar mensajes de registro.</p></li></ul>
+
+<p><strong>Consejo para desarrolladores</strong></p>
+
+<p>Muchos sistemas profesionales de IA exponen tanto interfaces gráficas como interfaces de línea de comandos. Sentirse cómodo con ambos flujos de trabajo hará que la depuración y la automatización sean considerablemente más sencillas.</p>
+
+<h4>4.5 Desafío opcional práctico</h4>
+
+<p>Algunos alumnos disfrutan implementando proyectos de forma independiente después de entender la solución completa.</p>
+
+<p>Si ese es tu estilo de aprendizaje preferido, el repositorio también incluye versiones con scaffold de cada lección, con secciones TODO claramente marcadas.</p>
+
+<p>Puedes lanzar una de estas usando el ayudante CLI.</p>
+
+<pre>python -m src.cli_agent project-todo/module-02-ai-fundamentals/lesson-02-tokens-context-completion.py</pre>
+
+<p>Estas lecciones con scaffold son completamente opcionales y no son necesarias para seguir el curso. Simplemente ofrecen una oportunidad adicional para reforzar conceptos implementando partes seleccionadas por tu cuenta.</p>
+
+<p><strong>Enfoque sugerido</strong></p>
+
+<p>Completa la lección usando primero la implementación final. Cuando entiendas cómo funciona todo, vuelve al scaffold opcional y desafíate a recrear partes de la aplicación sin consultar la solución completa.</p>
+
+<h4>4.6 Instalar dependencias específicas del módulo</h4>
+
+<p>La configuración inicial instala todas las dependencias principales usadas a lo largo del curso. Sin embargo, algunos módulos introducen librerías especializadas adicionales.</p>
+
+<p>Cuando empieces un nuevo módulo, simplemente instala sus requisitos adicionales.</p>
+
+<pre>pip install -r requirements-module-02.txt</pre>
+
+<p>Los módulos posteriores siguen el mismo patrón.</p>
+
+<pre>pip install -r requirements-module-03.txt
+
+pip install -r requirements-module-04.txt</pre>
+
+<p>Este enfoque incremental mantiene la instalación inicial más pequeña y garantiza que cada módulo tenga acceso a los paquetes que necesita.</p>
+
+<p><strong>Punto de control</strong></p>
+
+<p>¡Enhorabuena! Tu entorno está completamente configurado y estás listo para empezar a crear software impulsado por IA. En la última parte de esta lección veremos cómo ejecutar tu primera lección, discutiremos el flujo de trabajo recomendado diario, proporcionaremos una referencia útil de comandos y terminaremos con una guía práctica de solución de problemas a la que puedes volver durante el resto del curso.</p>
+
+<h4>4.7 Tu primera lección — Recorrido completo</h4>
+
+<p>Vamos a poner todo junto ejecutando tu primera lección impulsada por IA.</p>
+
+<p>Para este ejemplo, asumiremos que ya has completado todos los pasos de configuración de esta lección.</p>
+
+<h4>Paso 1 — Navegar hasta el repositorio</h4>
+
+<pre>cd ~/Code/ai-for-software-engineers</pre>
+
+<h4>Paso 2 — Activar el entorno virtual</h4>
+
+<pre>source .venv/bin/activate</pre>
+
+<p>Tu prompt debería empezar con:</p>
+
+<pre>(.venv)</pre>
+
+<h4>Paso 3 — Instalar dependencias del módulo (solo la primera vez)</h4>
+
+<pre>pip install -r requirements-module-02.txt</pre>
+
+<p>Esto solo debe hacerse la primera vez que empieces el Módulo 2.</p>
+
+<h4>Paso 4 — Asegurarte de que tu clave API esté disponible</h4>
+
+<p>Si configuraste antes un archivo <code>.env</code>, no hay nada más que hacer.</p>
+
+<p>De lo contrario, configura tu clave API para la sesión actual del terminal.</p>
+
+<pre>export OPENROUTER_API_KEY="your-api-key"</pre>
+
+<h4>Paso 5 — Lanzar el panel del curso</h4>
+
+<pre>streamlit run src/app.py</pre>
+
+<p>Tu navegador debería abrir automáticamente el panel.</p>
+
+<h4>Paso 6 — Abrir tu primera lección de programación</h4>
+
+<p>Navega a:</p>
+
+<ul><li><p>Módulo 2 — AI Fundamentals</p></li><li><p>Lección 2.2 — Tokens, Context and Completion</p></li></ul>
+
+<p>Introduce algún texto de ejemplo y ejecuta la lección.</p>
+
+<p>La aplicación se comunicará con tu modelo de lenguaje configurado, mostrará los resultados y demostrará cómo funciona la tokenización en la práctica.</p>
+
+<p><strong>¡Enhorabuena!</strong></p>
+
+<p>Si llegas a este punto con éxito, tu entorno de desarrollo funciona correctamente y ya estás listo para completar cada lección práctica durante el resto del curso.</p>
+
+<h4>4.8 Un flujo de trabajo diario típico</h4>
+
+<p>Una vez configurado todo, tu flujo de trabajo diario se vuelve muy sencillo.</p>
+
+<pre># Navegar al proyecto
+
+cd ~/Code/ai-for-software-engineers
+
+# Activar el entorno virtual
+
+source .venv/bin/activate
+
+# Iniciar el panel de Streamlit
+
+streamlit run src/app.py
+
+# Abrir el navegador
+
+http://localhost:8501
+
+# Seleccionar la lección del día
+
+# Experimentar, aprender y modificar el código
+
+# Cuando hayas terminado
+
+Ctrl + C</pre>
+
+<p>Observa que, después de la instalación inicial, tu rutina diaria consta de solo unos pocos comandos.</p>
+
+<p><strong>Buena práctica</strong></p>
+
+<p>Mantén el entorno virtual activado mientras trabajas con varias lecciones. No hay necesidad de activarlo repetidamente hasta que cierres el terminal.</p>
+
+<h4>4.9 Referencia útil de comandos</h4>
+
+<h4>Entorno virtual</h4>
+
+<pre># Activar (macOS / Linux / WSL)
+
+source .venv/bin/activate
+
+# Activar (Windows PowerShell)
+
+.venv\Scripts\Activate.ps1
+
+# Desactivar
+
+deactivate</pre>
+
+<h4>Gestión del repositorio</h4>
+
+<pre># Clonar repositorio
+
+git clone https://github.com/olawoye/ai-for-software-engineers.git
+
+# Cambiar de directorio
+
+cd ai-for-software-engineers</pre>
+
+<h4>Ejecutar el curso</h4>
+
+<pre># Lanzar el panel
+
+streamlit run src/app.py
+
+# Lanzar una lección concreta
+
+streamlit run project-completed/module-XX-name/lesson-NN-name.py
+
+# Ejecutar una lección directamente
+
+python project-completed/module-XX-name/lesson-NN-name.py</pre>
+
+<h4>Instalar dependencias</h4>
+
+<pre># Paquetes principales
+
+./setup.sh
+
+# Paquetes específicos del módulo
+
+pip install -r requirements-module-02.txt
+
+pip install -r requirements-module-03.txt</pre>
+
+<h4>Variables de entorno</h4>
+
+<pre>export OPENROUTER_API_KEY="your-key"
+
+export OPENAI_API_KEY="your-key"
+
+export ANTHROPIC_API_KEY="your-key"
+
+export COHERE_API_KEY="your-key"
+
+export OLLAMA_URL="http://localhost:11434/completions"</pre>
+
+<h4>Comandos de verificación</h4>
+
+<pre>python3 --version
+
+pip3 --version
+
+git --version
+
+pip list
+
+echo $OPENROUTER_API_KEY</pre>
+
+<h4>4.10 Guía de solución de problemas</h4>
+
+<pre><code>Problem                     Likely Cause                                Suggested Solution
+-------------------------  ------------------------------------------  ------------------------------------------------------
+Python command not found    Python is not installed or not on PATH      Revisit Section 1 and verify your Python installation.
+Module not found            Virtual environment is not activated       Activate <code>.venv</code> before running the lesson.
+API authentication failed   API key missing or incorrect               Verify your environment variables or <code>.env</code> file.
+Streamlit command not found Dependencies were not installed successfully Run <code>./setup.sh</code> again.
+Browser does not open       Automatic launch failed                    Open <code>http://localhost:8501</code> manually.
+Package installation errors Internet connection or missing system dependencies Verify your operating system setup and rerun the installation.
+</code></pre>
+
+<p><strong>Recuerda</strong></p>
+
+<p>Casi todos los problemas de configuración pueden atribuirse a una de estas cuatro causas:</p>
+
+<ol><li><p>El entorno virtual no está activado.</p></li><li><p>No se ha configurado una clave API.</p></li><li><p>No se instalaron los paquetes de Python necesarios.</p></li><li><p>La configuración del sistema operativo no se completó correctamente.</p></li></ol>
+
+<h4>Conclusión</h4>
+
+<p>¡Excelente trabajo! Has completado la configuración técnica necesaria para este curso.</p>
+
+<p>Ahora tienes:</p>
+
+<ul><li><p>Un entorno moderno de Python.</p></li><li><p>Visual Studio Code configurado para desarrollo de IA.</p></li><li><p>El repositorio completo del curso instalado localmente.</p></li><li><p>Un entorno virtual aislado de Python.</p></li><li><p>Acceso a uno o más proveedores de modelos de lenguaje grande.</p></li><li><p>La capacidad de lanzar y ejecutar cada proyecto completo demostrado a lo largo del curso.</p></li></ul>
+
+<p>A partir de este punto, cada lección se centrará en crear software impulsado por IA en lugar de configurar herramientas de desarrollo.</p>
+
+<p><strong>¿Qué viene ahora?</strong></p>
+
+<ol><li><p>Continúa con el Módulo 2 y explora cómo funcionan los modelos de lenguaje grande.</p></li><li><p>Ejecuta cada lección completa tal como se demuestra en los videos.</p></li><li><p>Experimenta con prompts, parámetros y comportamiento de la aplicación.</p></li><li><p>Modifica el código para profundizar en tu comprensión.</p></li><li><p>Cuando te sientas seguro, vuelve a las implementaciones opcionales de <code>project-todo/</code> y desafíate a recrear lecciones seleccionadas de forma independiente.</p></li></ol>
+
+<p><strong>Una recomendación final</strong></p>
+
+<p>Aprender ingeniería de software de IA es muy parecido a aprender cualquier otra disciplina de ingeniería: leer solo nunca es suficiente. Ejecuta las aplicaciones, inspecciona el código fuente, cambia valores, introduce experimentos y observa los resultados. Cuanto más interactúes con el código, más rápida será tu intuición sobre cómo se diseñan y construyen los sistemas modernos de IA.</p>
+
+<p>Ya estás listo para comenzar tu recorrido en IA para ingeniería de software. Te veo en la siguiente lección.</p>

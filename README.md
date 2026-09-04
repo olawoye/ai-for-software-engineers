@@ -5,11 +5,19 @@ This repository is the code companion for the "AI For Software Engineers" course
 ## Repository Structure
 - `agents.md` — instructions for Codex/Claude agents so they stay aligned with the course architecture and workflow.
 - `shared/` — reusable helpers (LLM, RAG, agent, eval, and utility modules) that prevent code duplication and can be imported by every lesson.
-- `docs/` — topic-focused guides (numbered `01-*` through `10-*`) for IDE/agent setup, deployment, and ops so the root README stays high level.
+- `docs/` — GitHub Pages-ready course website and public landing pages written in Markdown with front matter for navigation.
+- `knowledge/` — source/reference material, setup notes, and curriculum context for the course.
 - `project-completed/` — working lesson artifacts keyed by module/lesson, intended as reference implementations.
 - `project-todo/` — lesson scaffolds with commented TODOs that agents/learners update one lesson at a time; treat `project-completed/` as view-only.
 - `scripts/` — wrappers such as `run_streamlit.sh` and `run_cli_agent.sh` for macOS/WSL so the proper flows start with the virtual environment active.
 - `pyproject.toml` + `uv` — dependencies and entrypoints so `uv sync`, `uv run streamlit run src/app.py`, and `uv run pytest tests/` become the standard tooling commands.
+
+## Course Website
+The public course site lives in `docs/` and is designed for GitHub Pages at `https://<your-user>.github.io/ai-for-software-engineers/` or the equivalent repository GitHub Pages URL. The docs area is intentionally lightweight and uses Markdown plus front matter for clean navigation and language entry points.
+
+- `docs/README.md` — main course landing page
+- `docs/es/README.md` — Spanish-language intro page
+- `knowledge/` — deeper setup, curriculum, and reference material
 
 ## Setup Overview
 
@@ -45,7 +53,7 @@ See [Module 9 README](project-completed/module-09-advanced-capabilities-speciali
 ### VS Code / Codex / Claude Code Setup
 1. **VS Code**: Install the Python extension and set the interpreter to your `.venv`. Use the Command Palette to run the helper scripts in `scripts/` for linting or launching Streamlit.
 2. **Codex / Claude Code**: Point your workspace at this repository and start with the `agents.md` brief so the agent knows the folder boundaries and lesson priorities.
-3. **Subscription vs. FREE MCP**: If you have OpenAI/Anthropic subscriptions, configure the keys via environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`). If you prefer free alternatives, set up [OpenRouter](https://github.com/openrouter/openrouter) or [Ollama](https://ollama.com/) locally and configure the endpoints via `shared/utils/settings.py` (see `docs/vscode-codex-setup.md`).
+3. **Subscription vs. FREE MCP**: If you have OpenAI/Anthropic subscriptions, configure the keys via environment variables (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`). If you prefer free alternatives, set up [OpenRouter](https://github.com/openrouter/openrouter) or [Ollama](https://ollama.com/) locally and configure the endpoints via `shared/utils/settings.py` (see `knowledge/vscode-codex-setup.md`).
 
 ### Running Lessons
 1. **Activate your virtual environment**:
@@ -98,8 +106,8 @@ safe_prompt, token_count = budget_and_truncate_context("Your text here", max_tok
 cost = calculate_request_cost(input_tokens=5000, output_tokens=500)
 ```
 
-## Docs Reference
-Detailed procedures live in `docs/`, including the numbered guides (`docs/01-local-setup.md` through `docs/10-deployment-guide.md`) plus the agent-frameworks primer. Review the relevant guide whenever you move to a new module or toolchain.
+## Knowledge Reference
+Detailed procedures live in `knowledge/`, including the numbered guides (`knowledge/01-local-setup.md` through `knowledge/10-deployment-guide.md`) plus the agent-frameworks primer. Review the relevant guide whenever you move to a new module or toolchain.
 
 ## Important: Git & Commits
 
@@ -122,7 +130,7 @@ The repository includes a comprehensive `.gitignore` that excludes:
 See `.gitignore` for the full list.
 
 ## Course Alignment
-Modules follow the course narrative from AI shift foundations to advanced capabilities and career transition. Each folder inside `project-todo/`/`project-completed/` is prefixed with the module number so you can easily correlate a lesson to the curriculum outline in `docs/module-structure.md`.
+Modules follow the course narrative from AI shift foundations to advanced capabilities and career transition. Each folder inside `project-todo/`/`project-completed/` is prefixed with the module number so you can easily correlate a lesson to the curriculum outline in `knowledge/module-structure.md`.
 
 ## Next Steps
 - Start with `project-todo/module-01-ai-shift-for-engineers/lesson-01-why-this-course-matters.py` for the first guided exercise.

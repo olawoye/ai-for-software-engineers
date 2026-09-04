@@ -687,6 +687,6 @@ In Module 4, you'll learn how to build RAG systems that let your AI applications
 
 ## Reference
 
-- Full curriculum: `docs/curriculum_v1.md`
+- Full curriculum: `knowledge/curriculum_v2.md`
 - Agent instructions: `agents.md`
-- Architecture guide: `docs/architecture.md`
+- Knowledge base: `knowledge/`
