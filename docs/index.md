@@ -6,6 +6,8 @@ nav_order: 1
 
 # AI for Software Engineers
 
+Course author: Ifeoluwa Mobolaji Olawoye
+
 This course helps software engineers move from tool user to system designer in the age of AI. Instead of treating AI as a black box, the curriculum focuses on the core patterns behind modern AI products: chat interfaces, retrieval systems, agents, and production-ready AI architecture.
 
 ## Why this course exists

@@ -1,5 +1,7 @@
 # AI For Software Engineers Companion
 
+Course author: Ifeoluwa Mobolaji Olawoye
+
 This repository is the code companion for the "AI For Software Engineers" course. It mirrors the course flow with two parallel tracks: learners can follow a working codebase for each lesson (in `project-completed/`) while also using the commented scaffolds in `project-todo/` to drive hands-on builds either through an AI CLI agent or a traditional IDE.
 
 ## Repository Structure

@@ -6,6 +6,8 @@ nav_order: 2
 
 # AI para Ingenieros de Software
 
+Autor del curso: Ifeoluwa Mobolaji Olawoye
+
 Este curso ayuda a los ingenieros de software a pasar de usuarios de herramientas a diseñadores de sistemas en la era de la IA. En lugar de tratar la IA como una caja negra, el programa se centra en los patrones clave detrás de los productos modernos de IA: interfaces conversacionales, sistemas de recuperación, agentes y arquitectura de IA lista para producción.
 
 ## Propósito del curso
