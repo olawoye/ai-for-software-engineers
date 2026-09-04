@@ -21,7 +21,7 @@ El trabajo de ingeniería actual se sitúa cada vez más en la intersección ent
 - 1.4 — Tu camino de aprendizaje completo: presenta la ruta general del curso.
 
 ### Módulo 2: Fundamentos de IA
-- 2.0 — Configuración técnica: prepara el entorno local, el editor y el acceso a APIs.
+- 2.0 — [Configuración técnica del entorno](./setup.html): prepara el entorno local, el editor y el acceso a APIs.
 - 2.1 — LLMs por dentro: explica cómo funcionan los modelos de lenguaje a alto nivel.
 - 2.2 — Tokens, contexto y completado: cubre costos, límites de contexto y comportamiento del prompt.
 - 2.3 — Arquitectura de transformers: introduce los conceptos que moldean los sistemas modernos.

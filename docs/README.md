@@ -32,7 +32,7 @@ By the end of the course, learners will understand how to:
 - 1.4 — Your Complete Learning Path: maps the full course journey and learning progression.
 
 ### Module 2: AI Fundamentals
-- 2.0 — Technical Environment Setup: prepares the local environment, editor, and API access.
+- 2.0 — [Technical Environment Setup](./setup.html): prepares the local environment, editor, and API access.
 - 2.1 — LLMs Under the Hood: explains how LLMs work at a high level.
 - 2.2 — Tokens, Context & Completion: covers cost, context limits, and prompt behavior.
 - 2.3 — Transformer Architecture: introduces the model concepts that shape modern AI systems.
