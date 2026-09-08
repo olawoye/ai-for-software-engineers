@@ -20,6 +20,7 @@ The public course site lives in `docs/` and is designed for GitHub Pages at `htt
 
 - `docs/index.md` — main course landing page
 - `docs/es/README.md` — Spanish-language intro page
+- `docs/pt-BR/README.md` — Brazilian Portuguese-language intro page
 - `docs/knowledge/` — deeper setup, curriculum, and reference material served through GitHub Pages
 
 ## Setup Overview

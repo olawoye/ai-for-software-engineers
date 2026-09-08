@@ -105,7 +105,7 @@ By the end of the course, learners will understand how to:
 
 ## Language support
 
-The course is primarily delivered in English, but the public docs site is designed to support additional languages and localized entry points. A Spanish landing page is provided as a starting point, while key frameworks, code, and syntax remain in English to preserve consistency with the ecosystem and tools used throughout the course.
+The course is primarily delivered in English, but the public docs site is designed to support additional languages and localized entry points. Spanish and Brazilian Portuguese landing pages are provided as starting points, while key frameworks, code, and syntax remain in English to preserve consistency with the ecosystem and tools used throughout the course.
 
 ## Technical Environment Setup
 
@@ -119,6 +119,7 @@ This guide walks through the required Python environment, VS Code setup, reposit
 
 - [English overview](./index.md)
 - [Español](./es/README.md)
+- [Português (Brasil)](./pt-BR/README.md)
 - [Repository source](../README.md)
 - [Course on Udemy](https://www.udemy.com/course/complete-ai-for-software-engineers-course/?referralCode=BFC504E1BDACC6774CD1)
 - [Project code on GitHub](https://github.com/olawoye/ai-for-software-engineers)

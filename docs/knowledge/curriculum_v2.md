@@ -10,6 +10,7 @@ nav_order: 3
 
 - [Course overview](../index.md)
 - [Spanish overview](../es/README.md)
+- [Portuguese (Brazil) overview](../pt-BR/README.md)
 - [Knowledge guides](./)
 - [Technical environment setup](../setup.html)
 

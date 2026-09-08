@@ -1,0 +1,273 @@
+<h4>Aulas antes do código — Configuração técnica do ambiente</h4>
+
+<p>A partir do Módulo 2, você verá aulas práticas com demonstrações de código. Antes de começar a criar aplicações impulsionadas por IA, precisamos preparar um ambiente moderno de Python que será usado durante o restante do curso.</p>
+
+<p>A boa notícia é que essa configuração é feita apenas uma vez. Depois que o ambiente estiver configurado corretamente, cada aula do curso segue exatamente o mesmo fluxo de trabalho.</p>
+
+<p>Este curso foi desenhado para que você possa executar e estudar imediatamente implementações completas e funcionando. Cada aula demonstrada nos vídeos já existe dentro do diretório <code>project-completed/</code> do repositório. Esse é o caminho de aprendizado recomendado, porque permite que você se concentre em compreender conceitos de IA e técnicas de engenharia de software sem ter que construir cada aula do zero.</p>
+
+<p>Se você gosta de prática adicional, também encontrará um diretório correspondente chamado <code>project-todo/</code>. Esses arquivos contêm implementações com seções de TODO que você pode completar sozinho. São completamente opcionais e foram pensados como desafio após você já entender a implementação completa.</p>
+
+<p><strong>Fluxo de trabalho recomendado</strong></p>
+
+<ul><li><p>Assista à aula.</p></li><li><p>Execute a implementação completa a partir de <code>project-completed/</code>.</p></li><li><p>Estude como o código funciona.</p></li><li><p>Experimente a implementação.</p></li><li><p>Opcionalmente, recrie a aula mais tarde usando os arquivos dentro de <code>project-todo/</code>.</p></li></ul>
+
+<p>Durante o restante do curso, você vai trabalhar principalmente com:</p>
+
+<ul><li><p>Python 3.11+</p></li><li><p>Visual Studio Code</p></li><li><p>Git</p></li><li><p>Ambientes virtuais</p></li><li><p>APIs de modelos de linguagem grande</p></li><li><p>Streamlit</p></li><li><p>O repositório do curso</p></li></ul>
+
+<p>No final desta aula, você terá um ambiente completo capaz de executar todos os projetos demonstrados durante o curso.</p>
+
+<h4>Escolha de linguagem / framework</h4>
+
+<p>Python, uma linguagem muito popular e recomendada, é usada ao longo deste curso. Os métodos e as lições aprendidas podem ser aplicados facilmente (e até portados com LLMs de IA) para outras linguagens e frameworks.</p>
+
+<h4>Seção 1 — Preparando o sistema operacional</h4>
+
+<p>O curso suporta macOS e Windows. Usuários de Linux podem seguir as instruções do macOS, porque os comandos são idênticos.</p>
+
+<p>Se você estiver usando Windows, recomendamos fortemente o uso do Windows Subsystem for Linux (WSL2). O repositório inclui scripts em Bash e segue convenções de desenvolvimento Linux, então o WSL2 é a experiência mais próxima do ambiente usado durante o desenvolvimento do curso.</p>
+
+<h4>1.1 Configuração no macOS</h4>
+
+<p>A maioria dos sistemas macOS já inclui quase tudo o que é necessário para este curso. Em muitos casos, esta seção é apenas um processo de verificação, em vez de uma instalação completa.</p>
+
+<h4>Passo 1 — Verificar o acesso ao terminal</h4>
+
+<p>Abra o aplicativo Terminal integrado.</p>
+
+<p>Você também pode instalar o iTerm2 se preferir uma experiência de terminal mais avançada.</p>
+
+<pre><code>Application     Recomendação
+-------------   -----------------------------------------------------
+Terminal.app    Totalmente suportado e instalado por padrão.
+iTerm2          Substituto opcional para usuários avançados com abas,
+                perfis e melhor usabilidade.
+</code></pre>
+
+<p><strong>Dica</strong></p>
+
+<p>Se você já está confortável usando o Terminal.app, não há necessidade de instalar o iTerm2.</p>
+
+<h4>Passo 2 — Verificar a instalação do Python</h4>
+
+<p>Abra seu terminal e execute:</p>
+
+<pre>python3 --version</pre>
+
+<p>Você deve ver uma versão parecida com:</p>
+
+<pre>Python 3.11.x</pre>
+
+<p>O curso exige <strong>Python 3.11 ou superior</strong>.</p>
+
+<p>Se o Python não estiver instalado, há dois métodos recomendados de instalação.</p>
+
+<pre><code>Método          Recomendação
+-------------   ---------------------------------------------------
+Homebrew        Recomendado para a maioria dos desenvolvedores.
+python.org      Instalador oficial fornecido pela Python Software Foundation.
+</code></pre>
+
+<p>Se você já usa o Homebrew, instale o Python com:</p>
+
+<pre>brew install python3</pre>
+
+<p>Se o Homebrew ainda não estiver instalado, instale primeiro e depois o Python.</p>
+
+<p>Alternativamente, baixe o instalador mais recente no site oficial do Python.</p>
+
+<p>Depois da instalação, verifique novamente:</p>
+
+<pre>python3 --version</pre>
+
+<h4>Passo 3 — Verificar a instalação do Git</h4>
+
+<p>O Git é necessário para baixar o repositório do curso e gerenciar o código-fonte.</p>
+
+<pre>git --version</pre>
+
+<p>Uma instalação correta deve mostrar uma versão do Git 2.x ou superior.</p>
+
+<p>Se o Git não estiver disponível, instale com:</p>
+
+<pre>brew install git</pre>
+
+<h4>Passo 4 — Verificar o pip</h4>
+
+<p>Os pacotes do Python são instalados através do pip.</p>
+
+<pre>pip3 --version</pre>
+
+<p>Se o pip não estiver disponível, execute:</p>
+
+<pre>python3 -m ensurepip --upgrade</pre>
+
+<p><strong>Por que o pip importa</strong></p>
+
+<p>Cada framework de IA usado neste curso — incluindo Streamlit, LangChain, OpenAI, Anthropic, ChromaDB e muitos outros — é instalado por meio do pip. Verificar isso agora evita problemas desnecessários mais adiante.</p>
+
+<h4>Resultado esperado</h4>
+
+<p>Antes de passar para a próxima seção, seu Mac deve cumprir a seguinte lista de verificação.</p>
+
+<pre><code>Requisito          Status
+----------------  ---------
+Terminal disponível ✓
+Python 3.11+       ✓
+Git instalado      ✓
+pip disponível     ✓
+</code></pre>
+
+<p><strong>Ponto de controle</strong></p>
+
+<p>Se todos os quatro itens acima estiverem concluídos, seu ambiente macOS está pronto. Continue para a próxima subseção apenas se estiver usando Windows. Caso contrário, siga diretamente para a verificação final do sistema operacional mais adiante nesta aula.</p>
+
+<h4>1.2 Configuração no Windows (usando WSL2)</h4>
+
+<p>Se você estiver usando Windows 10 ou Windows 11, este curso recomenda fortemente que você desenvolva dentro do <strong>Windows Subsystem for Linux 2 (WSL2)</strong>. Embora o Python possa ser instalado diretamente no Windows, o WSL2 oferece um ambiente Linux totalmente compatível com as ferramentas modernas de IA e engenharia de software.</p>
+
+<p><strong>Por que usar WSL2?</strong></p>
+
+<ul><li><p>O curso inclui scripts em Bash para configuração e execução de aplicativos.</p></li><li><p>A maioria dos frameworks de IA é desenvolvida e testada principalmente em Linux.</p></li><li><p>A instalação de pacotes geralmente é mais confiável.</p></li><li><p>Os caminhos de arquivos e os ambientes virtuais se comportam de forma consistente com os exemplos demonstrados durante o curso.</p></li><li><p>Você ganha experiência usando o mesmo sistema operacional usado por muitos servidores em nuvem e ambientes de desenvolvimento.</p></li></ul>
+
+<h4>Passo 1 — Instalar o Windows Subsystem for Linux</h4>
+
+<p>Abra o <strong>Windows PowerShell</strong> como administrador.</p>
+
+<p>Execute o seguinte comando.</p>
+
+<pre>wsl --install</pre>
+
+<p>Este comando instala o Windows Subsystem for Linux juntamente com a distribuição padrão do Ubuntu.</p>
+
+<p>Quando a instalação terminar, reinicie o computador, se solicitado.</p>
+
+<p>Depois de reiniciar, o Ubuntu será iniciado automaticamente e pedirá para você criar um nome de usuário e uma senha do Linux. Essas credenciais são usadas apenas dentro do seu ambiente Linux.</p>
+
+<p><strong>Nota</strong></p>
+
+<p>Seu nome de usuário e senha do Linux são diferentes das credenciais de login do Windows.</p>
+
+<h4>Passo 2 — Verificar a versão do WSL</h4>
+
+<p>Abra o PowerShell novamente e execute:</p>
+
+<pre>wsl --list --verbose</pre>
+
+<p>Você deve ver uma saída semelhante a:</p>
+
+<pre>NAME&nbsp; &nbsp; &nbsp; STATE&nbsp; &nbsp; &nbsp;VERSION
+
+Ubuntu&nbsp; &nbsp; Running&nbsp; &nbsp;2</pre>
+
+<p>O valor importante está na coluna VERSION, que deve ser <strong>2</strong>.</p>
+
+<p>Se sua instalação reportar a versão 1, atualize com:</p>
+
+<pre>wsl --set-version Ubuntu 2</pre>
+
+<h4>Passo 3 — Abrir o Ubuntu</h4>
+
+<p>Você pode abrir o Ubuntu de várias maneiras.</p>
+
+<pre><code>Método            Descrição
+----------------  -------------------------------------------------
+Menu Iniciar      Abrir o Ubuntu diretamente no Menu Iniciar do Windows.
+PowerShell        Executar <code>wsl</code>.
+Prompt de Comando Executar <code>wsl</code>.
+Windows Terminal  Selecionar o perfil do Ubuntu.
+</code></pre>
+
+<p>A partir deste ponto, todos os comandos mostrados neste curso devem ser executados dentro do terminal do Ubuntu, a menos que indicado de outra forma.</p>
+
+<h4>Passo 4 — Atualizar o Ubuntu</h4>
+
+<p>Antes de instalar ferramentas de desenvolvimento, atualize o sistema operacional.</p>
+
+<pre>sudo apt update &amp;&amp; sudo apt upgrade -y</pre>
+
+<p>Isso pode levar alguns minutos, dependendo da sua conexão com a internet.</p>
+
+<h4>Passo 5 — Verificar o Python</h4>
+
+<pre>python3 --version</pre>
+
+<p>Você deve ter Python 3.11 ou superior.</p>
+
+<p>Se o Python estiver ausente ou sua versão for antiga, instale com:</p>
+
+<pre>sudo apt install python3 python3-pip -y</pre>
+
+<p>Algumas versões do Ubuntu também podem exigir:</p>
+
+<pre>sudo apt install python3.11 -y</pre>
+
+<p>Verifique novamente após a instalação.</p>
+
+<pre>python3 --version</pre>
+
+<h4>Passo 6 — Instalar ferramentas de desenvolvimento</h4>
+
+<p>Vários pacotes do Python compilam extensões nativas durante a instalação. Isso requer as ferramentas padrão de compilação do Linux.</p>
+
+<pre>sudo apt install build-essential curl git -y</pre>
+
+<p>Isso instala:</p>
+
+<ul><li><p>GCC</p></li><li><p>G++</p></li><li><p>Make</p></li><li><p>curl</p></li><li><p>Git</p></li></ul>
+
+<h4>Passo 7 — Verificar o Git</h4>
+
+<p>Você pode confirmar que o Git está disponível:</p>
+
+<pre>git --version</pre>
+
+<p>Se o comando funcionar, o Git foi instalado corretamente.</p>
+
+<h4>Passo 8 — Criar um ambiente virtual</h4>
+
+<p>Para manter o ambiente do curso organizado, crie um ambiente virtual dentro do repositório:</p>
+
+<pre>python3 -m venv .venv</pre>
+
+<p>Ative-o com:</p>
+
+<pre>source .venv/bin/activate</pre>
+
+<p>Em PowerShell, o comando é:</p>
+
+<pre>.venv\Scripts\Activate.ps1</pre>
+
+<h4>Passo 9 — Instalar dependências do curso</h4>
+
+<p>O projeto inclui um script de setup que instala as dependências principais do curso.</p>
+
+<pre>./setup.sh</pre>
+
+<p>Se você preferir instalar manualmente, consulte a documentação de setup do repositório.</p>
+
+<h4>Configuração de chaves de API</h4>
+
+<p>Algumas aulas exigem acesso a APIs externas de modelos de linguagem. O método mais simples é configurar uma chave de API do OpenRouter ou de outro provedor compatível.</p>
+
+<pre>export OPENROUTER_API_KEY="sua-chave-aqui"</pre>
+
+<p>Você também pode usar variáveis de ambiente para OpenAI ou Anthropic, dependendo do provedor que estiver usando.</p>
+
+<h4>Resultado final</h4>
+
+<p>Ao concluir os passos acima, você terá um ambiente pronto para executar as implementações e experimentos do curso, além de estar preparado para seguir os módulos de IA, RAG, agentes e produção.</p>
+
+<h4>Fluxo de trabalho do curso</h4>
+
+<p>O recomendado é:</p>
+
+<ol>
+<li><p>Estudar a teoria da aula.</p></li>
+<li><p>Executar a implementação completa em <code>project-completed/</code>.</p></li>
+<li><p>Experimentar mudanças e ajustes.</p></li>
+<li><p>Recriar a solução em <code>project-todo/</code> se quiser praticar.</p></li>
+</ol>
+
+<p>Com esse setup concluído, você estará pronto para seguir todos os módulos do curso em um ambiente consistente e reproduzível.</p>
