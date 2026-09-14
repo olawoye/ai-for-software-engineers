@@ -1,0 +1,273 @@
+<h4>Vorab-Lektionen — Technische Umgebung einrichten</h4>
+
+<p>Ab Modul 2 wirst du praktische Code-Demonstrationen sehen. Bevor wir mit dem Aufbau KI-gestützter Anwendungen beginnen, müssen wir eine moderne Python-Umgebung vorbereiten, die im weiteren Verlauf des Kurses verwendet wird.</p>
+
+<p>Das Gute daran: Diese Einrichtung musst du nur einmal durchführen. Sobald deine Umgebung korrekt konfiguriert ist, folgt jede Lektion des Kurses genau dem gleichen Workflow.</p>
+
+<p>Dieser Kurs wurde so gestaltet, dass du sofort fertige, lauffähige Implementierungen ausführen und studieren kannst. Jede im Video demonstrierte Lektion existiert bereits im Ordner <code>project-completed/</code> des Repositories. Das ist der empfohlene Lernweg, weil du dich auf das Verständnis von KI-Konzepten und Software-Engineering-Techniken konzentrieren kannst, ohne jede Lektion von Grund auf neu zu bauen.</p>
+
+<p>Wenn du zusätzliche Praxis möchtest, findest du auch ein passendes <code>project-todo/</code>-Verzeichnis. Diese Dateien enthalten gerüstete Implementierungen mit TODO-Abschnitten, die du selbst abschließen kannst. Sie sind komplett optional und dienen als Herausforderung, nachdem du die fertige Implementierung verstanden hast.</p>
+
+<p><strong>Empfohlener Workflow</strong></p>
+
+<ul><li><p>Lerne die Lektion.</p></li><li><p>Führe die fertige Implementierung aus <code>project-completed/</code> aus.</p></li><li><p>Studiere, wie der Code funktioniert.</p></li><li><p>Experimentiere mit der Implementierung.</p></li><li><p>Wenn du möchtest, baue die Lektion später erneut mit den Dateien in <code>project-todo/</code> nach.</p></li></ul>
+
+<p>Im weiteren Verlauf des Kurses wirst du hauptsächlich mit Folgendem arbeiten:</p>
+
+<ul><li><p>Python 3.11+</p></li><li><p>Visual Studio Code</p></li><li><p>Git</p></li><li><p>Virtuelle Umgebungen</p></li><li><p>APIs für Large Language Models</p></li><li><p>Streamlit</p></li><li><p>Dem Kurs-Repository</p></li></ul>
+
+<p>Am Ende dieser Lektion wirst du eine vollständige Umgebung haben, mit der du jedes im Kurs demonstrierte Projekt ausführen kannst.</p>
+
+<h4>Sprach- / Framework-Auswahl</h4>
+
+<p>Python, eine sehr beliebte und empfohlene Sprache, wird im gesamten Kurs verwendet. Die gelernten Methoden und Lektionen lassen sich leicht auf andere Programmiersprachen und Frameworks übertragen (und sogar mit KI-LLMs portieren).</p>
+
+<h4>Abschnitt 1 — Betriebssystem vorbereiten</h4>
+
+<p>Der Kurs unterstützt macOS und Windows. Linux-Nutzer können den macOS-Anweisungen folgen, da die Befehle identisch sind.</p>
+
+<p>Wenn du Windows verwendest, empfehlen wir dringend Windows Subsystem for Linux (WSL2). Das Repository enthält Bash-Skripte und folgt Linux-Entwicklungsstandards, wodurch WSL2 der nahestehende Erfahrungsrahmen zum während der Kursentwicklung verwendeten Umfeld ist.</p>
+
+<h4>1.1 macOS-Setup</h4>
+
+<p>Die meisten macOS-Systeme enthalten bereits fast alles, was für diesen Kurs nötig ist. In vielen Fällen ist dieser Abschnitt eher ein Verifikationsprozess als eine vollständige Installation.</p>
+
+<h4>Schritt 1 — Terminalzugang prüfen</h4>
+
+<p>Öffne die integrierte Terminal-Anwendung.</p>
+
+<p>Du kannst auch iTerm2 installieren, wenn du eine fortgeschrittenere Terminal-Erfahrung bevorzugst.</p>
+
+<pre><code>Anwendung      Empfehlung
+-------------   -----------------------------------------------------
+Terminal.app    Vollständig unterstützt und standardmäßig installiert.
+iTerm2          Optionales Power-User-Tool mit Tabs, Profilen und
+                verbesserter Bedienbarkeit.
+</code></pre>
+
+<p><strong>Tipp</strong></p>
+
+<p>Wenn du dich mit Terminal.app bereits wohl fühlst, besteht keine Pflicht, iTerm2 zu installieren.</p>
+
+<h4>Schritt 2 — Python-Installation prüfen</h4>
+
+<p>Öffne dein Terminal und führe aus:</p>
+
+<pre>python3 --version</pre>
+
+<p>Du solltest eine Version ähnlich zu:</p>
+
+<pre>Python 3.11.x</pre>
+
+<p>Der Kurs verlangt <strong>Python 3.11 oder neuer</strong>.</p>
+
+<p>Wenn Python nicht installiert ist, gibt es zwei empfohlene Installationsmethoden.</p>
+
+<pre><code>Methode         Empfehlung
+-------------   ---------------------------------------------------
+Homebrew        Empfohlen für die meisten Entwickler.
+python.org      Offizieller Installer der Python Software Foundation.
+</code></pre>
+
+<p>Wenn du bereits Homebrew nutzt, installiere Python mit:</p>
+
+<pre>brew install python3</pre>
+
+<p>Wenn Homebrew noch nicht installiert ist, installiere es zuerst und danach Python.</p>
+
+<p>Alternativ kannst du den neuesten Installer von der offiziellen Python-Website herunterladen.</p>
+
+<p>Nach der Installation prüfe erneut:</p>
+
+<pre>python3 --version</pre>
+
+<h4>Schritt 3 — Git-Installation prüfen</h4>
+
+<p>Git wird benötigt, um das Kurs-Repository herunterzuladen und den Quellcode zu verwalten.</p>
+
+<pre>git --version</pre>
+
+<p>Eine erfolgreiche Installation sollte eine Git-Version 2.x oder höher anzeigen.</p>
+
+<p>Wenn Git nicht verfügbar ist, installiere es mit:</p>
+
+<pre>brew install git</pre>
+
+<h4>Schritt 4 — pip prüfen</h4>
+
+<p>Python-Pakete werden über pip installiert.</p>
+
+<pre>pip3 --version</pre>
+
+<p>Wenn pip nicht verfügbar ist, führe aus:</p>
+
+<pre>python3 -m ensurepip --upgrade</pre>
+
+<p><strong>Warum pip wichtig ist</strong></p>
+
+<p>Jedes in diesem Kurs genutzte KI-Framework – einschließlich Streamlit, LangChain, OpenAI, Anthropic, ChromaDB und viele andere – wird über pip installiert. Die Prüfung jetzt vermeidet unnötige Troubleshooting-Schritte später.</p>
+
+<h4>Erwartetes Ergebnis</h4>
+
+<p>Bevor du zum nächsten Abschnitt übergehst, sollte dein Mac die folgende Checkliste erfüllen.</p>
+
+<pre><code>Anforderung          Status
+------------------  ---------
+Terminal verfügbar  ✓
+Python 3.11+        ✓
+Git installiert     ✓
+pip verfügbar      ✓
+</code></pre>
+
+<p><strong>Checkpoint</strong></p>
+
+<p>Wenn alle vier Punkte oben erfüllt sind, ist deine macOS-Umgebung bereit. Fahre nur dann mit dem nächsten Abschnitt fort, wenn du Windows nutzt. Andernfalls gehe direkt zur finalen Betriebssystem-Prüfung weiter unten in dieser Lektion.</p>
+
+<h4>1.2 Windows-Setup (mit WSL2)</h4>
+
+<p>Wenn du Windows 10 oder Windows 11 nutzt, empfiehlt dieser Kurs dringend die Entwicklung innerhalb von <strong>Windows Subsystem for Linux 2 (WSL2)</strong>. Obwohl Python auch direkt auf Windows installiert werden kann, bietet WSL2 eine Linux-Umgebung, die vollständig mit modernen KI- und Software-Engineering-Tools kompatibel ist.</p>
+
+<p><strong>Warum WSL2?</strong></p>
+
+<ul><li><p>Der Kurs enthält Bash-Skripte für Setup und Start von Anwendungen.</p></li><li><p>Die meisten KI-Frameworks werden primär unter Linux entwickelt und getestet.</p></li><li><p>Die Paketinstallation ist im Allgemeinen zuverlässiger.</p></li><li><p>Dateipfade und virtuelle Umgebungen verhalten sich konsistenter mit den Beispielen im Kurs.</p></li><li><p>Du bekommst Erfahrung mit demselben Betriebssystem, das viele Cloud-Server und Entwicklungsumgebungen nutzen.</p></li></ul>
+
+<h4>Schritt 1 — Windows Subsystem for Linux installieren</h4>
+
+<p>Öffne <strong>Windows PowerShell</strong> als Administrator.</p>
+
+<p>Führe den folgenden Befehl aus.</p>
+
+<pre>wsl --install</pre>
+
+<p>Dieser Befehl installiert Windows Subsystem for Linux zusammen mit der Standarddistribution Ubuntu.</p>
+
+<p>Wenn die Installation abgeschlossen ist, starte deinen Computer neu, falls dazu aufgefordert.</p>
+
+<p>Nach dem Neustart startet Ubuntu automatisch und fordert dich auf, einen Linux-Benutzernamen und ein Passwort zu erstellen. Diese Zugangsdaten werden nur innerhalb deiner Linux-Umgebung verwendet.</p>
+
+<p><strong>Hinweis</strong></p>
+
+<p>Dein Linux-Benutzername und dein Linux-Passwort sind getrennt von deinen Windows-Anmeldedaten.</p>
+
+<h4>Schritt 2 — WSL-Version prüfen</h4>
+
+<p>Öffne PowerShell erneut und führe aus:</p>
+
+<pre>wsl --list --verbose</pre>
+
+<p>Du solltest eine Ausgabe ähnlich zu dieser sehen:</p>
+
+<pre>NAME&nbsp; &nbsp; &nbsp; STATE&nbsp; &nbsp; &nbsp;VERSION
+
+Ubuntu&nbsp; &nbsp; Running&nbsp; &nbsp;2</pre>
+
+<p>Der wichtige Wert ist die Spalte VERSION, die <strong>2</strong> sein sollte.</p>
+
+<p>Wenn deine Installation Version 1 meldet, aktualisiere sie mit:</p>
+
+<pre>wsl --set-version Ubuntu 2</pre>
+
+<h4>Schritt 3 — Ubuntu öffnen</h4>
+
+<p>Du kannst Ubuntu auf verschiedene Arten starten.</p>
+
+<pre><code>Methode           Beschreibung
+----------------  -------------------------------------------------
+Startmenü         Ubuntu direkt aus dem Windows-Startmenü öffnen.
+PowerShell        <code>wsl</code> ausführen.
+Eingabeaufforderung <code>wsl</code> ausführen.
+Windows Terminal  Das Ubuntu-Profil auswählen.
+</code></pre>
+
+<p>Ab diesem Punkt sollten alle im Kurs gezeigten Befehle im Ubuntu-Terminal ausgeführt werden, sofern nicht anders angegeben.</p>
+
+<h4>Schritt 4 — Ubuntu aktualisieren</h4>
+
+<p>Bevor du Entwicklungswerkzeuge installierst, aktualisiere das Betriebssystem.</p>
+
+<pre>sudo apt update &amp;&amp; sudo apt upgrade -y</pre>
+
+<p>Dies kann je nach Internetverbindung einige Minuten dauern.</p>
+
+<h4>Schritt 5 — Python prüfen</h4>
+
+<pre>python3 --version</pre>
+
+<p>Du solltest Python 3.11 oder neuer installiert haben.</p>
+
+<p>Wenn Python fehlt oder deine Version zu alt ist, installiere es mit:</p>
+
+<pre>sudo apt install python3 python3-pip -y</pre>
+
+<p>Einige Ubuntu-Versionen benötigen möglicherweise auch:</p>
+
+<pre>sudo apt install python3.11 -y</pre>
+
+<p>Prüfe danach erneut:</p>
+
+<pre>python3 --version</pre>
+
+<h4>Schritt 6 — Entwicklungswerkzeuge installieren</h4>
+
+<p>Mehrere Python-Pakete kompilieren native Erweiterungen während der Installation. Dafür werden die Standard-Build-Tools von Linux benötigt.</p>
+
+<pre>sudo apt install build-essential curl git -y</pre>
+
+<p>Dadurch werden installiert:</p>
+
+<ul><li><p>GCC</p></li><li><p>G++</p></li><li><p>Make</p></li><li><p>curl</p></li><li><p>Git</p></li></ul>
+
+<h4>Schritt 7 — Git prüfen</h4>
+
+<p>Du kannst bestätigen, dass Git verfügbar ist:</p>
+
+<pre>git --version</pre>
+
+<p>Wenn der Befehl funktioniert, wurde Git korrekt installiert.</p>
+
+<h4>Schritt 8 — Virtuelle Umgebung erstellen</h4>
+
+<p>Um die Kursumgebung sauber zu halten, erstelle eine virtuelle Umgebung innerhalb des Repositories:</p>
+
+<pre>python3 -m venv .venv</pre>
+
+<p>Aktiviere sie mit:</p>
+
+<pre>source .venv/bin/activate</pre>
+
+<p>In PowerShell lautet der Befehl:</p>
+
+<pre>.venv\Scripts\Activate.ps1</pre>
+
+<h4>Schritt 9 — Kurs-Abhängigkeiten installieren</h4>
+
+<p>Das Projekt enthält ein Setup-Skript, das die wichtigsten Abhängigkeiten des Kurses installiert.</p>
+
+<pre>./setup.sh</pre>
+
+<p>Wenn du lieber manuell installierst, schau in die Setup-Dokumentation des Repositories.</p>
+
+<h4>API-Schlüssel konfigurieren</h4>
+
+<p>Einige Lektionen benötigen Zugang zu externen APIs für Sprachmodelle. Der einfachste Weg ist die Einrichtung eines API-Schlüssels für OpenRouter oder einen anderen kompatiblen Anbieter.</p>
+
+<pre>export OPENROUTER_API_KEY="dein-schluessel-hier"</pre>
+
+<p>Du kannst auch Umgebungsvariablen für OpenAI oder Anthropic verwenden, je nach Anbieter, den du nutzt.</p>
+
+<h4>Endergebnis</h4>
+
+<p>Wenn du die Schritte oben durchläufst, hast du eine fertige Umgebung für die Ausführung der Implementierungen und Experimente des Kurses und bist bereit, die Module zu AI, RAG, Agenten und Produktion zu verfolgen.</p>
+
+<h4>Workflow des Kurses</h4>
+
+<p>Empfohlen ist:</p>
+
+<ol>
+<li><p>Theorie der Lektion lernen.</p></li>
+<li><p>Die fertige Implementierung in <code>project-completed/</code> ausführen.</p></li>
+<li><p>Änderungen und Anpassungen ausprobieren.</p></li>
+<li><p>Wenn du üben möchtest, die Lösung in <code>project-todo/</code> erneut bauen.</p></li>
+</ol>
+
+<p>Mit diesem Abschluss ist deine Umgebung bereit, alle Module des Kurses in einem konsistenten und reproduzierbaren Setup zu verfolgen.</p>
