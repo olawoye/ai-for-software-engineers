@@ -25,6 +25,7 @@ from pathlib import Path
 # Import shared utilities
 from shared.api_client import get_client, call_llm
 from shared.tokens import (
+    AVAILABLE_MODELS,
     estimate_tokens,
     count_message_tokens,
     get_context_window,
@@ -115,13 +116,8 @@ def render_lesson_2_2():
     with col1:
         model = st.selectbox(
             "Select Model",
-            [
-                "gpt-3.5-turbo",
-                "gpt-4",
-                "claude-3-sonnet",
-                "claude-3-opus",
-            ],
-            help="All models available on OpenRouter. Swap with Anthropic/OpenAI models if you have direct API keys.",
+            AVAILABLE_MODELS,
+            help="Exact OpenRouter provider/model IDs. Edit AVAILABLE_MODELS in shared/tokens.py to experiment.",
         )
 
     with col2:
@@ -316,7 +312,7 @@ def render_lesson_2_2():
 
             except Exception as e:
                 st.error(f"❌ API Error: {str(e)}")
-                st.info("💡 Tip: Not all models are available on all OpenRouter endpoints. Try 'gpt-3.5-turbo' or 'claude-3-sonnet' from the dropdown.")
+                st.info("💡 Tip: Use an exact provider/model ID from OpenRouter, such as 'openai/gpt-4o'.")
 
     # ========================================================================
     # SECTION 2: Context Window Comparison
@@ -359,12 +355,12 @@ def render_lesson_2_2():
     word_limit = scenario_words[scenario]
     # Use shared estimator so scenarios stay aligned with app-wide token math.
     estimated_tokens = estimate_tokens("word " * word_limit)
-    gpt35_total_window = get_context_window("gpt-3.5-turbo")
+    gpt4o_total_window = get_context_window("openai/gpt-4o")
 
     st.write(f"**Word Limit**: {word_limit}")
     st.write(f"**Estimated Tokens**: {estimated_tokens}")
     st.write(
-        f"**Remaining Total Context Budget** (gpt-3.5-turbo): {gpt35_total_window - estimated_tokens:,} tokens"
+        f"**Remaining Total Context Budget** (openai/gpt-4o): {gpt4o_total_window - estimated_tokens:,} tokens"
     )
 
     # ========================================================================

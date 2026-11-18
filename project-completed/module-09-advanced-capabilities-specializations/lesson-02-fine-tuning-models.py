@@ -144,7 +144,7 @@ class FineTuningJob:
     """Represents a fine-tuning job."""
     job_id: str
     dataset: FineTuningDataset
-    base_model: str  # e.g., "distilgpt2", "gpt-3.5-turbo"
+    base_model: str  # e.g., "distilgpt2", "gpt-4o-mini"
     approach: FineTuningApproach
     status: str  # "queued", "processing", "completed", "failed"
     created_at: str = field(default_factory=lambda: datetime.now().isoformat())
@@ -345,7 +345,7 @@ class MockCloudAPI:
     def submit_fine_tuning_job(
         self,
         dataset: FineTuningDataset,
-        model_name: str = "gpt-3.5-turbo",
+        model_name: str = "gpt-4o-mini",
         approach: FineTuningApproach = FineTuningApproach.MOCK_API,
     ) -> FineTuningJob:
         """
@@ -505,7 +505,7 @@ print(f"File ID: {file_id}")
 print("Creating fine-tuning job...")
 job = client.fine_tuning.jobs.create(
     training_file=file_id,
-    model="gpt-3.5-turbo",  # Base model
+    model="gpt-4o-mini",  # OpenAI fine-tuning model (not an OpenRouter ID)
     hyperparameters={
         "n_epochs": 3,
         "learning_rate_multiplier": 1.0
@@ -1015,7 +1015,7 @@ def run_interactive_menu():
                     print(f"  Total tokens: {stats['total_tokens']:,}")
                     
                     # Submit job
-                    job = api.submit_fine_tuning_job(dataset, model_name="gpt-3.5-turbo")
+                    job = api.submit_fine_tuning_job(dataset, model_name="gpt-4o-mini")
                     
                     # Poll for completion
                     print("\n⏳ Polling for job completion...\n")
@@ -1087,7 +1087,7 @@ def run_interactive_menu():
             print(f"  Total tokens: {stats['total_tokens']:,}")
             
             # Submit job
-            job = api.submit_fine_tuning_job(dataset, model_name="gpt-3.5-turbo")
+            job = api.submit_fine_tuning_job(dataset, model_name="gpt-4o-mini")
             
             # Poll for completion
             print("\n⏳ Polling for job completion...\n")

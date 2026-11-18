@@ -218,7 +218,7 @@ def classify():
     # Setup API call
     headers = {'Authorization': f'Bearer {API_KEY}'}
     payload = {
-        'model': 'gpt-3.5-turbo',
+        'model': DEFAULT_MODEL,
         'messages': [{'role': 'user', 'content': f'Classify: {text}'}],
         'temperature': 0.7
     }
@@ -244,7 +244,7 @@ text = st.text_area("Text to classify")
 categories = st.multiselect("Categories", [options])
 
 if st.button("Classify"):
-    client = LLMClient(model="gpt-3.5-turbo")
+    client = LLMClient(model=DEFAULT_MODEL)
     response = client.complete(f"Classify: {text}")
     st.success(f"Result: {response}")
         """, language="python")
@@ -356,7 +356,7 @@ from shared.llm_client import LLMClient
 document = st.text_area("Document to summarize")
 
 if st.button("Summarize"):
-    client = LLMClient(model="gpt-3.5-turbo")
+    client = LLMClient(model=DEFAULT_MODEL)
     summary = client.complete(f"Summarize: {document}")
     st.success(f"**Summary:**\\n{summary}")
         """, language="python")

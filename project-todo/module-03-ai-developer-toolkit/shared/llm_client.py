@@ -23,11 +23,12 @@ from typing import Optional, Dict, Any, List
 class LLMClient:
     """Wrapper around LLM API for unified provider access."""
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "gpt-3.5-turbo"):
+    # TODO: Replace with an exact OpenRouter provider/model ID when experimenting.
+    def __init__(self, api_key: Optional[str] = None, model: str = "openai/gpt-4o"):
         # PHASE 1: Initialize with API key validation
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         self.model = model
-        self.base_url = "https://openrouter.io/api/v1"
+        self.base_url = "https://openrouter.ai/api/v1"
 
         if not self.api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable not set")

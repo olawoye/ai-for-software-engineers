@@ -155,7 +155,8 @@ def show_environment_setup():
 OPENROUTER_API_KEY=your-key-here
 
 # App Configuration
-APP_MODEL=gpt-3.5-turbo
+# Use an exact OpenRouter provider/model ID.
+APP_MODEL=openai/gpt-4o
 APP_TEMPERATURE=0.7
 APP_MAX_TOKENS=500
 
@@ -230,7 +231,7 @@ services:
     environment:
       # >>> CUSTOMIZE: Pass your environment variables
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - APP_MODEL=gpt-3.5-turbo
+      - APP_MODEL=openai/gpt-4o
       - DEBUG=false
     volumes:
       # >>> REFERENCE: Volume for code changes (dev mode)
@@ -437,7 +438,7 @@ RAILWAY.APP (Recommended for production)
 4. Add environment variables:
    - Project → Variables
    - Add: OPENROUTER_API_KEY = your-key-here
-   - Add: APP_MODEL = gpt-3.5-turbo
+   - Add: APP_MODEL = openai/gpt-4o
 
 5. Get public URL from "Deployments"
 

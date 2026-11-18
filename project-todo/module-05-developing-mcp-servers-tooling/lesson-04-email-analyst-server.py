@@ -30,6 +30,8 @@ from shared.mcp_server import MCPServer, Resource, Tool
 # Implement sentiment analysis, spam detection, intent classification, and
 # key phrase extraction tools for email processing.
 # Available utilities: text processing, sentiment analysis, classification helpers
+# TODO: Define DEFAULT_LLM_MODEL once with an exact OpenRouter provider/model ID.
+# Hints: "openai/gpt-4o"; fallback "openai/gpt-3.5-turbo-0613".
 # TODO: Add your Stage 1 implementation here
 
 

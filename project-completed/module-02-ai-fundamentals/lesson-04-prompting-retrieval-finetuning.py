@@ -27,6 +27,7 @@ from typing import List, Dict
 # Import shared utilities
 from shared.api_client import get_client, call_llm
 from shared.tokens import (
+    AVAILABLE_MODELS,
     estimate_tokens,
     count_message_tokens,
     get_context_window,
@@ -60,8 +61,7 @@ def load_lesson_2_2_data():
         if output_path.exists():
             with open(output_path, "r") as f:
                 data = json.load(f)
-                # Filter out old Mistral entries, keep valid models only
-                valid_models = {"gpt-3.5-turbo", "gpt-4", "claude-3-sonnet", "claude-3-opus"}
+                valid_models = set(AVAILABLE_MODELS)
                 explorations = data.get("lesson_2_2", {}).get("explorations", [])
                 filtered = [e for e in explorations if e.get("model") in valid_models]
                 return filtered[-1] if filtered else None
@@ -260,8 +260,8 @@ def render_lesson_2_4():
     with col1:
         model = st.selectbox(
             "Model for testing:",
-            ["gpt-3.5-turbo", "gpt-4", "claude-3-sonnet", "claude-3-opus"],
-            help="Same models from Lesson 2.2"
+            AVAILABLE_MODELS,
+            help="Exact OpenRouter provider/model IDs. Edit AVAILABLE_MODELS in shared/tokens.py to experiment."
         )
     with col2:
         max_tokens = st.slider("Max tokens:", 100, 500, 300, 50)

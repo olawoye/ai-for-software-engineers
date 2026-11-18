@@ -34,6 +34,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 from shared.embeddings import EmbeddingEngine, batch_similarity
 from shared.vector_store import VectorStore
 
+# Change this one line to try another exact OpenRouter provider/model ID.
+DEFAULT_LLM_MODEL = "openai/gpt-4o"
+# FALLBACK_LLM_MODEL = "openai/gpt-3.5-turbo-0613"
+
 
 # ============================================================================
 # UTILITY FUNCTIONS
@@ -104,7 +108,7 @@ def build_rag_pipeline(
     chunk_overlap: int = 50,
     embedding_provider: str = "cohere",
     openrouter_key: Optional[str] = None,
-    llm_model: str = "openai/gpt-3.5-turbo",
+    llm_model: str = DEFAULT_LLM_MODEL,
 ) -> Dict:
     """
     Build and execute a complete RAG pipeline end-to-end.
@@ -125,7 +129,7 @@ def build_rag_pipeline(
         chunk_overlap: Overlap between chunks (default: 50)
         embedding_provider: "openrouter", "cohere", or "tfidf" (default: "openrouter")
         openrouter_key: OpenRouter API key (if None, uses OPENROUTER_API_KEY env var)
-        llm_model: Model identifier for OpenRouter LLM calls (default: openai/gpt-3.5-turbo)
+        llm_model: Model identifier for OpenRouter LLM calls (default: openai/gpt-4o)
 
     Returns:
         Dict containing:
@@ -295,7 +299,7 @@ def _smart_chunk(text: str, chunk_size: int = 512, overlap: int = 50) -> List[st
 def _generate_answer_with_llm(
     prompt: str,
     api_key: Optional[str] = None,
-    model: str = "meta-llama/llama-2-7b-chat",
+    model: str = DEFAULT_LLM_MODEL,
 ) -> str:
     """
     Generate an answer using OpenRouter LLM API.
@@ -306,7 +310,7 @@ def _generate_answer_with_llm(
     Args:
         prompt: The augmented prompt with context and question
         api_key: OpenRouter API key
-        model: Model identifier (default: llama-2-7b-chat)
+        model: Model identifier (default: openai/gpt-4o)
     
     Returns:
         Generated answer as string
@@ -366,14 +370,13 @@ def demo_core_method():
     print(f"\nQuery: {query}")
     print(f"Knowledge base size: {len(documents)} documents\n")
 
-    # Build RAG pipeline with OpenRouter (uses GPT-3.5 by default)
+    # Build RAG pipeline with the editable DEFAULT_LLM_MODEL.
     result = build_rag_pipeline(
         documents=documents,
         query=query,
         top_k=3,
         embedding_provider="cohere",
         openrouter_key=os.getenv("OPENROUTER_API_KEY"),
-        llm_model="openai/gpt-3.5-turbo",
     )
 
     # Display results
@@ -421,7 +424,6 @@ def demo_retrieval_quality():
             top_k=2,
             embedding_provider="cohere",
             openrouter_key=os.getenv("OPENROUTER_API_KEY"),
-            llm_model="openai/gpt-3.5-turbo",
         )
 
         print(f"\n  Query {i}: {query}")

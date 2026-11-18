@@ -41,6 +41,8 @@ from enum import Enum
 # ============================================================================
 # Implement fine-tuning approaches: local training, mock API simulation, or cloud.
 # Available utilities: model loading, training utilities, API interaction patterns
+# NOTE: Direct OpenAI fine-tuning uses IDs such as "gpt-4o-mini".
+# OpenRouter "provider/model" IDs are for inference, not the OpenAI fine-tuning job API.
 # TODO: Add your Stage 3 implementation here
 
 

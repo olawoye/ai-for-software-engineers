@@ -10,12 +10,15 @@ import os
 
 # PHASE 1: Available models via OpenRouter
 MODELS = {
-    # TODO: Add model names and their OpenRouter IDs
-    # Example: "GPT-3.5 Turbo": "gpt-3.5-turbo"
+    # TODO: Add or replace models using the exact OpenRouter provider/model ID.
+    "GPT-4o": "openai/gpt-4o",
+    "GPT-3.5 Turbo (Fallback)": "openai/gpt-3.5-turbo-0613",
 }
 
 # Default model for lessons
-DEFAULT_MODEL = None  # TODO: Set default
+# TODO: Change this ID if you want to try another model from MODELS.
+DEFAULT_MODEL = MODELS["GPT-4o"]
+FALLBACK_MODEL = MODELS["GPT-3.5 Turbo (Fallback)"]
 
 # PHASE 2: Temperature ranges
 TEMP_CREATIVE = None  # TODO: Set creative temperature (close to 1.0)

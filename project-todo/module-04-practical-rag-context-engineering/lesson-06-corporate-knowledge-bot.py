@@ -49,6 +49,9 @@ sys.path.insert(0, str(Path(__file__).parent / "shared"))
 # ============================================================================
 # Handle user queries with retrieval, augmentation, and LLM generation.
 # Available utilities: semantic search, prompt construction, response formatting
+# TODO: Define DEFAULT_LLM_MODEL once using an exact OpenRouter provider/model ID.
+# Hints: "openai/gpt-4o" is the default; "openai/gpt-3.5-turbo-0613" is a fallback.
+# Pass the default to generation methods so learners can swap models in one place.
 # TODO: Add your Stage 3 implementation here
 
 

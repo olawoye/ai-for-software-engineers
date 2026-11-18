@@ -20,7 +20,8 @@ from typing import List, Optional, Dict
 class SummarizationService:
     """Core summarization business logic."""
 
-    def __init__(self, model: str = "gpt-3.5-turbo"):
+    # TODO: Replace with another exact OpenRouter provider/model ID to experiment.
+    def __init__(self, model: str = "openai/gpt-4o"):
         """
         PHASE 1: Initialize service with model choice.
 

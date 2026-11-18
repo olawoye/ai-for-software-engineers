@@ -33,6 +33,8 @@ from shared.mcp_server import MCPServer, Resource, Tool
 # ============================================================================
 # Design and implement the central MCP toolkit server orchestrating all tools.
 # Available utilities: MCPServer, multiple resource/tool categories, config management
+# TODO: If your implementation calls OpenRouter, define DEFAULT_LLM_MODEL once.
+# Hints: "openai/gpt-4o"; fallback "openai/gpt-3.5-turbo-0613".
 # TODO: Add your Stage 1 implementation here
 
 

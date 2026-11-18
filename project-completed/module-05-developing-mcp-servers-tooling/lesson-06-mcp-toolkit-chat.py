@@ -147,6 +147,9 @@ RAG combines retrieval and generation for better AI responses.
 # LLM API INTEGRATION (OPENROUTER)
 # ============================================================================
 
+DEFAULT_LLM_MODEL = "openai/gpt-4o"
+# FALLBACK_LLM_MODEL = "openai/gpt-3.5-turbo-0613"
+
 def call_llm_api(prompt: str, system_prompt: str = "", temperature: float = 0.7) -> Optional[str]:
     """
     Call OpenRouter API for LLM inference.
@@ -168,7 +171,7 @@ def call_llm_api(prompt: str, system_prompt: str = "", temperature: float = 0.7)
         }
         
         data = {
-            "model": "openai/gpt-3.5-turbo",
+            "model": DEFAULT_LLM_MODEL,
             "messages": [
                 {"role": "system", "content": system_prompt} if system_prompt else None,
                 {"role": "user", "content": prompt}
@@ -723,7 +726,7 @@ Example document: `database-troubleshooting.md`
     if llm_key:
         st.success("✅ LLM API enabled (OPENROUTER_API_KEY found)")
         st.markdown("""Real LLM-powered processing active:
-- Email urgency analysis using OpenRouter (GPT-3.5-turbo)
+- Email urgency analysis using OpenRouter (`openai/gpt-4o` by default)
 - Intelligent document ranking and matching
 - Semantic understanding instead of keyword matching
 - Multi-turn conversation support with reasoning

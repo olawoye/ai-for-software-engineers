@@ -5,6 +5,7 @@ File: projects-completed/module-03/resource_llm_gateway.py
 """
 
 import asyncio
+import os
 import random
 import time
 from typing import AsyncGenerator, Dict, Any, List, Optional
@@ -19,8 +20,8 @@ class ResilientLLMGateway:
 
     def __init__(
         self,
-        primary_model: str = "gpt-4o",
-        fallback_model: str = "gpt-4o-mini",
+        primary_model: str = "openai/gpt-4o",
+        fallback_model: str = "openai/gpt-4o-mini",
         max_retries: int = 3,
         base_backoff_sec: float = 1.0,
     ):
@@ -28,8 +29,10 @@ class ResilientLLMGateway:
         self.fallback_model = fallback_model
         self.max_retries = max_retries
         self.base_backoff_sec = base_backoff_sec
-        # Initialize standard async client (reads OPENAI_API_KEY from environment)
-        self.client = AsyncOpenAI()
+        self.client = AsyncOpenAI(
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+            base_url="https://openrouter.ai/api/v1",
+        )
 
     async def execute_with_retry(
         self,

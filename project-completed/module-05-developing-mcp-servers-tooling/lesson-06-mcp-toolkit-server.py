@@ -424,7 +424,7 @@ Client → [JSON-RPC Connection]
     "jsonrpc": "2.0",
     "id": 1,
     "method": "initialize",
-    "params": {"name": "claude-3.5"}
+    "params": {"name": "example-mcp-client"}
   }
 
 Server ← Responds with server info

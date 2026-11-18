@@ -55,7 +55,7 @@ def pattern_1_basic():
         "from shared.llm_client import LLMClient",
         "",
         "# >>> CUSTOMIZE: Choose your model",
-        "model = \"gpt-3.5-turbo\"",
+        "model = DEFAULT_MODEL",
         "",
         "# >>> CUSTOMIZE: Your prompt here",
         "prompt = \"What are Large Language Models?\"",
@@ -79,7 +79,7 @@ def pattern_1_basic():
 
     try:
         # >>> CUSTOMIZE: Choose your model
-        model = "gpt-3.5-turbo"
+        model = DEFAULT_MODEL
 
         # >>> CUSTOMIZE: Your prompt here
         prompt = "What are Large Language Models in one sentence?"
@@ -115,7 +115,7 @@ def pattern_2_provider_switching():
         "from shared.llm_client import LLMClient",
         "",
         "# >>> CUSTOMIZE: Model choices",
-        "models = [\"gpt-3.5-turbo\", \"nvidia/nemotron-3-ultra-550b-a55b:free\"]",
+        "models = [DEFAULT_MODEL, \"openrouter/free\"]",
         "",
         "prompt = \"Explain RAG in one sentence\"",
         "",
@@ -130,7 +130,7 @@ def pattern_2_provider_switching():
 
     print("\n💡 What you'll learn:")
     print("  • How to switch between different providers")
-    print("  • Same code works with GPT-3.5, Nvidia Nemotron, etc.")
+    print("  • Same code works with GPT-4o, Claude, free router models, etc.")
     print("  • Trade-offs: speed, cost, quality")
     print("  • How to choose the right model")
 
@@ -139,7 +139,7 @@ def pattern_2_provider_switching():
 
     try:
         # >>> CUSTOMIZE: Model choices
-        models = ["gpt-3.5-turbo", "nvidia/nemotron-3-ultra-550b-a55b:free"]
+        models = [DEFAULT_MODEL, "openrouter/free"]
 
         prompt = "Explain Retrieval-Augmented Generation in one sentence"
 
@@ -183,7 +183,7 @@ def pattern_3_temperature():
         "",
         "# >>> REFERENCE: Same prompt, different temperatures",
         "for temp, label in temps:",
-        "    client = LLMClient(model=\"gpt-3.5-turbo\")",
+        "    client = LLMClient(model=DEFAULT_MODEL)",
         "    response = client.complete(prompt, temperature=temp, max_tokens=50)",
         "    print(f\"[{label}] {response}\")",
     ]
@@ -211,7 +211,7 @@ def pattern_3_temperature():
         # >>> REFERENCE: Same prompt, different temperatures
         for temp, label in temps:
             try:
-                client = LLMClient(model="gpt-3.5-turbo")
+                client = LLMClient(model=DEFAULT_MODEL)
                 start = time.time()
                 response = client.complete(prompt, temperature=temp, max_tokens=50)
                 elapsed = time.time() - start
@@ -249,7 +249,7 @@ def pattern_4_use_case():
         "]",
         "",
         "# >>> REFERENCE: Classify each ticket",
-        "client = LLMClient(model=\"gpt-3.5-turbo\")",
+        "client = LLMClient(model=DEFAULT_MODEL)",
         "for ticket in tickets:",
         "    prompt = prompt_template.format(ticket=ticket)",
         "    category = client.complete(prompt, temperature=0.3, max_tokens=20)",
@@ -280,7 +280,7 @@ def pattern_4_use_case():
         print("\n🔄 Classifying tickets...\n")
 
         # >>> REFERENCE: Classify each ticket
-        client = LLMClient(model="gpt-3.5-turbo")
+        client = LLMClient(model=DEFAULT_MODEL)
         for ticket in tickets:
             try:
                 prompt = prompt_template.format(ticket=ticket)
@@ -317,7 +317,7 @@ def pattern_5_error_handling():
         "",
         "# >>> REFERENCE: Try/except for error handling",
         "try:",
-        "    client = LLMClient(model='gpt-3.5-turbo')",
+        "    client = LLMClient(model=DEFAULT_MODEL)",
         "    response = client.complete('Hello')",
         "except ValueError as e:",
         "    print(f'Config error: {e}')",
@@ -344,7 +344,7 @@ def pattern_5_error_handling():
     # Scenario 2: Try a real call with error handling
     print("✓ Scenario 2: Graceful Error Handling")
     try:
-        client = LLMClient(model="gpt-3.5-turbo")
+        client = LLMClient(model=DEFAULT_MODEL)
         response = client.complete("Test", max_tokens=10)
         print("  Status: PASS - API call succeeded")
     except ValueError as e:

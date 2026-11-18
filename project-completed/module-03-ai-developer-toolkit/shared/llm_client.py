@@ -11,7 +11,7 @@ from typing import Optional, Dict, Any, List
 class LLMClient:
     """Wrapper around OpenRouter API for unified provider access."""
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "gpt-3.5-turbo"):
+    def __init__(self, api_key: Optional[str] = None, model: str = "openai/gpt-4o"):
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         self.model = model
         self.base_url = "https://openrouter.ai/api/v1"

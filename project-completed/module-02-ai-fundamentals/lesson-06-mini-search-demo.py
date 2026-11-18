@@ -15,6 +15,9 @@ OPTIONAL UPGRADES: See Lesson 2.5 README for sentence-transformers or OpenRouter
 # COMPANY CONFIGURATION
 # ============================================================================
 COMPANY_NAME = "TechCorp Inc."
+# Change this one line to try another exact OpenRouter provider/model ID.
+DEFAULT_LLM_MODEL = "openai/gpt-4o"
+# FALLBACK_LLM_MODEL = "openai/gpt-3.5-turbo-0613"
 COMPANY_TAGLINE = "Your trusted technology partner"
 
 import os
@@ -297,7 +300,7 @@ Here's the relevant company information to base your answer on:
 IMPORTANT: Please provide a warm, conversational answer that rewrites and contextualizes this information. Do NOT copy text verbatim from the document. Sound like a friendly colleague explaining company policies, not a bot reading from a document."""
     
     try:
-        model_name = "gpt-3.5-turbo"  # Use bare model name, not provider/model format
+        model_name = DEFAULT_LLM_MODEL
         url = "https://openrouter.ai/api/v1/chat/completions"
         headers = {"Authorization": f"Bearer {api_key}"}
         

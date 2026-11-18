@@ -36,7 +36,7 @@ def call_llm(client, model, messages, temperature=0.7, max_tokens=500):
 
     Args:
         client: OpenAI client instance
-        model: Model name (e.g., "gpt-3.5-turbo" or "mistralai/mistral-7b-instruct")
+        model: Exact OpenRouter model ID (e.g., "openai/gpt-4o")
         messages: List of message dicts
         temperature: Sampling temperature
         max_tokens: Max completion tokens

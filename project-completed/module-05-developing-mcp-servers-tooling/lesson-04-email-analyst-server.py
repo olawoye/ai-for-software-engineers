@@ -36,6 +36,9 @@ except ImportError:
             openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
         return Settings()
 
+DEFAULT_LLM_MODEL = "openai/gpt-4o"
+# FALLBACK_LLM_MODEL = "openai/gpt-3.5-turbo-0613"
+
 # LLM imports for real analysis
 try:
     import requests
@@ -135,7 +138,7 @@ Customer Support Team""",
 
 
 def analyze_with_llm(prompt: str) -> str:
-    """Call OpenRouter API with GPT-3.5 for analysis. Falls back to keyword-based if API unavailable."""
+    """Call OpenRouter for analysis. Falls back to keyword-based if unavailable."""
     if not HAS_REQUESTS:
         return None
     
@@ -150,7 +153,7 @@ def analyze_with_llm(prompt: str) -> str:
         }
         
         data = {
-            "model": "openai/gpt-3.5-turbo",
+            "model": DEFAULT_LLM_MODEL,
             "messages": [
                 {"role": "user", "content": prompt}
             ],
@@ -206,7 +209,7 @@ def create_email_analyst_server(
     
     Features:
         - Parse and structure raw email messages
-        - Categorize email types using GPT-3.5 via OpenRouter
+        - Categorize email types using DEFAULT_LLM_MODEL via OpenRouter
         - Extract action items and TODOs
         - Analyze sentiment using GPT-3.5 (or keyword fallback)
         - Identify important keywords
@@ -279,7 +282,7 @@ def create_email_analyst_server(
     
     # Step 3: Define and register categorize_email tool with LLM
     def categorize_email(subject: Optional[str] = None, body: Optional[str] = None) -> str:
-        """Categorize email type using GPT-3.5 via OpenRouter (with fallback to keyword analysis).
+        """Categorize email type via OpenRouter, with keyword-analysis fallback.
         
         Args:
             subject: Email subject line (optional, uses sample if not provided)
@@ -317,7 +320,7 @@ Format: category|confidence"""
                         "category": category,
                         "confidence": confidence,
                         "description": _category_descriptions.get(category, "Other email type"),
-                        "method": "GPT-3.5 via OpenRouter"
+                        "method": "LLM via OpenRouter"
                     })
                 except:
                     pass
@@ -389,7 +392,7 @@ Format: category|confidence"""
     
     # Step 5: Define and register analyze_sentiment tool with LLM
     def analyze_sentiment(text: Optional[str] = None) -> str:
-        """Analyze sentiment and urgency of email using GPT-3.5 via OpenRouter.
+        """Analyze sentiment and urgency of email via OpenRouter.
         
         Args:
             text: Email text to analyze (optional, uses sample body if not provided)
@@ -423,7 +426,7 @@ Format: sentiment|urgency|priority"""
                         "sentiment": sentiment,
                         "urgency": urgency,
                         "priority": priority,
-                        "method": "GPT-3.5 via OpenRouter"
+                        "method": "LLM via OpenRouter"
                     })
                 except:
                     pass
@@ -538,14 +541,14 @@ def demo_tool_registration():
     print("\nKey Features:")
     print("  • All input parameters are OPTIONAL")
     print("  • Tools use sample email from datasets/sample-email.txt if not provided")
-    print("  • Sentiment & categorization use GPT-3.5 via OpenRouter (fallback to keyword analysis)")
+    print(f"  • Sentiment & categorization use {DEFAULT_LLM_MODEL} via OpenRouter")
     print("  • Perfect for agent integration: agents can call tools with or without params")
 
 
 def demo_email_analysis():
     """Demonstration 2: Analyze a complex email through the pipeline."""
     print("\n" + "=" * 70)
-    print("DEMO 2: EMAIL ANALYSIS PIPELINE (GPT-3.5 via OpenRouter)")
+    print(f"DEMO 2: EMAIL ANALYSIS PIPELINE ({DEFAULT_LLM_MODEL} via OpenRouter)")
     print("=" * 70)
     
     # Load sample email from file
@@ -569,7 +572,7 @@ def demo_email_analysis():
     print(f"Parsed: {json.dumps(parsed, indent=2)}")
     
     # Categorize with LLM
-    print("\nStep 2: Categorize (GPT-3.5 via OpenRouter)")
+    print(f"\nStep 2: Categorize ({DEFAULT_LLM_MODEL} via OpenRouter)")
     print("-" * 70)
     category_result = server.tool_handlers['categorize_email'](
         subject=email['subject'],
@@ -582,7 +585,7 @@ def demo_email_analysis():
     print(f"Method: {category['method']}")
     
     # Analyze sentiment with LLM
-    print("\nStep 3: Analyze Sentiment (GPT-3.5 via OpenRouter)")
+    print(f"\nStep 3: Analyze Sentiment ({DEFAULT_LLM_MODEL} via OpenRouter)")
     print("-" * 70)
     sentiment_result = server.tool_handlers['analyze_sentiment'](
         text=email['body']
@@ -616,7 +619,7 @@ def demo_email_analysis():
     
     print("\n✅ Email analysis complete")
     print("\nLearning Point:")
-    print("  • Tools use GPT-3.5 via OpenRouter for sentiment and categorization")
+    print(f"  • Tools use {DEFAULT_LLM_MODEL} via OpenRouter for sentiment and categorization")
     print("  • Fallback to keyword-based analysis if API unavailable")
     print("  • All tool parameters are optional (use sample email if omitted)")
     print("  • AI clients can provide custom emails or rely on samples")

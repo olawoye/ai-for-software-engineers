@@ -253,7 +253,7 @@ def estimate_fine_tuning_cost(
         "openai": {
             "name": "OpenAI Fine-Tuning",
             "price_per_1m": 3.00,
-            "models": ["gpt-3.5-turbo"],
+            "models": ["gpt-4o-mini"],
         },
         "together_ai": {
             "name": "Together.ai",
@@ -466,7 +466,7 @@ def get_fine_tuning_checklist() -> List[str]:
         "✓ Examples are diverse (not repetitive)",
         "✓ Prompts and completions are well-formatted",
         "✓ No sensitive data in training examples",
-        "✓ Base model chosen (GPT-3.5-turbo vs. Claude vs. open-source)",
+        "✓ Base model chosen (GPT-4o-mini vs. other cloud/open-source models)",
         "✓ Cost estimated and approved",
         "✓ Evaluation metrics defined (how to measure quality improvement)",
         "✓ Baseline model evaluated (before fine-tuning)",

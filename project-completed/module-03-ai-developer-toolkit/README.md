@@ -105,16 +105,16 @@ PATTERN 2: Provider Switching - Same Code, Different Models
 📝 Code:
   1 | from shared.llm_client import LLMClient
   2 |
-  3 | # >>> CUSTOMIZE: Model choices (use provider/model format for non-OpenAI)
-  4 | models = ["gpt-3.5-turbo", "anthropic/claude-3-sonnet"]
+  3 | # >>> CUSTOMIZE: Model choices (use exact OpenRouter IDs)
+  4 | models = ["openai/gpt-4o", "anthropic/claude-sonnet-4.5"]
   ...
 
 🔄 Running with multiple models...
 
-✓ gpt-3.5-turbo (0.89s):
+✓ openai/gpt-4o (0.89s):
   "Retrieval-Augmented Generation combines retrieval..."
   
-✓ anthropic/claude-3-sonnet (1.23s):
+✓ anthropic/claude-sonnet-4.5 (1.23s):
   "RAG is a technique that augments LLMs with..."
 
 ✅ Pattern complete. Return to menu.
@@ -259,7 +259,7 @@ git push
 **Code Marker Format (for reference):**
 ```python
 # >>> CUSTOMIZE: Things you can change (model, system prompt, token limits)
-CHAT_MODEL = "gpt-3.5-turbo"
+CHAT_MODEL = DEFAULT_MODEL  # "openai/gpt-4o"
 
 # >>> REFERENCE: Implementation details (don't change, but understand why)
 context_messages = build_context_for_api(st.session_state.messages)
@@ -573,8 +573,8 @@ Features:
 from resource_llm_gateway import ResilientLLMGateway
 
 gateway = ResilientLLMGateway(
-    primary_model="gpt-4o",
-    fallback_model="gpt-4o-mini",
+    primary_model="openai/gpt-4o",
+    fallback_model="openai/gpt-4o-mini",
     max_retries=3
 )
 

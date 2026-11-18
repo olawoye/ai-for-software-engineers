@@ -174,17 +174,17 @@ A production-grade toolkit for token budgeting, cost estimation, and text chunki
 
 **Functions:**
 
-1. **`budget_and_truncate_context(prompt, max_token_budget=2048, model="gpt-4o")`**
+1. **`budget_and_truncate_context(prompt, max_token_budget=2048, model="openai/gpt-4o")`**
    - Validates prompt stays within token limits before API dispatch
    - Truncates if needed
    - Returns: `(safe_prompt: str, token_count: int)`
 
-2. **`calculate_request_cost(input_tokens, output_tokens, cached_tokens=0, model="gpt-4o")`**
+2. **`calculate_request_cost(input_tokens, output_tokens, cached_tokens=0, model="openai/gpt-4o")`**
    - Computes total API cost factoring in prompt caching discounts
    - Supports: GPT-4o, GPT-4o-mini, Claude 3.5 Sonnet
    - Returns: `{input_cost, cache_cost, output_cost, total_cost}` (in USD)
 
-3. **`chunk_prompt_by_tokens(text, chunk_size=512, overlap=50, model="gpt-4o")`**
+3. **`chunk_prompt_by_tokens(text, chunk_size=512, overlap=50, model="openai/gpt-4o")`**
    - Splits long text into token-aware overlapping chunks
    - Useful for splitting documents before RAG indexing
    - Returns: `List[str]` of chunks
@@ -201,7 +201,7 @@ cost = calculate_request_cost(
     input_tokens=5000, 
     output_tokens=500, 
     cached_tokens=3000, 
-    model="gpt-4o"
+    model="openai/gpt-4o"
 )
 print(f"Total cost: ${cost['total_cost']}")
 ```

@@ -52,6 +52,10 @@ COMPANY_NAME = "TechCorp Inc"
 COMPANY_TAGLINE = "Innovating the Future Together"
 EMPLOYEE_NAME = "John"  # Can be customized per user/session
 
+# Change this one line to try another exact OpenRouter provider/model ID.
+DEFAULT_LLM_MODEL = "openai/gpt-4o"
+# FALLBACK_LLM_MODEL = "openai/gpt-3.5-turbo-0613"
+
 # Feature flag: Set to True to disable CLI/non-Streamlit code
 STREAMLIT_ONLY_MODE = True
 
@@ -508,7 +512,7 @@ if HAS_STREAMLIT:
     def _generate_answer_with_llm(
         prompt: str,
         api_key: Optional[str] = None,
-        model: str = "openai/gpt-3.5-turbo",
+        model: str = DEFAULT_LLM_MODEL,
     ) -> str:
         """
         Generate an answer using OpenRouter LLM API.
@@ -600,7 +604,6 @@ ANSWER:"""
             answer = _generate_answer_with_llm(
                 prompt=augmented_prompt,
                 api_key=openrouter_key,
-                model="openai/gpt-3.5-turbo",
             )
             if not answer.startswith("["):  # If not an error
                 return answer, source_titles

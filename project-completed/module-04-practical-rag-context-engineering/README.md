@@ -204,7 +204,7 @@ Extract `semantic_search()` into your projects:
 ### Lesson 4.4: Building the Pipeline
 **Type:** Code Screencast  
 **Status:** ✅ Complete  
-**Provider:** OpenRouter (Llama 2) for LLM answer generation
+**Provider:** OpenRouter (`openai/gpt-4o`) for LLM answer generation
 
 Assemble the complete end-to-end RAG workflow that combines Lessons 4.2, 4.3, and LLM generation into a production-ready pipeline.
 
@@ -224,7 +224,7 @@ def build_rag_pipeline(
     chunk_overlap: int = 50,
     embedding_provider: str = "cohere",
     openrouter_key: Optional[str] = None,
-    llm_model: str = "meta-llama/llama-2-7b-chat",
+    llm_model: str = DEFAULT_LLM_MODEL,
 ) -> Dict
 ```
 
@@ -253,7 +253,8 @@ python lesson-04-building-rag-pipeline.py
 **Environment Setup:**
 1. Get free OpenRouter API key: https://openrouter.ai (signup with email)
 2. Set `export OPENROUTER_API_KEY='your-key-here'`
-3. Default LLM: `meta-llama/llama-2-7b-chat` (free, reliable)
+3. Default LLM: `openai/gpt-4o`
+4. To experiment, edit `DEFAULT_LLM_MODEL` near the top of the lesson. The verified legacy fallback `openai/gpt-3.5-turbo-0613` is provided as a commented line.
 
 #### Pipeline Architecture
 
@@ -369,7 +370,7 @@ Extract `build_rag_pipeline()` for your projects:
    ```python
    result = build_rag_pipeline(
        documents, query,
-       llm_model="meta-llama/llama-2-13b-chat"  # Larger model
+       llm_model="openai/gpt-4o"
    )
    ```
 
@@ -573,7 +574,8 @@ Extract `improve_retrieval()` for your projects:
 ### Lesson 4.6: Corporate Knowledge Bot (Capstone)
 **Type:** Code Screencast  
 **Status:** ✅ Complete  
-**Deployment:** CLI (batch and interactive modes)
+**Deployment:** Streamlit
+**Default LLM:** `openai/gpt-4o` (edit `DEFAULT_LLM_MODEL` in the lesson)
 
 Build and deploy a complete RAG knowledge assistant that orchestrates all prior lessons into a production-ready system.
 
@@ -617,10 +619,13 @@ def deploy_knowledge_assistant(
 ```bash
 source .venv/bin/activate
 export OPENROUTER_API_KEY='your-openrouter-key-here'
-python lesson-06-corporate-knowledge-bot.py              # Run demos
-python lesson-06-corporate-knowledge-bot.py --demo 1     # Specific demo
-python lesson-06-corporate-knowledge-bot.py --interactive # Interactive mode
+export COHERE_API_KEY='your-cohere-key-here'
+streamlit run lesson-06-corporate-knowledge-bot.py
 ```
+
+To use the verified GPT-3.5 fallback, replace `DEFAULT_LLM_MODEL` with
+`openai/gpt-3.5-turbo-0613`. The commented fallback line is included near the top
+of the lesson.
 
 #### What You'll Learn
 

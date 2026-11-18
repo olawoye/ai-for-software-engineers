@@ -11,14 +11,14 @@ import tiktoken
 def budget_and_truncate_context(
     prompt: str, 
     max_token_budget: int = 2048, 
-    model: str = "gpt-4o"
+    model: str = "openai/gpt-4o"
 ) -> Tuple[str, int]:
     """
     Ensures a prompt strictly adheres to token limits before API dispatch.
     Returns the (potentially truncated) prompt and its token count.
     """
     try:
-        encoding = tiktoken.encoding_for_model(model)
+        encoding = tiktoken.encoding_for_model(model.split("/", 1)[-1])
     except KeyError:
         encoding = tiktoken.get_encoding("cl100k_base")
     
@@ -39,19 +39,19 @@ def calculate_request_cost(
     input_tokens: int,
     output_tokens: int,
     cached_tokens: int = 0,
-    model: str = "gpt-4o"
+    model: str = "openai/gpt-4o"
 ) -> Dict[str, float]:
     """
     Computes total cost per API call factoring in prompt caching discounts.
     """
     # Pricing per 1M tokens (as of current benchmarks)
     pricing_catalog = {
-        "gpt-4o": {"input": 2.50, "output": 10.00, "cache": 1.25},
-        "gpt-4o-mini": {"input": 0.15, "output": 0.60, "cache": 0.075},
-        "claude-3-5-sonnet": {"input": 3.00, "output": 15.00, "cache": 0.30},
+        "openai/gpt-4o": {"input": 2.50, "output": 10.00, "cache": 1.25},
+        "openai/gpt-4o-mini": {"input": 0.15, "output": 0.60, "cache": 0.075},
+        "anthropic/claude-sonnet-4.5": {"input": 3.00, "output": 15.00, "cache": 0.30},
     }
     
-    rates = pricing_catalog.get(model, pricing_catalog["gpt-4o"])
+    rates = pricing_catalog.get(model, pricing_catalog["openai/gpt-4o"])
     
     uncached_inputs = max(0, input_tokens - cached_tokens)
     
@@ -73,13 +73,13 @@ def chunk_prompt_by_tokens(
     text: str, 
     chunk_size: int = 512, 
     overlap: int = 50, 
-    model: str = "gpt-4o"
+    model: str = "openai/gpt-4o"
 ) -> List[str]:
     """
     Splits long text documents into overlapping token-aware chunks.
     """
     try:
-        encoding = tiktoken.encoding_for_model(model)
+        encoding = tiktoken.encoding_for_model(model.split("/", 1)[-1])
     except KeyError:
         encoding = tiktoken.get_encoding("cl100k_base")
         
@@ -104,7 +104,12 @@ if __name__ == "__main__":
     print(f"[Truncation] Token Count: {count}")
     
     # 2. Cost estimation
-    cost_data = calculate_request_cost(input_tokens=5000, output_tokens=500, cached_tokens=3000, model="gpt-4o")
+    cost_data = calculate_request_cost(
+        input_tokens=5000,
+        output_tokens=500,
+        cached_tokens=3000,
+        model="openai/gpt-4o",
+    )
     print(f"[Cost Calculation] {cost_data}")
     
     # 3. Chunking

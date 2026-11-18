@@ -28,6 +28,9 @@ sys.path.insert(0, str(Path(__file__).parent / "shared"))
 # ============================================================================
 # Implement text chunking and LLM API integration utilities.
 # Available utilities: EmbeddingEngine, VectorStore, requests, time module
+# TODO: Define DEFAULT_LLM_MODEL using an exact OpenRouter provider/model ID.
+# Hints: "openai/gpt-4o" is the default; "openai/gpt-3.5-turbo-0613" is a fallback.
+# Keep one editable default so learners can switch models without changing every demo.
 # TODO: Add your Stage 1 implementation here
 
 

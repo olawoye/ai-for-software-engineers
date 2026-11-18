@@ -7,15 +7,18 @@ import os
 
 # Available models via OpenRouter
 MODELS = {
-    "GPT-3.5 Turbo": "gpt-3.5-turbo",
+    "GPT-4o": "openai/gpt-4o",
+    "GPT-4o Mini": "openai/gpt-4o-mini",
+    "Claude Sonnet 4.5": "anthropic/claude-sonnet-4.5",
+    "GPT-3.5 Turbo (Fallback)": "openai/gpt-3.5-turbo-0613",
     "Nvidia Nemotron 3 Ultra (Free)": "nvidia/nemotron-3-ultra-550b-a55b:free",
-    "Nvidia Nemotron 3 Super (Free)": "nvidia/nemotron-3-super-120b-a12b:free",
     "Cohere North Mini Code (Free)": "cohere/north-mini-code:free",
     "OpenRouter Free": "openrouter/free",
 }
 
-# Default model for lessons
-DEFAULT_MODEL = "gpt-3.5-turbo"
+# Change DEFAULT_MODEL to any exact ID from MODELS for lesson experiments.
+DEFAULT_MODEL = MODELS["GPT-4o"]
+FALLBACK_MODEL = MODELS["GPT-3.5 Turbo (Fallback)"]
 
 # Temperature ranges
 TEMP_CREATIVE = 0.9

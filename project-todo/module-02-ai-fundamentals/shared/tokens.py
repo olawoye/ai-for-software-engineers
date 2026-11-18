@@ -10,27 +10,34 @@ from typing import Dict, List
 TOKENS_PER_WORD = 1.33
 
 # Model context window limits (in tokens)
+AVAILABLE_MODELS = [
+    "openai/gpt-4o",
+    "openai/gpt-4o-mini",
+    "anthropic/claude-sonnet-4.5",
+    "openai/gpt-3.5-turbo-0613",
+]
+
 CONTEXT_WINDOWS = {
-    "gpt-3.5-turbo": 16385,
-    "gpt-4": 8191,
-    "claude-3-sonnet": 200000,
-    "claude-3-opus": 200000,
+    "openai/gpt-4o": 128000,
+    "openai/gpt-4o-mini": 128000,
+    "anthropic/claude-sonnet-4.5": 1000000,
+    "openai/gpt-3.5-turbo-0613": 4095,
 }
 
 # Approximate max output tokens per response (in tokens).
 OUTPUT_WINDOWS = {
-    "gpt-3.5-turbo": 4096,
-    "gpt-4": 4096,
-    "claude-3-sonnet": 4096,
-    "claude-3-opus": 4096,
+    "openai/gpt-4o": 16384,
+    "openai/gpt-4o-mini": 16384,
+    "anthropic/claude-sonnet-4.5": 64000,
+    "openai/gpt-3.5-turbo-0613": 3685,
 }
 
 # Approximate pricing per 1M tokens (OpenRouter, may vary)
 PRICING = {
-    "gpt-3.5-turbo": {"input": 0.50, "output": 1.50},
-    "gpt-4": {"input": 30.0, "output": 60.0},
-    "claude-3-sonnet": {"input": 3.0, "output": 15.0},
-    "claude-3-opus": {"input": 15.0, "output": 75.0},
+    "openai/gpt-4o": {"input": 2.50, "output": 10.00},
+    "openai/gpt-4o-mini": {"input": 0.15, "output": 0.60},
+    "anthropic/claude-sonnet-4.5": {"input": 3.00, "output": 15.00},
+    "openai/gpt-3.5-turbo-0613": {"input": 1.00, "output": 2.00},
 }
 
 def estimate_tokens(text: str) -> int:

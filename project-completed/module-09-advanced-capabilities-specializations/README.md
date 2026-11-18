@@ -145,7 +145,7 @@ python lesson-02-fine-tuning-models.py
 Provides ready-to-use code for:
 
 1. **OpenAI Fine-Tuning API**
-   - Models: GPT-3.5-turbo, GPT-4
+   - Models: GPT-4o-mini and other currently supported OpenAI fine-tuning models
    - Cost: $3 per 1M training tokens
    - Setup: `pip install openai` + API key
 
@@ -297,7 +297,7 @@ for eval in evaluations:
 from lesson-02-fine-tuning-models import MockCloudAPI
 
 api = MockCloudAPI()
-job = api.submit_fine_tuning_job(dataset, model_name="gpt-3.5-turbo")
+job = api.submit_fine_tuning_job(dataset, model_name="gpt-4o-mini")
 
 # Poll for completion
 while api.get_job_status(job.job_id).status != "completed":

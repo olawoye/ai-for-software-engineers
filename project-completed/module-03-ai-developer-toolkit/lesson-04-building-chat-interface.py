@@ -187,9 +187,9 @@ if user_input:
 
             # >>> CUSTOMIZE: Model selection
             # In production: choose based on cost/quality tradeoffs
-            # - Fast/cheap: gpt-3.5-turbo, llama-2
-            # - Balanced: gpt-4-turbo, claude-3-sonnet
-            # - Best: gpt-4, claude-3-opus
+            # - Fast/cheap: openai/gpt-4o-mini, openrouter/free
+            # - Balanced: openai/gpt-4o, anthropic/claude-sonnet-4.5
+            # - Legacy fallback: openai/gpt-3.5-turbo-0613
             client = LLMClient(model=CHAT_MODEL)
 
             # >>> REFERENCE: Format conversation as prompt
@@ -316,7 +316,7 @@ with st.expander("🔧 Try This"):
 
     3. **Switch models:**
        - Find `CHAT_MODEL = DEFAULT_MODEL`
-       - Change to `"gpt-4"` or other available models
+       - Change to another exact OpenRouter `provider/model` ID
        - Compare quality vs speed tradeoffs
 
     4. **Reduce context window:**

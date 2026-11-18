@@ -142,7 +142,7 @@ streamlit run lesson-06-ai-summarizer-service.py
 ## Learning Resources
 
 - **Streamlit Docs**: streamlit.io/docs
-- **OpenRouter**: openrouter.io/docs
+- **OpenRouter**: openrouter.ai/docs
 - **Python async**: docs.python.org/3/library/asyncio.html
 - **Complete Versions**: `project-completed/module-03-ai-developer-toolkit/`
 

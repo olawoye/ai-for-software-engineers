@@ -90,7 +90,7 @@ INSTRUCTIONS:
 # TODO: Add your Stage 5 implementation here
 #       {
 #         "question": "What is the remote work policy?",
-#         "model": "gpt-3.5-turbo",
+#         "model": "openai/gpt-4o",
 #         "max_tokens": 300,
 #         "timestamp": "2024-06-22T14:30:00.123456",
 #         "approaches": {
